@@ -28,7 +28,7 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
 
     @Override
     public String getEventID() {
-        return "Manual_QA_Flags";
+        return "Manual_QA_Flagged";
     }
 
     @Override
