@@ -1,12 +1,6 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
-/**
- * Created with IntelliJ IDEA.
- * User: jrg
- * Date: 1/7/14
- * Time: 5:00 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class AverageHistogram {
     private static int NUMBER_OF_VALUES_IN_HISTOGRAM = 256;
 
@@ -18,6 +12,11 @@ public class AverageHistogram {
 
 
     public AverageHistogram() {
+        resetAverageHistogram();
+    }
+
+
+    public void resetAverageHistogram() {
         for (int i = 0; i < NUMBER_OF_VALUES_IN_HISTOGRAM; i++) {
             sumOfValue[i] = 0;
         }
