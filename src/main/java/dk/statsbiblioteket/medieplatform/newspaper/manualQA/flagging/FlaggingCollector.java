@@ -1,20 +1,28 @@
-package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
+package dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging;
 
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent;
+import org.w3c.dom.Document;
 
 public class FlaggingCollector {
+
+
     private Batch batch;
+    private FlaggingFinder flaggingFinder;
 
     private int flags = 0;
 
-    public FlaggingCollector(Batch batch) {
+    public FlaggingCollector(Batch batch, Document batchXmlStructure) {
 
         this.batch = batch;
+        flaggingFinder = new FlaggingFinder(batchXmlStructure);
     }
 
-    public void addFlag(String reference, String type, String component, String description) {
+
+    public void addFlag(ParsingEvent reference, String type, String component, String description) {
         flags++;
     }
+
 
     public Batch getBatch() {
         return batch;

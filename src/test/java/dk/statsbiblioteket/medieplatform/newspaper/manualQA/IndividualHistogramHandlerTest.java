@@ -3,6 +3,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,7 +15,7 @@ public class IndividualHistogramHandlerTest {
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"));
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), batchXmlStructure);
         IndividualHistogramHandler histogramHandler = new IndividualHistogramHandler(
                 resultCollector, flaggingCollector);
         AttributeParsingEvent event = createAttributeEvent(

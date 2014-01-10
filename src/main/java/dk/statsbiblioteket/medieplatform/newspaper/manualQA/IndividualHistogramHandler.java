@@ -3,6 +3,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 
 public class IndividualHistogramHandler extends DefaultTreeEventHandler {
 

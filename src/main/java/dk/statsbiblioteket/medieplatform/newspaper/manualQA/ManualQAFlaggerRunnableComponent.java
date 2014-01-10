@@ -6,6 +6,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,6 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
     @Override
     public void doWorkOnBatch(Batch batch, ResultCollector resultCollector) throws Exception {
         log.info("Starting validation of '{}'", batch.getFullID());
-        FlaggingCollector flaggingCollector = new FlaggingCollector(batch);
 
         InputStream batchXmlStructureStream = retrieveBatchStructure(batch);
         if (batchXmlStructureStream == null) {
@@ -41,6 +41,7 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
 
         Document batchXmlStructure = DOM.streamToDOM(batchXmlStructureStream);
 
+        FlaggingCollector flaggingCollector = new FlaggingCollector(batch,batchXmlStructure);
 
         FlaggerFactory factory = new FlaggerFactory(resultCollector, batch, batchXmlStructure, flaggingCollector);
         EventHandlerFactory eventHandlerFactory = factory;
