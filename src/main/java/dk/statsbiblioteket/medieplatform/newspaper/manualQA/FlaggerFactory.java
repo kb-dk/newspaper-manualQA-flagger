@@ -28,7 +28,7 @@ public class FlaggerFactory implements EventHandlerFactory {
     @Override
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
-        treeEventHandlers.add(new IndividualHistogramHandler(resultCollector,flaggingCollector));
+        treeEventHandlers.add(new IndividualHistogramHandler(resultCollector, flaggingCollector));
 
         return treeEventHandlers;
     }

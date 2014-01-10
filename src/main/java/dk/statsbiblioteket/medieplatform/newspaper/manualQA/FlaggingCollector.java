@@ -12,7 +12,7 @@ public class FlaggingCollector {
         this.batch = batch;
     }
 
-    public void addFlag(String reference, String type, String component, String description){
+    public void addFlag(String reference, String type, String component, String description) {
         flags++;
     }
 
@@ -20,7 +20,7 @@ public class FlaggingCollector {
         return batch;
     }
 
-    public String toReport(){
+    public String toReport() {
         return "<mq:manualqainput xmlns:mq=\"http://schemas.statsbiblioteket.dk/manualqainput/\"\n" +
                "             version=\"0.5\">\n" +
                "    <mq:manualqafiles>\n" +

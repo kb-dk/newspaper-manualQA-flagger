@@ -26,8 +26,6 @@ public class HistogramAverageHandler extends DefaultTreeEventHandler {
             if (event.getName().endsWith(".histogram.xml")) {
 
 
-
-
             }
         } catch (Exception e) {
             resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
@@ -42,7 +40,6 @@ public class HistogramAverageHandler extends DefaultTreeEventHandler {
                 // We have now entered a film
 
 
-
             }
         } catch (Exception e) {
             resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
@@ -55,8 +52,6 @@ public class HistogramAverageHandler extends DefaultTreeEventHandler {
         try {
             if (event.getName().matches("/" + batch.getBatchID() + "-" + "[0-9]{2}$")) {
                 // We have now left a film
-
-
 
 
             }

@@ -20,8 +20,6 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
     private Logger log = LoggerFactory.getLogger(getClass());
 
 
-
-
     protected ManualQAFlaggerRunnableComponent(Properties properties) {
         super(properties);
     }

@@ -12,25 +12,25 @@ public class ManualQAFlaggerComponent {
 
     private static Logger log = LoggerFactory.getLogger(ManualQAFlaggerComponent.class);
 
-         /**
-          * The class must have a main method, so it can be started as a command line tool
-      *
-      * @param args the arguments.
-      *
-      * @throws Exception
-      * @see dk.statsbiblioteket.medieplatform.autonomous.AutonomousComponentUtils#parseArgs(String[])
-      */
-     public static void main(String[] args) throws Exception {
-         log.info("Starting with args {}", args);
+    /**
+     * The class must have a main method, so it can be started as a command line tool
+     *
+     * @param args the arguments.
+     *
+     * @throws Exception
+     * @see dk.statsbiblioteket.medieplatform.autonomous.AutonomousComponentUtils#parseArgs(String[])
+     */
+    public static void main(String[] args) throws Exception {
+        log.info("Starting with args {}", args);
 
-         //Parse the args to a properties construct
-         Properties properties = AutonomousComponentUtils.parseArgs(args);
+        //Parse the args to a properties construct
+        Properties properties = AutonomousComponentUtils.parseArgs(args);
 
-         //make a new runnable component from the properties
-         RunnableComponent component = new ManualQAFlaggerRunnableComponent(properties);
+        //make a new runnable component from the properties
+        RunnableComponent component = new ManualQAFlaggerRunnableComponent(properties);
 
-         CallResult result = AutonomousComponentUtils.startAutonomousComponent(properties, component);
-         log.info(result.toString());
-         System.exit(result.containsFailures());
-     }
+        CallResult result = AutonomousComponentUtils.startAutonomousComponent(properties, component);
+        log.info(result.toString());
+        System.exit(result.containsFailures());
+    }
 }
