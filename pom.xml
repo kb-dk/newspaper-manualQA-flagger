@@ -21,14 +21,36 @@
                 <version>0.8.3</version>
                 <executions>
                     <execution>
+                        <id>histogram</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <phase>generate-sources</phase>
+                        <configuration>
+                            <schemaIncludes>
+                                <schemaInclude>histogram.xsd</schemaInclude>
+                            </schemaIncludes>
+                            <generatePackage>dk.statsbiblioteket.medieplatform.newspaper.histogram</generatePackage>
+                        </configuration>
                     </execution>
+                    <execution>
+                        <id>manualQA</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <forceRegenerate>true</forceRegenerate>
+                            <schemaIncludes>
+                                <schemaInclude>manualqainput.xsd</schemaInclude>
+                            </schemaIncludes>
+                            <generatePackage>dk.statsbiblioteket.medieplatform.newspaper.manualQA</generatePackage>
+                        </configuration>
+                    </execution>
+
                 </executions>
                 <configuration>
-                    <generatePackage>dk.statsbiblioteket.medieplatform.newspaper.histogram</generatePackage>
+
                 </configuration>
             </plugin>
 
