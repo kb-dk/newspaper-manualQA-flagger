@@ -23,12 +23,12 @@ public class AverageHistogramTest {
         for (int i = 0; i < 256; i++) {
             histogram2[i] = 3;
         }
-        long[] average = new long[256];
+
 
         averageHistogram.addHistogram(histogram1);
         averageHistogram.addHistogram(histogram2);
 
-        average = averageHistogram.getAverageHistogramAsArray();
+        long[] average = averageHistogram.getAverageHistogramAsArray();
 
         for (int i = 0; i < 256; i++) {
             Assert.assertTrue(average[i] == 2);
