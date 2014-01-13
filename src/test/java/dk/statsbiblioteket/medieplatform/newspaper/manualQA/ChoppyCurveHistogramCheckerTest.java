@@ -23,7 +23,7 @@ public class ChoppyCurveHistogramCheckerTest {
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
         histogramHandler.handleAttribute(event);
-        Assert.assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     private AttributeParsingEvent createAttributeEvent(String name, final String contents) {
