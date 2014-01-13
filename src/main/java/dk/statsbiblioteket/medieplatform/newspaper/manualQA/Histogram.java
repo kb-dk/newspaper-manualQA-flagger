@@ -15,6 +15,11 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.List;
 
+
+/**
+ * This class represents a Histogram. It can be read from xml or from an array of long, and can be exported to xml or
+ * an array of long
+ */
 public class Histogram {
 
     private final ObjectFactory objectFactory;
@@ -23,6 +28,10 @@ public class Histogram {
 
     private long[] values;
 
+    /**
+     * private constructor. Initialises the jaxb stuff
+     * @throws JAXBException
+     */
     private Histogram() throws JAXBException {
         objectFactory = new ObjectFactory();
         JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
@@ -32,11 +41,21 @@ public class Histogram {
         unmarshaller = context.createUnmarshaller();
     }
 
+    /**
+     * Construct the Histogram from an Array of Longs. The array should be of length 255.
+     * @param values
+     * @throws JAXBException
+     */
     public Histogram(long[] values) throws JAXBException {
         this();
         this.values = values;
     }
 
+    /**
+     * Create the Histogram from an xml representation.
+     * @param xml
+     * @throws JAXBException
+     */
     public Histogram(InputStream xml) throws JAXBException {
         this();
         JAXBElement<HistogramType> histrogramJaxbXml = (JAXBElement<HistogramType>) unmarshaller.unmarshal(xml);
@@ -50,6 +69,11 @@ public class Histogram {
     }
 
 
+    /**
+     * Export the histogram as xml
+     * @return the histogram as xml
+     * @throws JAXBException
+     */
     public String toXml() throws JAXBException {
         HistogramType histogram = objectFactory.createHistogramType();
         ColorSchemeType colorScheme = objectFactory.createColorSchemeType();
@@ -71,6 +95,10 @@ public class Histogram {
         return writer.toString();
     }
 
+    /**
+     * Export the histogram as an array of long
+     * @return
+     */
     public long[] values() {
         return values;
     }
