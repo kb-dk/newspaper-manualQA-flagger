@@ -5,10 +5,15 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.InjectingTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 
-public class HistogramAverageHandler extends DefaultTreeEventHandler {
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+public class HistogramAverageHandler extends InjectingTreeEventHandler {
 
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
@@ -22,7 +27,6 @@ public class HistogramAverageHandler extends DefaultTreeEventHandler {
         this.flaggingCollector = flaggingCollector;
         this.batch = batch;
     }
-
 
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
@@ -55,7 +59,24 @@ public class HistogramAverageHandler extends DefaultTreeEventHandler {
         try {
             if (event.getName().matches("/" + batch.getBatchID() + "-" + "[0-9]{2}$")) {
                 // We have now left a film
-                // TODO output average to somewhere...
+                pushInjectedEvent(new AttributeParsingEvent(event.getName()+".film.histogram.xml") {
+                    @Override
+                    public InputStream getData() throws IOException {
+                        try {
+                            return new ByteArrayInputStream(new Histogram(filmAverageHistogram.getAverageHistogramAsArray()).toXml().getBytes());
+                        } catch (JAXBException e) {
+                            throw new IOException(e);
+                        }
+
+                    }
+
+                    @Override
+                    public String getChecksum() throws IOException {
+                        //TODO
+                        return null;
+                    }
+                });
+
             }
         } catch (Exception e) {
             resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
