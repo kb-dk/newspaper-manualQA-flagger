@@ -32,8 +32,9 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
     public void handleAttribute(AttributeParsingEvent event) {
         try {
             if (event.getName().endsWith(".histogram.xml")) {
-                filmAverageHistogram.addHistogram(parseHistogram(event, resultCollector));
-                batchAverageHistogram.addHistogram(parseHistogram(event, resultCollector));
+                long[] histogram = new Histogram(event.getData()).values();
+                filmAverageHistogram.addHistogram(histogram);
+                batchAverageHistogram.addHistogram(histogram);
             }
         } catch (Exception e) {
             resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
@@ -63,11 +64,11 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
                     @Override
                     public InputStream getData() throws IOException {
                         try {
-                            return new ByteArrayInputStream(new Histogram(filmAverageHistogram.getAverageHistogramAsArray()).toXml().getBytes());
+                            return new ByteArrayInputStream(new Histogram(
+                                    filmAverageHistogram.getAverageHistogramAsArray()).toXml().getBytes());
                         } catch (JAXBException e) {
                             throw new IOException(e);
                         }
-
                     }
 
                     @Override
