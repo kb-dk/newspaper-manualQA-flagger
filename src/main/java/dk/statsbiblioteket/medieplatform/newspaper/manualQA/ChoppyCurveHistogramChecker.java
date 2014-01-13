@@ -17,6 +17,12 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
     private final FlaggingCollector flaggingCollector;
     private final long threshold;
 
+    /**
+     * Create the Checker
+     * @param resultCollector the result collector for real errors
+     * @param flaggingCollector the flagging collector for raised flags
+     * @param threshold the threshold, the total amount which the curve can deviate from a straight line
+     */
     public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
                                        long threshold) {
         this.resultCollector = resultCollector;
