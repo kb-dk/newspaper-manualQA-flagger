@@ -4,7 +4,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 public class AverageHistogram {
     private static int NUMBER_OF_VALUES_IN_HISTOGRAM = 256;
 
-    // Holds the sums of each value in the histograms
+    // Holds the sums of each value in the histograms for which this one is an average
     private long[] sumOfValue = new long[NUMBER_OF_VALUES_IN_HISTOGRAM];
 
     // The number of histograms, the values of which have been added to the array of sums
