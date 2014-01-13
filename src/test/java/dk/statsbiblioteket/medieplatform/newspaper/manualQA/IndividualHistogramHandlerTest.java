@@ -15,7 +15,7 @@ public class IndividualHistogramHandlerTest {
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null,"0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
         IndividualHistogramHandler histogramHandler = new IndividualHistogramHandler(
                 resultCollector, flaggingCollector);
         AttributeParsingEvent event = createAttributeEvent(

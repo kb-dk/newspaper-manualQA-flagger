@@ -17,7 +17,8 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
     private final FlaggingCollector flaggingCollector;
     private final long threshold;
 
-    public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, long threshold) {
+    public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
+                                       long threshold) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.threshold = threshold;
@@ -64,7 +65,7 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
             long expected = (window[0] + window[2]) / 2;
             long increase = Math.abs(expected - window[1]);
             error += increase;
-            System.out.println(i-1+" "+increase);
+            System.out.println(i - 1 + " " + increase);
         }
         return error;
     }

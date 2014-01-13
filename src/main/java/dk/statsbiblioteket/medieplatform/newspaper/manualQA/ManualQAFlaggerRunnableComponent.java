@@ -56,10 +56,7 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
                 batch, batchXmlStructure, getComponentVersion());
 
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(
-                resultCollector,
-                batch,
-                batchXmlStructure,
-                flaggingCollector);
+                resultCollector, batch, batchXmlStructure, flaggingCollector);
         List<TreeEventHandler> eventHandlers = eventHandlerFactory.createEventHandlers();
         EventRunner eventRunner = new EventRunner(createIterator(batch));
         eventRunner.runEvents(eventHandlers, resultCollector);

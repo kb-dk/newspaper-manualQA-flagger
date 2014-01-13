@@ -25,8 +25,7 @@ public class Histogram {
 
     private Histogram() throws JAXBException {
         objectFactory = new ObjectFactory();
-        JAXBContext context
-                = JAXBContext.newInstance(ObjectFactory.class);
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
         marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -49,7 +48,6 @@ public class Histogram {
             values[colorType.getCode()] = colorType.getCount();
         }
     }
-
 
 
     public String toXml() throws JAXBException {

@@ -72,9 +72,9 @@ public class FlaggingFinder {
      */
     private static final String UNMATCHED_REGEXP = "^B(\\d{12})-RT\\d+/\\1-\\d+/UNMATCHED";
 
-        /*
-    The regexp to recognize if a path denote an Unmatched scan node
-     */
+    /*
+The regexp to recognize if a path denote an Unmatched scan node
+ */
     private static final String UNMATCHED_SCAN_REGEXP
             = "^B(\\d{12})-RT\\d+/\\1-(\\d+)/UNMATCHED/\\w+-\\1-\\2-\\d{4}\\w?(-brik)?$";
 
@@ -218,9 +218,11 @@ public class FlaggingFinder {
     private String jp2(ParsingEvent event) {
         return jp2(event.getName());
     }
+
     private String jp2(String name) {
-        return name+JP2;
+        return name + JP2;
     }
+
     private String jp2(Node node) {
         return jp2(getName(node));
     }

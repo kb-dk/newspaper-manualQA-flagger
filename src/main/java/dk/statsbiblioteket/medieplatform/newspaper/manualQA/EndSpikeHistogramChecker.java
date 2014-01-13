@@ -18,7 +18,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private ResultCollector resultCollector;
     private double threshold;
 
-    public EndSpikeHistogramChecker(ResultCollector resultCollector,FlaggingCollector flaggingCollector,
+    public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
                                     double threshold) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
@@ -30,12 +30,16 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
         try {
             if (event.getName().endsWith(".histogram.xml")) {
                 Histogram histogram = new Histogram(event.getData());
-                Pair<Spike,Long> spikeAndTotal = findSpike(histogram);
+                Pair<Spike, Long> spikeAndTotal = findSpike(histogram);
                 Spike spike = spikeAndTotal.getLeft();
                 Long total = spikeAndTotal.getRight();
                 double amount = (spike.getValue() + 0.0) / total;
-                if (amount > threshold){
-                    flaggingCollector.addFlag(event,"jp2file",getComponent(),"Found suspicious color spike for color '"+spike.getColor()+"'. "+amount*100+"% of the graph is contained in this spike.");
+                if (amount > threshold) {
+                    flaggingCollector.addFlag(
+                            event,
+                            "jp2file",
+                            getComponent(),
+                            "Found suspicious color spike for color '" + spike.getColor() + "'. " + amount * 100 + "% of the graph is contained in this spike.");
                 }
             }
         } catch (Exception e) {
@@ -44,19 +48,19 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
 
     }
 
-    private Pair<Spike,Long> findSpike(Histogram histogram) {
+    private Pair<Spike, Long> findSpike(Histogram histogram) {
         long total = 0;
         Spike highest = null;
         long[] values = histogram.values();
         for (int i = 0; i < values.length; i++) {
             long value = values[i];
             Spike spike = new Spike(i, value);
-            if (highest == null || highest.compareTo(spike) < 0){
+            if (highest == null || highest.compareTo(spike) < 0) {
                 highest = spike;
             }
             total += value;
         }
-        return new Pair<>(highest,total);
+        return new Pair<>(highest, total);
     }
 
     private String getComponent() {
@@ -66,7 +70,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     /**
      * Note: this class has a natural ordering that is inconsistent with equals
      */
-    private class Spike implements Comparable<Spike>{
+    private class Spike implements Comparable<Spike> {
 
         private int color;
         private long value;

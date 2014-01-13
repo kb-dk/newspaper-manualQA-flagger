@@ -19,16 +19,16 @@ public class HistogramTest {
         Histogram histogramObject = new Histogram(sampleHistogram);
 
         InputStream sampleHistogramAgain = Thread.currentThread()
-                                                    .getContextClassLoader()
-                                                    .getResourceAsStream("histogramExample.xml");
+                                                 .getContextClassLoader()
+                                                 .getResourceAsStream("histogramExample.xml");
 
         Document control = XMLUnit.buildControlDocument(new InputSource(sampleHistogramAgain));
         Document test = XMLUnit.buildTestDocument(histogramObject.toXml());
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML(control, test);
 
-        Assert.assertTrue(diff.similar(),diff.toString());
-        Assert.assertTrue(diff.identical(),diff.toString());
+        Assert.assertTrue(diff.similar(), diff.toString());
+        Assert.assertTrue(diff.identical(), diff.toString());
 
     }
 }

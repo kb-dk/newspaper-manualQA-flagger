@@ -46,13 +46,14 @@ public class FlaggingCollector {
         addFlagPrivate(reference, type, component, description, details);
     }
 
-    private void addFlagPrivate(ParsingEvent reference, String type, String component, String description, String... details) {
+    private void addFlagPrivate(ParsingEvent reference, String type, String component, String description,
+                                String... details) {
         Manualqafile manualQAFile = objectFactory.createManualqafile();
         manualQAFile.setComponent(component);
         manualQAFile.setDescription(description);
         manualQAFile.setType(type);
         manualQAFile.setFilereference(flaggingFinder.getFileReferenceFromEvent(reference));
-        if (details != null && details.length > 0){
+        if (details != null && details.length > 0) {
             Details detailsBlock = objectFactory.createDetails();
             for (String detail : details) {
                 detailsBlock.getContent().add(detail);

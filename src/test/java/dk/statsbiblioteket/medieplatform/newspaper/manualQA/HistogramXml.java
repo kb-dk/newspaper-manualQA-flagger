@@ -2,7 +2,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
 public class HistogramXml {
 
-    public static String getSampleGoodHistogram(){
+    public static String getSampleGoodHistogram() {
         return
 
                 "<histogram xmlns=\"http://www.statsbiblioteket.dk/avisdigitalisering/histogram/1/0/\">\n" +

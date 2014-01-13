@@ -22,7 +22,7 @@ public class FlaggingCollectorTest {
         FlaggingCollector collector = new FlaggingCollector(
                 new Batch("B400022028241"), DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")),"0.1-SNAPSHOT");
+                        "batchStructure.xml")), "0.1-SNAPSHOT");
 
 
         String report = collector.toReport();
