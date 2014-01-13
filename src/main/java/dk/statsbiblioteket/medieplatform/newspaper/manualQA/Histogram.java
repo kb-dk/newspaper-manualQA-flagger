@@ -62,7 +62,7 @@ public class Histogram {
         HistogramType histrogramXml = histrogramJaxbXml.getValue();
         List<ColorType> colorList = histrogramXml.getColors().getColor();
 
-        values = new long[255];
+        values = new long[256];
         for (ColorType colorType : colorList) {
             values[colorType.getCode()] = colorType.getCount();
         }
@@ -77,7 +77,7 @@ public class Histogram {
     public String toXml() throws JAXBException {
         HistogramType histogram = objectFactory.createHistogramType();
         ColorSchemeType colorScheme = objectFactory.createColorSchemeType();
-        colorScheme.setColorSpace("Grayscale");
+        colorScheme.setColorSpace("Greyscale");
         colorScheme.setColorDepth("8 bits");
         histogram.setColorScheme(colorScheme);
         ColorsType colors = objectFactory.createColorsType();
