@@ -28,7 +28,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
         try {
-            if (event.getName().endsWith(".histogram.xml")) {
+            if (event.getName().endsWith(".film.histogram.xml")) {
                 Histogram histogram = new Histogram(event.getData());
                 Pair<Spike, Long> spikeAndTotal = findSpike(histogram);
                 Spike spike = spikeAndTotal.getLeft();
