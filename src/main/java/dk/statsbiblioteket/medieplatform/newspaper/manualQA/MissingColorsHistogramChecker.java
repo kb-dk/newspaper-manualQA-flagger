@@ -19,6 +19,12 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
     private ResultCollector resultCollector;
     private int threshold;
 
+    /**
+     * Create the Checker
+     * @param resultCollector the result collector for real errors
+     * @param flaggingCollector the flagging collector for raised flags
+     * @param threshold the threshold, in this case the number of missing colors allowed
+     */
     public MissingColorsHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
                                          int threshold) {
         this.flaggingCollector = flaggingCollector;
@@ -27,6 +33,9 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
     }
 
     @Override
+    /**
+     * Triggers on .histogram.xml files.
+     */
     public void handleAttribute(AttributeParsingEvent event) {
         try {
             if (event.getName().endsWith(".histogram.xml")) {
@@ -47,6 +56,7 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
     }
 
     private String getComponent() {
+        //TODO
         return null;
     }
 
