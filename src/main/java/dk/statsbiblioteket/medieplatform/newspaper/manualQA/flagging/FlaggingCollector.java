@@ -14,6 +14,9 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 
+/**
+ * This collector should be used to collect the flags for the manual QA
+ */
 public class FlaggingCollector {
 
 
@@ -22,6 +25,13 @@ public class FlaggingCollector {
     private Batch batch;
     private FlaggingFinder flaggingFinder;
 
+    /**
+     * Create a new flagging collector
+     *
+     * @param batch             the batch
+     * @param batchXmlStructure the batch structure xml
+     * @param version           the version of the component?
+     */
     public FlaggingCollector(Batch batch, Document batchXmlStructure, String version) {
 
         this.batch = batch;
@@ -38,10 +48,27 @@ public class FlaggingCollector {
     }
 
 
+    /**
+     * Add a flag
+     *
+     * @param reference   the event which caused the flag to be raised
+     * @param type        the type, Should be "jp2file" or "metadata"
+     * @param component   the component causing the flag
+     * @param description description of the problem
+     */
     public void addFlag(ParsingEvent reference, String type, String component, String description) {
         addFlagPrivate(reference, type, component, description);
     }
 
+    /**
+     * Add a flag
+     *
+     * @param reference   the event which caused the flag to be raised
+     * @param type        the type, Should be "jp2file" or "metadata"
+     * @param component   the component causing the flag
+     * @param description description of the problem
+     * @param details     additional details of the problem
+     */
     public void addFlag(ParsingEvent reference, String type, String component, String description, String... details) {
         addFlagPrivate(reference, type, component, description, details);
     }
@@ -64,11 +91,18 @@ public class FlaggingCollector {
         report.getManualqafiles().getManualqafile().add(manualQAFile);
     }
 
-
+    /**
+     * Get the batch
+     * @return the batch
+     */
     public Batch getBatch() {
         return batch;
     }
 
+    /**
+     * Convert the collector to an xml report
+     * @return the xml report as String
+     */
     public String toReport() {
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
@@ -83,6 +117,9 @@ public class FlaggingCollector {
         }
     }
 
+    /**
+     * Return true if any flags have been reported
+     */
     public boolean hasFlags() {
         return !report.getManualqafiles().getManualqafile().isEmpty();
     }
