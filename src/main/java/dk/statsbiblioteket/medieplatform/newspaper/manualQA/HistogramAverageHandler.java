@@ -37,7 +37,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
                 batchAverageHistogram.addHistogram(histogram);
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
                 filmAverageHistogram.resetAverageHistogram();
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
     }
 
