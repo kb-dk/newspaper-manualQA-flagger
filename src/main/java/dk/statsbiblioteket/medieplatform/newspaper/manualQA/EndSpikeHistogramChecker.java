@@ -43,7 +43,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                 }
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
 
     }
@@ -64,7 +64,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     }
 
     private String getComponent() {
-        return null;
+        return getClass().getSimpleName();
     }
 
     /**

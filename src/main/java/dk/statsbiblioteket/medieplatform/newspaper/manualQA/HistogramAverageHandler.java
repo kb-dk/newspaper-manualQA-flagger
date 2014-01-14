@@ -80,8 +80,12 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
 
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
+    }
+
+    private String getComponent() {
+        return getClass().getSimpleName();
     }
 
 

@@ -50,14 +50,14 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
                 }
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
 
     }
 
     private String getComponent() {
-        //TODO
-        return null;
+
+        return getClass().getSimpleName();
     }
 
     private List<Integer> findMissingColors(Histogram histogram) {
