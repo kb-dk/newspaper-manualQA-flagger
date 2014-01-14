@@ -3,6 +3,8 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jrg
@@ -16,14 +18,9 @@ public class AverageHistogramTest {
     public void testGetAverageHistogramAsArrayGood() throws Exception {
         AverageHistogram averageHistogram = new AverageHistogram();
         long[] histogram1 = new long[256];
-        for (int i = 0; i < 256; i++) {
-            histogram1[i] = 1;
-        }
+        Arrays.fill(histogram1, 1);
         long[] histogram2 = new long[256];
-        for (int i = 0; i < 256; i++) {
-            histogram2[i] = 3;
-        }
-
+        Arrays.fill(histogram2, 3);
 
         averageHistogram.addHistogram(histogram1);
         averageHistogram.addHistogram(histogram2);
