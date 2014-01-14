@@ -1,6 +1,10 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
+import java.util.Arrays;
 
+/**
+ * This class represents a histogram that is value-by-value average of several histgorams.
+ */
 public class AverageHistogram {
     private static int NUMBER_OF_VALUES_IN_HISTOGRAM = 256;
 
@@ -12,19 +16,20 @@ public class AverageHistogram {
 
 
     public AverageHistogram() {
-        resetAverageHistogram();
     }
 
 
     public void resetAverageHistogram() {
-        for (int i = 0; i < NUMBER_OF_VALUES_IN_HISTOGRAM; i++) {
-            sumOfValue[i] = 0;
-        }
+        Arrays.fill(sumOfValue, 0);
         histogramCount = 0;
     }
 
 
     public void addHistogram(long[] histogram) {
+        if (histogram.length != 256) {
+            throw new IllegalArgumentException("Expected array of length 256");
+        }
+
         for (int i = 0; i < NUMBER_OF_VALUES_IN_HISTOGRAM; i++) {
             sumOfValue[i] += histogram[i];
         }
