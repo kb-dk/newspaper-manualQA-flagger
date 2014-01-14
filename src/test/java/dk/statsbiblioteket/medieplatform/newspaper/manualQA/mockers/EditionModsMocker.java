@@ -4,7 +4,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers;
  */
 public class EditionModsMocker {
 
-    public static String getEditionMods(int editionNumber) {
+    public static String getEditionMods(String editionNumber) {
         String rawMods = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
         "<mods:mods xmlns:mods=\"http://www.loc.gov/mods/v3\">" +
                 "<mods:titleInfo>" +
@@ -38,7 +38,7 @@ public class EditionModsMocker {
                 "        </mods:part>" +
                 "    </mods:relatedItem>" +
                 "</mods:mods>";
-        return rawMods.replace("___EDITIONNUMBER___", editionNumber + "");
+        return rawMods.replace("___EDITIONNUMBER___", editionNumber);
     }
 
 }

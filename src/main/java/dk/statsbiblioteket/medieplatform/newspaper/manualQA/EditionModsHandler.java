@@ -21,6 +21,11 @@ public class EditionModsHandler extends DefaultTreeEventHandler {
     private Batch batch;
 
     /**
+     * The maximum number of editions of a newspaper per day before we raise a flag.
+     */
+    private int maxEditionsPerDay = 3;
+
+    /**
      * Constructor for this class.
      * @param resultCollector the result collector.
      * @param flaggingCollector the flagging collector.
@@ -63,11 +68,12 @@ public class EditionModsHandler extends DefaultTreeEventHandler {
         String xpathForEditionNumber = xpath.selectString(doc, xpathForEditionNumberXPath);
         try {
             int editionNumber = Integer.parseInt(xpathForEditionNumber);
-            if (editionNumber > 3) {
-              flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2D-9: Edition number is larger than expected: " + editionNumber);
+            if (editionNumber > maxEditionsPerDay) {
+              flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2D-9: Edition number is larger than the maximum " +
+                      "expected value (" + maxEditionsPerDay + "): " + editionNumber);
             }
         } catch (NumberFormatException nfe) {
-            addFailure(event, "2D-9: Unable to parse (" + xpathForEditionNumber + ") as a number");
+            addFailure(event, "2D-9: Unable to parse '" + xpathForEditionNumber + "' as a number");
         }
     }
 
