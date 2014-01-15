@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlaggerFactory implements EventHandlerFactory {
+    // How much a value is allowed to deviate from the average of its two neighbours (in pct, >0) before
+    // it is considered an irregularity (only happens if both neighbours are either higher or lower)
+    private static final double CHOPPY_CHECK_THRESHOLD = 0.5;
+    // The maximum number of peaks/valleys allowed before flagged as an error
+    private static final int CHOPPY_CHECK_MAX_IRREGULARITIES = 4;
 
     private final ResultCollector resultCollector;
     private final Batch batch;
@@ -30,7 +35,8 @@ public class FlaggerFactory implements EventHandlerFactory {
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
         treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector,0));
-        treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector,flaggingCollector,10000));
+        treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
+                CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES));
         treeEventHandlers.add(new EditionModsHandler(resultCollector, flaggingCollector, batch));
         treeEventHandlers.add(new FilmHandler(resultCollector, flaggingCollector));
         return treeEventHandlers;
