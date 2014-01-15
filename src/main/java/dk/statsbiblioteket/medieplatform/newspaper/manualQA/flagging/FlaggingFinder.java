@@ -95,21 +95,27 @@ The regexp to recognize if a path denote an Unmatched scan node
     }
 
     public String getFileReferenceFromEvent(ParsingEvent event) {
-        switch (event.getType()) {
-            case Attribute:
-                if (event instanceof AttributeParsingEvent) {
-                    AttributeParsingEvent attributeParsingEvent = (AttributeParsingEvent) event;
-                    return getFileReferenceFromEvent(attributeParsingEvent);
-                }
-            case NodeBegin:
-            case NodeEnd:
-                return getFileReferenceFromNodeEvent(event);
-            default:
-                return null;
+        try {
+            switch (event.getType()) {
+                case Attribute:
+                    if (event instanceof AttributeParsingEvent) {
+                        AttributeParsingEvent attributeParsingEvent = (AttributeParsingEvent) event;
+                        return getFileReferenceFromEvent(attributeParsingEvent);
+                    }
+                case NodeBegin:
+                case NodeEnd:
+                    return getFileReferenceFromNodeEvent(event);
+                default:
+                    return null;
+            }
+        } catch (NodeNotFoundException e) {
+            //TODO log the exception
+            return null;
         }
     }
 
-    private String getFileReferenceFromNodeEvent(ParsingEvent event) {
+    private String getFileReferenceFromNodeEvent(ParsingEvent event) throws NodeNotFoundException {
+
         if (event instanceof DataFileNodeBeginsParsingEvent || event instanceof DataFileNodeEndsParsingEvent) {
             return event.getName();
         } else if (event.getName().matches(PAGE_REGEXP)) {
@@ -133,31 +139,39 @@ The regexp to recognize if a path denote an Unmatched scan node
         } else {
             return null;
         }
+
     }
 
 
-    private String getFirstFromFilm(ParsingEvent event) {
+    private String getFirstFromFilm(ParsingEvent event) throws NodeNotFoundException {
         //Get the first from Film  iso target
         String name = getFolder(event);
         NodeList filmIsoTargetNodes = DOM.createXPathSelector().selectNodeList(
                 batchXmlStructure, "//node[@name='" + name + "']/node[@shortName='FILM-ISO-target']/node");
-        Node firstInFilmIsoTarget = getFirstBySequence(filmIsoTargetNodes);
-        if (firstInFilmIsoTarget != null) {
-            return jp2(firstInFilmIsoTarget);
-        }
-        //if no file in film iso target, get the first from editions
-        NodeList editionPageNodes = DOM.createXPathSelector().selectNodeList(
-                batchXmlStructure, "//node[@name='" + name + "']/node[@shortName!='FILM-ISO-target']/node");
-        Node firstInEditionPages = getFirstBySequence(filmIsoTargetNodes);
-        if (firstInEditionPages != null) {
-            return jp2(firstInEditionPages);
-        }
-        return null;
+        try {
+            Node firstInFilmIsoTarget = getFirstBySequence(filmIsoTargetNodes);
+            if (firstInFilmIsoTarget != null) {
+                return jp2(firstInFilmIsoTarget);
+            }
+        } catch (NodeNotFoundException e) {
 
+            //if no file in film iso target, get the first from editions
+            NodeList editionPageNodes = DOM.createXPathSelector().selectNodeList(
+                    batchXmlStructure, "//node[@name='" + name + "']/node[@shortName!='FILM-ISO-target']/node");
+            Node firstInEditionPages = null;
+
+            firstInEditionPages = getFirstBySequence(editionPageNodes);
+            if (firstInEditionPages != null) {
+                return jp2(firstInEditionPages);
+            }
+
+
+        }
+        throw new NodeNotFoundException("Node not found");
     }
 
 
-    private String getFirstFromEdition(ParsingEvent event) {
+    private String getFirstFromEdition(ParsingEvent event) throws NodeNotFoundException {
         String name = getFolder(event);
         NodeList pageNodes = DOM.createXPathSelector()
                                 .selectNodeList(batchXmlStructure, "//node[@name='" + name + "']/node");
@@ -177,7 +191,7 @@ The regexp to recognize if a path denote an Unmatched scan node
         return node.getAttributes().getNamedItem("name").getNodeValue();
     }
 
-    private org.w3c.dom.Node getFirstBySequence(NodeList pageNodes) {
+    private org.w3c.dom.Node getFirstBySequence(NodeList pageNodes) throws NodeNotFoundException {
         org.w3c.dom.Node lowest = null;
         for (int i = 0; i < pageNodes.getLength(); i++) {
             org.w3c.dom.Node current = pageNodes.item(i);
@@ -190,10 +204,14 @@ The regexp to recognize if a path denote an Unmatched scan node
             }
 
         }
+        if (lowest == null) {
+            throw new NodeNotFoundException("No nodes found");
+
+        }
         return lowest;
     }
 
-    private String getFileReferenceFromEvent(AttributeParsingEvent reference) {
+    private String getFileReferenceFromEvent(AttributeParsingEvent reference) throws NodeNotFoundException {
         String name = reference.getName();
         if (name.endsWith(".jp2/contents")) {
             return name.replace("/contents", "");
@@ -233,4 +251,19 @@ The regexp to recognize if a path denote an Unmatched scan node
         return name.substring(0, extensionStart);
     }
 
+    private class NodeNotFoundException extends Exception {
+        private NodeNotFoundException() {
+        }
+
+        public NodeNotFoundException(String s) {
+        }
+
+        private NodeNotFoundException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        private NodeNotFoundException(Throwable cause) {
+            super(cause);
+        }
+    }
 }

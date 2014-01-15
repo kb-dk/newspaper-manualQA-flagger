@@ -7,27 +7,34 @@ import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCol
 
 /**
  * Hakker i kurven
- * Vi så en del kurver der ikke manglede farver, men havde vilde variationer mellem to farver. En test er at rulle et
- * window af bredde 3 hen over kurven. For hver punkt skal det gælde at (x0+x2)/2 ~= x1. Undervejs tæller vi så op hvor
- * meget off den ligning er, og hvis den slutteligt er over en hvis størrelse, kan vi flagge billedet.
+ * Vi så en del kurver der ikke manglede farver, men havde vilde variationer mellem to farver.
+ * En test er at rulle et
+ * window af bredde 3 hen over kurven. For hver punkt skal det gælde at (x0+x2)/2 ~= x1.
+ * Undervejs tæller vi så op hvor
+ * meget off den ligning er, og hvis den slutteligt er over en hvis størrelse,
+ * kan vi flagge billedet.
  */
 public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
 
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
-    private final long threshold;
+    private final double threshold;
+    private final int maxIrregularities;
 
     /**
      * Create the Checker
      * @param resultCollector the result collector for real errors
      * @param flaggingCollector the flagging collector for raised flags
-     * @param threshold the threshold, the total amount which the curve can deviate from a straight line
+     * @param threshold how much a value is allowed to deviate from the average of its two
+     *                  neighbours (in pct, >0) before it is considered an irregularity
+     * @param maxIrregularities the maximum number of peaks/valleys allowed before flagged as an error
      */
     public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
-                                       long threshold) {
+                                       double threshold, int maxIrregularities) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.threshold = threshold;
+        this.maxIrregularities = maxIrregularities;
     }
 
 
@@ -36,8 +43,8 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         try {
             if (event.getName().endsWith(".histogram.xml")) {
                 Histogram histogram = new Histogram(event.getData());
-                long error = testChoppyness(histogram);
-                if (error > threshold) {
+
+                if (errorFound(histogram)) {
                     flaggingCollector.addFlag(
                             event,
                             "jp2file",
@@ -48,31 +55,69 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         } catch (Exception e) {
             resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
-
     }
+
 
     private String getComponent() {
         return getClass().getName();
     }
 
-    private long testChoppyness(Histogram histogram) {
 
-        long error = 0;
-        long[] window = new long[3];
+    private boolean errorFound(Histogram histogram) {
+        long irregularities;
+
+        irregularities = countIrregularities(histogram);
+        return (irregularities > maxIrregularities);
+    }
+
+
+    /**
+     * Count local "peaks and valleys" that might break the continuity of the histogram curve
+     * @return number of irregularities
+     */
+    private int countIrregularities(Histogram histogram) {
         long[] values = histogram.values();
+        long value, pre, post;
+        double deviation;
+        int count = 0;
+
         for (int i = 0; i < values.length; i++) {
-            long value = values[i];
-            window[0] = window[1];
-            window[1] = window[2];
-            window[2] = value;
-            if (i < 2) { //we have not filled the first window yet
+            if (i == 0 || i == values.length - 1) {
+                // This value does not have both a pre-value and a post-value, so skip it
                 continue;
             }
-            long expected = (window[0] + window[2]) / 2;
-            long increase = Math.abs(expected - window[1]);
-            error += increase;
-            System.out.println(i - 1 + " " + increase);
+
+            value = values[i];
+            pre = values[i - 1];
+            post = values[i + 1];
+
+            if (pre < value && value < post) {
+                // We are on a rising edge, this should not be flagged as an error
+                continue;
+            }
+
+            if (pre > value && value > post) {
+                // We are on a falling edge, this should not be flagged as an error
+                continue;
+            }
+
+            deviation = calculateDeviation(value, pre, post);
+            if (deviation > threshold) {
+                count++;
+            }
         }
-        return error;
+
+        return count;
+    }
+
+
+    private double calculateDeviation(long value, long pre, long post) {
+        // To avoid division by zero, we define 1 as the lowest value
+        long nonZeroValue = (value == 0) ? 1 : value;
+
+        long prePostAverage = (pre + post) / 2;
+        long absoluteDeviation = Math.abs(prePostAverage - nonZeroValue);
+        double deviationAsFractionOfValue = absoluteDeviation / nonZeroValue;
+        return Math.abs(deviationAsFractionOfValue - 1);
     }
 }
