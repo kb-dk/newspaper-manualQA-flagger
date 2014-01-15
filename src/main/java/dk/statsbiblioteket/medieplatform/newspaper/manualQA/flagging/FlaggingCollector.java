@@ -48,17 +48,7 @@ public class FlaggingCollector {
     }
 
 
-    /**
-     * Add a flag
-     *
-     * @param reference   the event which caused the flag to be raised
-     * @param type        the type, Should be "jp2file" or "metadata"
-     * @param component   the component causing the flag
-     * @param description description of the problem
-     */
-    public void addFlag(ParsingEvent reference, String type, String component, String description) {
-        addFlagPrivate(reference, type, component, description);
-    }
+
 
     /**
      * Add a flag
