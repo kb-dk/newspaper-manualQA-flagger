@@ -66,11 +66,6 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
     private boolean errorFound(Histogram histogram) {
         long irregularities;
 
-        //error = testChoppyness(histogram);
-        //if (error > threshold) {
-        //    return true;
-        //}
-
         irregularities = countIrregularities(histogram);
         return (irregularities > maxIrregularities);
     }
