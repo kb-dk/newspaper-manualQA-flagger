@@ -11,7 +11,7 @@ import org.w3c.dom.Document;
 import java.io.IOException;
 
 /**
- *
+ * This class flags issues with film.xml containing unexpected, but not necessarily erroneous values.
  */
 public class FilmHandler extends DefaultTreeEventHandler {
 
@@ -19,6 +19,25 @@ public class FilmHandler extends DefaultTreeEventHandler {
     private ResultCollector resultCollector;
     private FlaggingCollector flaggingCollector;
 
+    /**
+     * Constructor for this class.
+     * @param resultCollector the ResultCollector for reporting failures.
+     * @param flaggingCollector the FlaggingCollector for reporting issues requiring manual QA.
+     */
+    public FilmHandler(ResultCollector resultCollector, FlaggingCollector flaggingCollector) {
+        this.resultCollector = resultCollector;
+        this.flaggingCollector = flaggingCollector;
+        filmXPathSelector = DOM.createXPathSelector("avis",
+                "http://www.statsbiblioteket.dk/avisdigitalisering/microfilm/1/0/");
+    }
+
+    /**
+     * This class tests two specific requirements which can trigger manual QA:
+     * i) the captureOriginalResolution should not normally be higher than 400. Anything above this causes a flag to be raised.
+     * ii) the reductionRatio should normally not be higher than 19. between 19.1 and 25 raises a flag. (Anything higher
+     * than 25 is marked as an error in newspaper-batch-metadata-checker.)
+     * @param event
+     */
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
         if (!event.getName().endsWith("film.xml")) {

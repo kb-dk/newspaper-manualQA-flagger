@@ -32,6 +32,7 @@ public class FlaggerFactory implements EventHandlerFactory {
         treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector,0));
         treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector,flaggingCollector,10000));
         treeEventHandlers.add(new EditionModsHandler(resultCollector, flaggingCollector, batch));
+        treeEventHandlers.add(new FilmHandler(resultCollector, flaggingCollector));
         return treeEventHandlers;
     }
 }
