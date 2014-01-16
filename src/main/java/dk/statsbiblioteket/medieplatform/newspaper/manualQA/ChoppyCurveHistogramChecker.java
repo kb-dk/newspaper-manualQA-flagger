@@ -43,13 +43,16 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         try {
             if (event.getName().endsWith(".histogram.xml")) {
                 Histogram histogram = new Histogram(event.getData());
+                int irregularities = countIrregularities(histogram);
 
-                if (errorFound(histogram)) {
+                if (irregularities > maxIrregularities) {
                     flaggingCollector.addFlag(
                             event,
                             "jp2file",
                             getComponent(),
-                            "Unnaturally choppy histogram curve. Possible sign of post processing");
+                            "Unnaturally choppy histogram curve. Possible sign of post processing."
+                                    + " Found " + irregularities + " peaks/valleys and only "
+                                    + maxIrregularities + " were allowed.");
                 }
             }
         } catch (Exception e) {
@@ -60,14 +63,6 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
 
     private String getComponent() {
         return getClass().getName();
-    }
-
-
-    private boolean errorFound(Histogram histogram) {
-        long irregularities;
-
-        irregularities = countIrregularities(histogram);
-        return (irregularities > maxIrregularities);
     }
 
 
@@ -101,8 +96,8 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
                 continue;
             }
 
-            deviation = calculateDeviation(value, pre, post);
-            if (deviation > threshold) {
+            if (deviationTooBig(pre, value) && deviationTooBig(post, value)) {
+                //System.out.println(i);
                 count++;
             }
         }
@@ -110,14 +105,16 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         return count;
     }
 
+    /**
+     * Calculates whether the given value deviates more than allowed from the given comparison-value
+     * @param comparison Value to compare with
+     * @param value Value in question
+     * @return whether the given value deviates more than allowed from the given comparison-value
+     */
+    private boolean deviationTooBig(long comparison, long value) {
+        long maxAllowedValue = (long)((1.0 + threshold) * comparison);
+        long minAllowedValue = (long)((1.0 - threshold) * comparison);
 
-    private double calculateDeviation(long value, long pre, long post) {
-        // To avoid division by zero, we define 1 as the lowest value
-        long nonZeroValue = (value == 0) ? 1 : value;
-
-        long prePostAverage = (pre + post) / 2;
-        long absoluteDeviation = Math.abs(prePostAverage - nonZeroValue);
-        double deviationAsFractionOfValue = absoluteDeviation / nonZeroValue;
-        return Math.abs(deviationAsFractionOfValue - 1);
+        return value < minAllowedValue || value > maxAllowedValue;
     }
 }
