@@ -54,13 +54,19 @@ public class MixHandler extends DefaultTreeEventHandler {
             throw new RuntimeException(e);
         }
 
-        String[] allowedManufacturers = properties.getProperty(ConfigConstants.SCANNER_MANUFACTURERS).split(",");
         final String xpathManufacturer = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:scannerManufacturer";
-        String manufacturer = mixXpathSelector.selectString(doc, xpathManufacturer).trim();
-        if (!Arrays.asList(allowedManufacturers).contains(manufacturer)) {
-            flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Found a new scanner manufacturer: " + manufacturer);
-        }
+        validate(event, doc, ConfigConstants.SCANNER_MANUFACTURERS, xpathManufacturer, "Found a new scanner manufacturer");
+        final String xpathModel = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelName";
+        validate(event, doc, ConfigConstants.SCANNER_MODELS, xpathModel, "Found new scanner model name");
+        final String xpathModelNumber = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelNumber";
+        validate(event, doc, ConfigConstants.SCANNER_MODEL_NUMBERS, xpathModelNumber, "Found new scanner model number");
+        final String xpathModelSerialNo = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelSerialNo";
+        validate(event, doc, ConfigConstants.SCANNER_SERIAL_NOS, xpathModelSerialNo, "Found new scanner serial number");
+        validateProducers(event, doc);
+        validateSoftwareVersions(event, doc);
+    }
 
+    private void validateSoftwareVersions(AttributeParsingEvent event, Document doc) {
         String[] allowedSoftwareVersions = properties.getProperty(ConfigConstants.SCANNER_SOFTWARES).split(",");
         final String xpathSoftwareVersions = "mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScanningSystemSoftware";
         NodeList softwareVersionNodes = mixXpathSelector.selectNodeList(doc, xpathSoftwareVersions);
@@ -70,10 +76,33 @@ public class MixHandler extends DefaultTreeEventHandler {
             String softwareVersion = mixXpathSelector.selectString(versionNode, "mix:scanningSoftwareVersionNo");
             String foundSoftwareVersion = softwareName + ";" + softwareVersion;
             if (!Arrays.asList(allowedSoftwareVersions).contains(foundSoftwareVersion)) {
-                flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Found new software version: " + foundSoftwareVersion);
+                addFlag(event, "Found new software version: " + foundSoftwareVersion);
             }
         }
-
-
     }
+
+    private void validateProducers(AttributeParsingEvent event, Document doc) {
+        String[] allowedProducers = properties.getProperty(ConfigConstants.IMAGE_PRODUCERS).split(",");
+        final String xpathProducers = "/mix:mix/mix:ImageCaptureMetadata/mix:GeneralCaptureInformation/mix:imageProducer";
+        String[] producers = mixXpathSelector.selectString(doc, xpathProducers).split(";");
+        for (String producer: producers) {
+            if (!Arrays.asList(allowedProducers).contains(producer)) {
+                addFlag(event, "Unknown or new producer found: " + producer);
+            }
+        }
+    }
+
+    private void validate(AttributeParsingEvent event, Document doc, String property, String xpath, String message) {
+        String[] allowedValues = properties.getProperty(property).split(",");
+        String actualValue = mixXpathSelector.selectString(doc, xpath).trim();
+        if (!Arrays.asList(allowedValues).contains(actualValue)) {
+            addFlag(event, message + ": " + actualValue);
+        }
+    }
+
+
+    private void addFlag(AttributeParsingEvent event, String message) {
+        flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), message);
+    }
+
 }
