@@ -5,6 +5,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 
+import java.util.Arrays;
+
 /**
  * Hakker i kurven
  * Vi så en del kurver der ikke manglede farver, men havde vilde variationer mellem to farver.
@@ -20,6 +22,7 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
     private final FlaggingCollector flaggingCollector;
     private final double threshold;
     private final int maxIrregularities;
+    private boolean[] errorPositions = new boolean[256];
 
     /**
      * Create the Checker
@@ -52,7 +55,8 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
                             getComponent(),
                             "Unnaturally choppy histogram curve. Possible sign of post processing."
                                     + " Found " + irregularities + " peaks/valleys and only "
-                                    + maxIrregularities + " were allowed.");
+                                    + maxIrregularities + " were allowed."
+                                    + " Positions of these: " + errorPositionsToString() + ".");
                 }
             }
         } catch (Exception e) {
@@ -76,6 +80,11 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         double deviation;
         int count = 0;
 
+        if (values.length != 256) {
+            throw new IllegalArgumentException("Expected array of length 256");
+        }
+
+        Arrays.fill(errorPositions, false);
         for (int i = 0; i < values.length; i++) {
             if (i == 0 || i == values.length - 1) {
                 // This value does not have both a pre-value and a post-value, so skip it
@@ -99,6 +108,7 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
             if (deviationTooBig(pre, value) && deviationTooBig(post, value)) {
                 //System.out.println(i);
                 count++;
+                errorPositions[i] = true;
             }
         }
 
@@ -116,5 +126,20 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         long minAllowedValue = (long)((1.0 - threshold) * comparison);
 
         return value < minAllowedValue || value > maxAllowedValue;
+    }
+
+    private String errorPositionsToString() {
+        String s = "";
+        boolean hadOne = false;
+        for (int i = 0; i < errorPositions.length; i++) {
+            if (errorPositions[i]) {
+                if (hadOne) {
+                    s += ", ";
+                }
+                s += i;
+                hadOne = true;
+            }
+        }
+        return s;
     }
 }
