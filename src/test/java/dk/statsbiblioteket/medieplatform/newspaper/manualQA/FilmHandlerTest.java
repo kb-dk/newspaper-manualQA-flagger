@@ -36,7 +36,7 @@ public class FilmHandlerTest {
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
             @Override
             public InputStream getData() throws IOException {
-                return new ByteArrayInputStream( FilmMocker.getFilmXml("350", "17").getBytes());
+                return new ByteArrayInputStream( FilmMocker.getFilmXml("350", "17x").getBytes());
             }
 
             @Override
@@ -64,7 +64,7 @@ public class FilmHandlerTest {
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
             @Override
             public InputStream getData() throws IOException {
-                return new ByteArrayInputStream( FilmMocker.getFilmXml("450", "17").getBytes());
+                return new ByteArrayInputStream( FilmMocker.getFilmXml("450", "17x").getBytes());
             }
 
             @Override
@@ -92,7 +92,7 @@ public class FilmHandlerTest {
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
             @Override
             public InputStream getData() throws IOException {
-                return new ByteArrayInputStream( FilmMocker.getFilmXml("350", "23").getBytes());
+                return new ByteArrayInputStream( FilmMocker.getFilmXml("350", "23x").getBytes());
             }
 
             @Override
@@ -120,7 +120,7 @@ public class FilmHandlerTest {
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
             @Override
             public InputStream getData() throws IOException {
-                return new ByteArrayInputStream( FilmMocker.getFilmXml("350x", "17").getBytes());
+                return new ByteArrayInputStream( FilmMocker.getFilmXml("350y", "17x").getBytes());
             }
 
             @Override
@@ -148,7 +148,7 @@ public class FilmHandlerTest {
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
             @Override
             public InputStream getData() throws IOException {
-                return new ByteArrayInputStream( FilmMocker.getFilmXml("350>", "17").getBytes());
+                return new ByteArrayInputStream( FilmMocker.getFilmXml("350>", "17x").getBytes());
             }
 
             @Override

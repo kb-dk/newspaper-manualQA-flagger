@@ -29,10 +29,11 @@ import java.util.Properties;
 public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent {
 
     private Logger log = LoggerFactory.getLogger(getClass());
-
+    private Properties properties;
 
     protected ManualQAFlaggerRunnableComponent(Properties properties) {
         super(properties);
+        this.properties = properties;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
                 batch, batchXmlStructure, getComponentVersion());
 
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(
-                resultCollector, batch, batchXmlStructure, flaggingCollector);
+                resultCollector, batch, batchXmlStructure, flaggingCollector, properties);
         List<TreeEventHandler> eventHandlers = eventHandlerFactory.createEventHandlers();
         EventRunner eventRunner = new EventRunner(createIterator(batch));
         eventRunner.runEvents(eventHandlers, resultCollector);

@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers;
 
 /**
- *
+ * Simple class to manipulate a mix.xml string.
  */
 public class MixMocker {
 

@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class FlaggerFactory implements EventHandlerFactory {
     // How much a value is allowed to deviate from the average of its two neighbours (in pct, >0) before
@@ -21,14 +22,16 @@ public class FlaggerFactory implements EventHandlerFactory {
     private final Batch batch;
     private final Document batchXmlStructure;
     private FlaggingCollector flaggingCollector;
+    private Properties properties;
 
     public FlaggerFactory(ResultCollector resultCollector, Batch batch, Document batchXmlStructure,
-                          FlaggingCollector flaggingCollector) {
+                          FlaggingCollector flaggingCollector, Properties properties) {
 
         this.resultCollector = resultCollector;
         this.batch = batch;
         this.batchXmlStructure = batchXmlStructure;
         this.flaggingCollector = flaggingCollector;
+        this.properties = properties;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class FlaggerFactory implements EventHandlerFactory {
                 CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES));
         treeEventHandlers.add(new EditionModsHandler(resultCollector, flaggingCollector, batch));
         treeEventHandlers.add(new FilmHandler(resultCollector, flaggingCollector));
+        treeEventHandlers.add(new MixHandler(resultCollector, properties, flaggingCollector));
         return treeEventHandlers;
     }
 }

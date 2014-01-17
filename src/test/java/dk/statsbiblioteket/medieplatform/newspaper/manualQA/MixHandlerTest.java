@@ -20,10 +20,13 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 /**
- *
+ * Test that we can identify issues with mix files.
  */
 public class MixHandlerTest {
 
+    /**
+     * An extra software version that can be added to the mix file. (Because this is a repeatable element.)
+     */
     String extraSoftware = "            <mix:ScanningSystemSoftware><!--Repeatable-->\n" +
             "                <mix:scanningSoftwareName>___softwares___</mix:scanningSoftwareName>\n" +
             "                <mix:scanningSoftwareVersionNo>___versions___</mix:scanningSoftwareVersionNo>\n" +
@@ -35,6 +38,10 @@ public class MixHandlerTest {
     ResultCollector resultCollector;
 
 
+    /**
+     * Set up the mix.xml to be validated and the properties specifying the expected values. Individual tests can
+     * overwrite these property values to trigger different flags.
+     */
     @BeforeMethod
     public void setUp() {
         properties = new Properties();
@@ -73,6 +80,9 @@ public class MixHandlerTest {
         };
     }
 
+    /**
+     * The case where no flags are raised.
+     */
     @Test
     public void testHandleNoFlag() {
         MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
@@ -80,6 +90,11 @@ public class MixHandlerTest {
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
         assertTrue(resultCollector.isSuccess());
     }
+
+    /**
+     * The following tests cover all the cases where a flag can be raised because a parameter has a
+     * previously-unknown value.
+     */
 
     @Test
     public void testHandleModelSerialNumbers() {

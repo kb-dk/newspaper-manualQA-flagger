@@ -81,6 +81,7 @@ public class FilmHandler extends DefaultTreeEventHandler {
 
     private void validateReductionRatio(AttributeParsingEvent event, Document doc) {
         String reductionRatioString = filmXPathSelector.selectString(doc, "/avis:reelMetadata/avis:reductionRatio");
+        reductionRatioString = reductionRatioString.replace("x", "");
         try {
             Double reductionRatio = Double.parseDouble(reductionRatioString);
             if (reductionRatio >= 19.1 && reductionRatio <= 25) {
