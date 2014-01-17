@@ -9,27 +9,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hvis vi finder den lyseste og den mørkeste farve på billedet, har vi et krav om at ingen farver mellem de to må være
- * 0 eller meget lave. Det er ikke muligt for et analogt system at producere dette, så det er et klart tegn på
+ * Hvis vi finder den lyseste og den mørkeste farve på billedet, har vi et krav om at ingen
+ * farver mellem de to må være
+ * 0 eller meget lave. Det er ikke muligt for et analogt system at producere dette, så det
+ * er et klart tegn på
  * efterbehandling.
  */
 public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
-
-    private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector flaggingCollector;
+    private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector
+            flaggingCollector;
     private ResultCollector resultCollector;
-    private int threshold;
+    private int numberOfMissingColorsAllowed;
+    private int maxValueToDeemAColorMissing;
 
     /**
      * Create the Checker
      * @param resultCollector the result collector for real errors
      * @param flaggingCollector the flagging collector for raised flags
-     * @param threshold the threshold, in this case the number of missing colors allowed
+     * @param numberOfMissingColorsAllowed the number of missing colors allowed
      */
-    public MissingColorsHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
-                                         int threshold) {
+    public MissingColorsHistogramChecker(ResultCollector resultCollector,
+                                         FlaggingCollector flaggingCollector,
+                                         int numberOfMissingColorsAllowed,
+                                         int maxValueToDeemAColorMissing) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
-        this.threshold = threshold;
+        this.numberOfMissingColorsAllowed = numberOfMissingColorsAllowed;
+        this.maxValueToDeemAColorMissing = maxValueToDeemAColorMissing;
     }
 
     @Override
@@ -41,25 +47,73 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
             if (event.getName().endsWith(".histogram.xml")) {
                 Histogram histogram = new Histogram(event.getData());
                 List<Integer> missingColorList = findMissingColors(histogram);
-                if (missingColorList.size() > threshold) {
+
+                if (missingColorList.size() > numberOfMissingColorsAllowed) {
                     flaggingCollector.addFlag(
                             event,
                             "jp2file",
                             getComponent(),
-                            "There are '" + missingColorList.size() + " in the picture. This could be the result of post processing");
+                            "There are '" + missingColorList.size()
+                                    + " in the picture. This could be the result of post processing");
                 }
             }
         } catch (Exception e) {
             resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
-
     }
 
     private String getComponent() {
-
         return getClass().getSimpleName();
     }
 
+    private List<Integer> findMissingColors(Histogram histogram) {
+        long[] values = histogram.values();
+        List<Integer> result = new ArrayList<>();
+        int darkestColor = 0;
+        int brightestColor = 255;
+        int i;
+
+        // Find darkest color
+        for (i = 0; i < values.length; i++) {
+            if (values[i] > 0) {
+                break;
+            }
+        }
+        if (i < values.length) {
+            darkestColor = i;
+        } else {
+            darkestColor = -1;
+        }
+
+        // Find brightest color
+        for (i = values.length - 1; i > -1; i--) {
+            if (values[i] > 0) {
+                break;
+            }
+        }
+        if (i > -1) {
+            brightestColor = i;
+        } else {
+            brightestColor = values.length;
+        }
+
+        // Only one color, so there's no interval to check, maybe we should check for
+        // that special case somewhere else
+        if ((darkestColor == values.length - 1) || (brightestColor == 0)) {
+            return result;
+        }
+
+        // Find missing colors between darkest and brightest
+        for (i = darkestColor + 1; i < brightestColor; i++) {
+            if (values[i] <= maxValueToDeemAColorMissing) {
+                result.add(i);
+            }
+        }
+
+        return result;
+    }
+
+    /*
     private List<Integer> findMissingColors(Histogram histogram) {
         long[] values = histogram.values();
         List<Integer> result = new ArrayList<>();
@@ -85,6 +139,7 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
             }
         }
         return result;
-
     }
+    */
+
 }
