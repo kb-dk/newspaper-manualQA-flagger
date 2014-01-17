@@ -75,7 +75,7 @@ public class FilmHandler extends DefaultTreeEventHandler {
             }
         } catch (NumberFormatException e) {
             resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(), "2E-7: originalNewspaperResolution should be" +
-                    " an integer, not'" + originalNewspaperResolutionString + "'" );
+                    " an integer, not '" + originalNewspaperResolutionString + "'" );
         }
     }
 
@@ -85,11 +85,11 @@ public class FilmHandler extends DefaultTreeEventHandler {
             Double reductionRatio = Double.parseDouble(reductionRatioString);
             if (reductionRatio >= 19.1 && reductionRatio <= 25) {
                 flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2E-6: reductionRatio expected to" +
-                        " lie between 19.1 and 25. Actual value is " + reductionRatio );
+                        " be 19 or less. Actual value is " + reductionRatio );
             }
         } catch (NumberFormatException e) {
             resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(), "2E-6: reductionRatio should be" +
-                    " a number, not'" + reductionRatioString + "'" );
+                    " a number, not '" + reductionRatioString + "'" );
         }
     }
 
