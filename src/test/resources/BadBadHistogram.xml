@@ -378,7 +378,8 @@
         </color>
         <color>
             <code>93</code>
-            <count>27007</count>
+            <!-- Changed from 27007 to 0 for use by the MissingColorsHistogramCheckerTest -->
+            <count>0</count>
         </color>
         <color>
             <code>94</code>
@@ -606,6 +607,7 @@
         </color>
         <color>
             <code>150</code>
+            <!-- Changed from 39907 to 0 for use by the MissingColorsHistogramCheckerTest -->
             <count>0</count>
         </color>
         <color>
