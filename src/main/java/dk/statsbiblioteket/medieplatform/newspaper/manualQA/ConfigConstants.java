@@ -13,6 +13,6 @@ public class ConfigConstants {
     public static final String SCANNER_SERIAL_NOS = "flag.mix.scannerserialnos";
     public static final String SCANNER_SOFTWARES = "flag.mix.scannersoftwares";
     public static final String IMAGE_PRODUCERS = "flag.mix.imageproducers";
-
+    public static final String MINIMUM_ALTO_ACCURACY = "flag.alto.accuracy";
 
 }

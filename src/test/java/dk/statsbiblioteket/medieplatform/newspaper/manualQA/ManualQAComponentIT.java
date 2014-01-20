@@ -44,6 +44,7 @@ public class ManualQAComponentIT  {
            EventRunner runner = new EventRunner(iterator);
            ResultCollector resultCollector = new ResultCollector(getClass().getSimpleName(), "v0.1");
            Batch batch = new Batch();
+
            batch.setBatchID(TEST_BATCH_ID);
            batch.setRoundTripNumber(1);
            InputStream batchXmlStructureStream = retrieveBatchStructure(batch);
