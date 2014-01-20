@@ -6,6 +6,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Defau
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -19,14 +20,15 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector
             flaggingCollector;
     private ResultCollector resultCollector;
-    private int numberOfMissingColorsAllowed;
-    private int maxValueToDeemAColorMissing;
+    private final int numberOfMissingColorsAllowed;
+    private final int maxValueToDeemAColorMissing;
 
     /**
      * Create the Checker
      * @param resultCollector the result collector for real errors
      * @param flaggingCollector the flagging collector for raised flags
      * @param numberOfMissingColorsAllowed the number of missing colors allowed
+     * @param maxValueToDeemAColorMissing when a color has this value or below, it is considered missing
      */
     public MissingColorsHistogramChecker(ResultCollector resultCollector,
                                          FlaggingCollector flaggingCollector,
@@ -53,8 +55,10 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
                             event,
                             "jp2file",
                             getComponent(),
-                            "There are '" + missingColorList.size()
-                                    + " in the picture. This could be the result of post processing");
+                            "There are " + missingColorList.size() + " missing colors"
+                                    + " in the picture. This could be the result of post processing."
+                                    + " The missing colors have positions: "
+                                    + integerListToString(missingColorList) + ".");
                 }
             }
         } catch (Exception e) {
@@ -111,6 +115,20 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
         }
 
         return result;
+    }
+
+    private String integerListToString(List<Integer> l) {
+        String s = "";
+
+        Iterator<Integer> iterator = l.iterator();
+        while(iterator.hasNext()) {
+            s += iterator.next();
+            if(iterator.hasNext()){
+                s += ", ";
+            }
+        }
+
+        return s;
     }
 
     /*
