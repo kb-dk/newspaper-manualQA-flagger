@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -33,7 +34,7 @@ public class ManualQAComponentIT  {
 
     /** Tests that the BatchStructureChecker can parse a production like batch. */
        @Test(groups = "integrationTest")
-       public void testMetadataCheck() throws Exception {
+       public void testMetadataGood() throws Exception {
            String pathToProperties = System.getProperty("integration.test.newspaper.properties");
            Properties properties = new Properties();
 
@@ -63,7 +64,7 @@ public class ManualQAComponentIT  {
            System.out.println(resultCollector.toReport());
            System.out.println(flaggingCollector.toReport());
            assertTrue(resultCollector.isSuccess());
-           assertTrue(flaggingCollector.hasFlags());
+           assertFalse(flaggingCollector.hasFlags());
        }
 
        public InputStream retrieveBatchStructure(Batch batch) {
