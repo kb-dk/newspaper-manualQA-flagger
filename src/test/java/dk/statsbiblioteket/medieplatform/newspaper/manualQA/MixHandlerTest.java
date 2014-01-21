@@ -51,12 +51,18 @@ public class MixHandlerTest {
         properties.setProperty(ConfigConstants.SCANNER_MODELS, "Nutrimat");
         properties.setProperty(ConfigConstants.SCANNER_SERIAL_NOS, "h2s04,h2r07,h2z12");
         properties.setProperty(ConfigConstants.SCANNER_SOFTWARES, "vi;0.0.1beta,emacs;0.0.2alpha");
+        properties.setProperty(ConfigConstants.MIN_IMAGE_WIDTH, "2000");
+        properties.setProperty(ConfigConstants.MAX_IMAGE_WIDTH, "15000");
+        properties.setProperty(ConfigConstants.MIN_IMAGE_HEIGHT, "4000");
+        properties.setProperty(ConfigConstants.MAX_IMAGE_HEIGHT, "12000");
         Batch batch = new Batch();
         flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
                         "batchStructure.xml")), "42.24");
         resultCollector = new ResultCollector("foo", "bar");
-        final String additionalSoftware = extraSoftware.replace("___softwares___", "emacs").replace("___versions___", "0.0.2alpha");
+
+        final String additionalSoftware = extraSoftware.replace("___softwares___", "emacs").replace("___versions___",
+                "0.0.2alpha");
         final String xml =  MixMocker.getMixXml(
                 "AcmeCorp",
                 "Nutrimat",
@@ -65,9 +71,12 @@ public class MixHandlerTest {
                 "vi",
                 "0.0.1beta",
                 "Statsbiblioteket;Anand",
-                additionalSoftware
+                additionalSoftware,
+                "6121",
+                "8661"
         );
-        event = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01-0003A.mix.xml") {
+        event = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/"
+                + "adresseavisen1759-1795-06-15-01-0003A.mix.xml") {
             @Override
             public InputStream getData() throws IOException {
                 return new ByteArrayInputStream(xml.getBytes());
@@ -140,5 +149,42 @@ public class MixHandlerTest {
         assertTrue(flaggingCollector.hasFlags());
         assertTrue(resultCollector.isSuccess());
     }
+
+    @Test
+    public void testHandleIdmageWidthTooLow() {
+        properties.setProperty(ConfigConstants.MIN_IMAGE_WIDTH, "7000");
+        MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
+        mixHandler.handleAttribute(event);
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertTrue(resultCollector.isSuccess());
+    }
+
+    @Test
+    public void testHandleIdmageWidthTooHigh() {
+        properties.setProperty(ConfigConstants.MAX_IMAGE_WIDTH, "4000");
+        MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
+        mixHandler.handleAttribute(event);
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertTrue(resultCollector.isSuccess());
+    }
+
+    @Test
+    public void testHandleIdmageHeightTooLow() {
+        properties.setProperty(ConfigConstants.MIN_IMAGE_HEIGHT, "9000");
+        MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
+        mixHandler.handleAttribute(event);
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertTrue(resultCollector.isSuccess());
+    }
+
+    @Test
+    public void testHandleIdmageHeightTooHigh() {
+        properties.setProperty(ConfigConstants.MAX_IMAGE_HEIGHT, "8000");
+        MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
+        mixHandler.handleAttribute(event);
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertTrue(resultCollector.isSuccess());
+    }
+
 
 }
