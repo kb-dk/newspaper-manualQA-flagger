@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * This class handles issues raised by metadata in mix-files which require manual QA intervention. These are typically
- * changes in scanner-related hardware, software, and wetware.
+ * This class handles issues raised by metadata in mix-files which require manual QA intervention.
+ * These are typically changes in scanner-related hardware, software, and wetware.
  */
 public class MixHandler extends DefaultTreeEventHandler {
 
@@ -72,6 +72,7 @@ public class MixHandler extends DefaultTreeEventHandler {
         validate(event, doc, ConfigConstants.SCANNER_SERIAL_NOS, xpathModelSerialNo, "Found new scanner serial number");
         validateProducers(event, doc);
         validateSoftwareVersions(event, doc);
+        validateDimensions(event, doc);
     }
 
     /**
@@ -107,6 +108,27 @@ public class MixHandler extends DefaultTreeEventHandler {
             if (!Arrays.asList(allowedProducers).contains(producer)) {
                 addFlag(event, "Unknown or new producer found: " + producer);
             }
+        }
+    }
+
+    private void validateDimensions(AttributeParsingEvent event, Document doc) {
+        int minImageWidth = Integer.parseInt(properties.getProperty(ConfigConstants.MIN_IMAGE_WIDTH));
+        int maxImageWidth = Integer.parseInt(properties.getProperty(ConfigConstants.MAX_IMAGE_WIDTH));
+        int minImageHeight = Integer.parseInt(properties.getProperty(ConfigConstants.MIN_IMAGE_HEIGHT));
+        int maxImageHeight = Integer.parseInt(properties.getProperty(ConfigConstants.MAX_IMAGE_HEIGHT));
+        final String xpathWidth = "/mix:mix/mix:BasicImageInformation/mix:BasicImageCharacteristics/mix:imageWidth";
+        final String xpathHeight = "/mix:mix/mix:BasicImageInformation/mix:BasicImageCharacteristics/mix:imageHeight";
+        int width = Integer.parseInt(mixXpathSelector.selectString(doc, xpathWidth));
+        int height = Integer.parseInt(mixXpathSelector.selectString(doc, xpathHeight));
+
+        if ((minImageWidth > width) || (width > maxImageWidth)) {
+            addFlag(event, "Image width should have a value from " + minImageWidth + " to " + maxImageWidth + " but was found "
+                    + " to be: " + width);
+        }
+
+        if ((minImageHeight > height) || (height > maxImageHeight)) {
+            addFlag(event, "Image height should have a value from " + minImageHeight + " to " + maxImageHeight + " but was found "
+                    + " to be: " + height);
         }
     }
 
