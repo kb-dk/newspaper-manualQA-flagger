@@ -31,63 +31,69 @@ public class ManualQAComponentIT  {
     private final static String TEST_BATCH_ID = "400022028241";
 
 
+    /**
+     * Test that a reasonable batch can be run against the flagger component without generating any
+     * errors, but generating some flags.
+     * @throws Exception
+     */
+    @Test(groups = "integrationTest")
+    public void testMetadataGood() throws Exception {
+        String pathToProperties = System.getProperty("integration.test.newspaper.properties");
+        Properties properties = new Properties();
 
-    /** Tests that the BatchStructureChecker can parse a production like batch. */
-       @Test(groups = "integrationTest")
-       public void testMetadataGood() throws Exception {
-           String pathToProperties = System.getProperty("integration.test.newspaper.properties");
-           Properties properties = new Properties();
+        File genericProperties = new File(pathToProperties);
+        File specificProperties = new File(genericProperties.getParentFile(),
+                "newspaper-manualQA-flagger-config/integration.test.newspaper.properties");
 
+        properties.load(new FileInputStream(specificProperties));
 
-           properties.load(new FileInputStream(pathToProperties));
+        TreeIterator iterator = getIterator();
+        EventRunner runner = new EventRunner(iterator);
+        ResultCollector resultCollector = new ResultCollector(getClass().getSimpleName(), "v0.1");
+        Batch batch = new Batch();
 
-           TreeIterator iterator = getIterator();
-           EventRunner runner = new EventRunner(iterator);
-           ResultCollector resultCollector = new ResultCollector(getClass().getSimpleName(), "v0.1");
-           Batch batch = new Batch();
+        batch.setBatchID(TEST_BATCH_ID);
+        batch.setRoundTripNumber(1);
+        InputStream batchXmlStructureStream = retrieveBatchStructure(batch);
 
-           batch.setBatchID(TEST_BATCH_ID);
-           batch.setRoundTripNumber(1);
-           InputStream batchXmlStructureStream = retrieveBatchStructure(batch);
+        if (batchXmlStructureStream == null) {
+            throw new RuntimeException("Failed to resolve batch manifest from data collector");
+        }
+        Document batchXmlManifest = DOM.streamToDOM(batchXmlStructureStream);
 
-           if (batchXmlStructureStream == null) {
-               throw new RuntimeException("Failed to resolve batch manifest from data collector");
-           }
-           Document batchXmlManifest = DOM.streamToDOM(batchXmlStructureStream);
+        FlaggingCollector flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1");
 
-           FlaggingCollector flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1");
+        EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, batchXmlManifest, flaggingCollector, properties);
 
-           EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, batchXmlManifest, flaggingCollector, properties);
-
-           runner.runEvents(eventHandlerFactory.createEventHandlers(), resultCollector);
-
-
-           System.out.println(resultCollector.toReport());
-           System.out.println(flaggingCollector.toReport());
-           assertTrue(resultCollector.isSuccess());
-           assertFalse(flaggingCollector.hasFlags());
-       }
-
-       public InputStream retrieveBatchStructure(Batch batch) {
-           return Thread.currentThread().getContextClassLoader().getResourceAsStream("assumed-valid-structure.xml");
-       }
+        runner.runEvents(eventHandlerFactory.createEventHandlers(), resultCollector);
 
 
-       /**
-        * Creates and returns a iteration based on the test batch file structure found in the test/ressources folder.
-        *
-        * @return A iterator the the test batch
-        * @throws URISyntaxException
-        */
-       public TreeIterator getIterator() throws URISyntaxException {
-           File file = getBatchFolder();
-           System.out.println(file);
-           return new TransformingIteratorForFileSystems(file, "\\.", ".*\\.jp2$", ".md5");
-       }
+        System.out.println(resultCollector.toReport());
+        System.out.println(flaggingCollector.toReport());
+        assertTrue(resultCollector.isSuccess());
+        assertTrue(flaggingCollector.hasFlags());
+    }
 
-       private File getBatchFolder() {
-           String pathToTestBatch = System.getProperty("integration.test.newspaper.testdata");
-           return new File(pathToTestBatch);
-       }
+    public InputStream retrieveBatchStructure(Batch batch) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream("assumed-valid-structure.xml");
+    }
+
+
+    /**
+     * Creates and returns a iteration based on the test batch file structure found in the test/ressources folder.
+     *
+     * @return A iterator the the test batch
+     * @throws URISyntaxException
+     */
+    public TreeIterator getIterator() throws URISyntaxException {
+        File file = getBatchFolder();
+        System.out.println(file);
+        return new TransformingIteratorForFileSystems(file, "\\.", ".*\\.jp2$", ".md5");
+    }
+
+    private File getBatchFolder() {
+        String pathToTestBatch = System.getProperty("integration.test.newspaper.testdata");
+        return new File(pathToTestBatch);
+    }
 
 }
