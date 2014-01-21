@@ -11,9 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -21,7 +19,6 @@ import java.util.Properties;
  * These are typically changes in scanner-related hardware, software, and wetware.
  */
 public class MixHandler extends DefaultTreeEventHandler {
-
     private ResultCollector resultCollector;
     private FlaggingCollector flaggingCollector;
     private Properties properties;
@@ -153,9 +150,7 @@ public class MixHandler extends DefaultTreeEventHandler {
         }
     }
 
-
     private void addFlag(AttributeParsingEvent event, String message) {
         flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), message);
     }
-
 }
