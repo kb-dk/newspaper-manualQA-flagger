@@ -66,13 +66,17 @@ public class MixHandler extends DefaultTreeEventHandler {
         validate(event, doc, ConfigConstants.SCANNER_MANUFACTURERS, xpathManufacturer, "Found a new scanner manufacturer");
         final String xpathModel = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelName";
         validate(event, doc, ConfigConstants.SCANNER_MODELS, xpathModel, "Found new scanner model name");
-        final String xpathModelNumber = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelNumber";
+        final String xpathModelNumber
+                = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelNumber";
         validate(event, doc, ConfigConstants.SCANNER_MODEL_NUMBERS, xpathModelNumber, "Found new scanner model number");
-        final String xpathModelSerialNo = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelSerialNo";
+        final String xpathModelSerialNo
+                = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelSerialNo";
         validate(event, doc, ConfigConstants.SCANNER_SERIAL_NOS, xpathModelSerialNo, "Found new scanner serial number");
         validateProducers(event, doc);
         validateSoftwareVersions(event, doc);
-        validateDimensions(event, doc);
+        if (!event.getName().endsWith("-brik.mix.xml")) {
+            validateDimensions(event, doc);
+        }
     }
 
     /**
@@ -127,8 +131,8 @@ public class MixHandler extends DefaultTreeEventHandler {
         }
 
         if ((minImageHeight > height) || (height > maxImageHeight)) {
-            addFlag(event, "Image height should have a value from " + minImageHeight + " to " + maxImageHeight + " but was found "
-                    + " to be: " + height);
+            addFlag(event, "Image height should have a value from " + minImageHeight + " to " + maxImageHeight
+                    + " but was found " + " to be: " + height);
         }
     }
 
