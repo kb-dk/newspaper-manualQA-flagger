@@ -28,4 +28,13 @@ properties (values given below are dummy-examples):
     #Name(s) of known image producers (comma separated)
     flag.mix.imageproducers=Statsbiblioteket,Bob,Alice
 
+    #Minimum acceptable OCR accuracy (averaged over edition or film)
+    flag.alto.accuracy=60.0
+
+    #Minimum acceptable OCR accuracy per file
+    flag.alto.accuracy.perfile=20.0
+
+    #If true, ignore accuracy of exactly zero as this means there is probably no text on
+    #the page.
+    flag.alto.zeroaccuracy.ignore=true
 
