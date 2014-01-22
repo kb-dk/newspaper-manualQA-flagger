@@ -4,11 +4,10 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers;
  * Simple class to manipulate a mix.xml string.
  */
 public class MixMocker {
-
     public static String getMixXml(String manufacturers, String models, String modelnumbers,
                                    String serials, String softwares,
                                    String versions, String producers,
-                                   String extrasoftware) {
+                                   String extrasoftware, String imageWidth, String imageHeight) {
         if (extrasoftware == null) {
             extrasoftware = "";
         }
@@ -34,8 +33,8 @@ public class MixMocker {
                 "    </mix:BasicDigitalObjectInformation>\n" +
                 "    <mix:BasicImageInformation>\n" +
                 "        <mix:BasicImageCharacteristics>\n" +
-                "            <mix:imageWidth>5108</mix:imageWidth>\n" +
-                "            <mix:imageHeight>3667</mix:imageHeight>\n" +
+                "            <mix:imageWidth>___imagewidth___</mix:imageWidth>\n" +
+                "            <mix:imageHeight>___imageheight___</mix:imageHeight>\n" +
                 "            <mix:PhotometricInterpretation>\n" +
                 "                <mix:colorSpace>greyscale</mix:colorSpace>\n" +
                 "            </mix:PhotometricInterpretation>\n" +
@@ -98,7 +97,8 @@ public class MixMocker {
                 .replace("___modelnumbers___", modelnumbers).replace("___serials___", serials)
                 .replace("___softwares___", softwares).replace("___versions___", versions)
                 .replace("___producers___", producers)
-                .replace("___extrasoftware___", extrasoftware);
+                .replace("___extrasoftware___", extrasoftware)
+                .replace("___imagewidth___", imageWidth)
+                .replace("___imageheight___", imageHeight);
     }
-
 }
