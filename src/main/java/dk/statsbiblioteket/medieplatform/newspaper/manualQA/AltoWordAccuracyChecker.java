@@ -99,6 +99,10 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
 
         String editionId = event.getName().substring(0, event.getName().lastIndexOf('/'));
         String filmId = editionId.substring(0, editionId.lastIndexOf('/'));
+
+        //These initialisations could equivalently be made in the handleNodeBegin method for the given edition and film
+        //nodes. Putting them here, in the first alto attribute for each node, requires less work because we don't need
+        //to identify edition and film nodes by regexps. They're just the parent and grandparent of the current node.
         if (averages.get(editionId) == null) {
             averages.put(editionId, new RunningAverage());
         }
