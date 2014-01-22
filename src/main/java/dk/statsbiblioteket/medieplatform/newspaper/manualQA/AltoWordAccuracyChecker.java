@@ -2,10 +2,8 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
@@ -30,7 +28,8 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
     FlaggingCollector flaggingCollector;
 
     Double minimumAcceptable;
-
+    boolean ignoreZero;
+    Double minimumAcceptablePerfile;
 
     /**
      * Map from an eventId to the running average accuracy of all alto files within the corresponding directory.
@@ -43,7 +42,9 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
         this.flaggingCollector = flaggingCollector;
         this.xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
         averages = new HashMap<String, RunningAverage>();
-        minimumAcceptable = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_ACCURACY));
+        minimumAcceptable = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_AVERAGE_ACCURACY));
+        minimumAcceptablePerfile = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_PERFILE_ACCURACY));
+        ignoreZero = Boolean.parseBoolean(properties.getProperty(ConfigConstants.ALTO_IGNORE_ZERO_ACCURACY));
     }
 
     public static class RunningAverage {
@@ -91,6 +92,11 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
                     " element in this file.");
             return;
         }
+        if (accuracy < minimumAcceptablePerfile && (!ignoreZero || accuracy > 0)) {
+            flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Accuracy for alto file is less " +
+                    "than the prescribed minimum (" + minimumAcceptablePerfile + ") :" + accuracy);
+        }
+
         String editionId = event.getName().substring(0, event.getName().lastIndexOf('/'));
         String filmId = editionId.substring(0, editionId.lastIndexOf('/'));
         if (averages.get(editionId) == null) {
@@ -99,8 +105,10 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
         if (averages.get(filmId) == null) {
             averages.put(filmId, new RunningAverage());
         }
-        averages.get(editionId).addValue(accuracy);
-        averages.get(filmId).addValue(accuracy);
+        if (accuracy > 0 || !ignoreZero) {
+            averages.get(editionId).addValue(accuracy);
+            averages.get(filmId).addValue(accuracy);
+        }
     }
 
 
