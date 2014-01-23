@@ -19,12 +19,51 @@ public class EndSpikeHistogramCheckerTest {
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
-                resultCollector, flaggingCollector, 0.1);
+                resultCollector, flaggingCollector, 0.1, 0, 2, 255, 255, 2, 0.5);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
         histogramHandler.handleAttribute(event);
         Assert.assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+    }
+
+    @Test
+    public void testHandleAttributeBadSpike() throws Exception {
+        ResultCollector resultCollector = new ResultCollector("blah", "blah");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
+                resultCollector, flaggingCollector, 0.05, 0, 2, 255, 255, 100, 100);
+        AttributeParsingEvent event = createAttributeEvent(
+                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
+                HistogramXml.getSampleBadHistogram());
+        histogramHandler.handleAttribute(event);
+        Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+    }
+
+    @Test
+    public void testHandleAttributeBadLowLightBlowout() throws Exception {
+        ResultCollector resultCollector = new ResultCollector("blah", "blah");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
+                resultCollector, flaggingCollector, 1, 0, 2, 255, 255, 2, 100);
+        AttributeParsingEvent event = createAttributeEvent(
+                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
+                HistogramXml.getSampleBadHistogram());
+        histogramHandler.handleAttribute(event);
+        Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+    }
+
+    @Test
+    public void testHandleAttributeBadHighLightBlowout() throws Exception {
+        ResultCollector resultCollector = new ResultCollector("blah", "blah");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
+                resultCollector, flaggingCollector, 1, 0, 2, 255, 255, 100, 0.5);
+        AttributeParsingEvent event = createAttributeEvent(
+                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
+                HistogramXml.getSampleBadHistogram());
+        histogramHandler.handleAttribute(event);
+        Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     private AttributeParsingEvent createAttributeEvent(String name, final String contents) {
