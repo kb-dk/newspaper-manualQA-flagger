@@ -6,6 +6,7 @@
     <colors>
         <color>
             <code>0</code>
+            <!-- This value used by the EndSpikeHistogramCheckerTest -->
             <count>3316315</count>
         </color>
         <color>
@@ -519,7 +520,8 @@
         </color>
         <color>
             <code>128</code>
-            <count>33078</count>
+            <!-- Changed from 33078 to 3000000 for use by the EndSpikeHistogramCheckerTest -->
+            <count>3000000</count>
         </color>
         <color>
             <code>129</code>
@@ -1028,7 +1030,8 @@
         </color>
         <color>
             <code>255</code>
-            <count>0</count>
+            <!-- Changed from 0 to 3000000 for use by the EndSpikeHistogramCheckerTest -->
+            <count>3000000</count>
         </color>
     </colors>
 </histogram>
