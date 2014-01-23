@@ -13,16 +13,30 @@ import dk.statsbiblioteket.util.Pair;
  * flages.
  */
 public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
-
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector flaggingCollector;
     private ResultCollector resultCollector;
     private double threshold;
 
-    public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
-                                    double threshold) {
+    private int minColorConsideredBlack = 0;
+    private int maxColorConsideredBlack = 2;
+    private int minColorConsideredWhite = 255;
+    private int maxColorConsideredWhite = 255;
+    private double maxPercentAllowedNearBlack = 2;
+    private double maxPercentAllowedNearWhite = 0.5;
+
+    public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, double threshold,
+                                    int minColorConsideredBlack, int maxColorConsideredBlack, int minColorConsideredWhite,
+                                    int maxColorConsideredWhite, double maxPercentAllowedNearBlack,
+                                    double maxPercentAllowedNearWhite) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
         this.threshold = threshold;
+        this.minColorConsideredBlack = minColorConsideredBlack;
+        this.maxColorConsideredBlack = maxColorConsideredBlack;
+        this.minColorConsideredWhite = minColorConsideredWhite;
+        this.maxColorConsideredWhite = maxColorConsideredWhite;
+        this.maxPercentAllowedNearBlack = maxPercentAllowedNearBlack;
+        this.maxPercentAllowedNearWhite = maxPercentAllowedNearWhite;
     }
 
     @Override
@@ -30,7 +44,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
         try {
             if (event.getName().endsWith(".film.histogram.xml")) {
                 Histogram histogram = new Histogram(event.getData());
-                Pair<Spike, Long> spikeAndTotal = findSpike(histogram);
+                Pair<Spike, Long> spikeAndTotal = findHighestSpike(histogram);
                 Spike spike = spikeAndTotal.getLeft();
                 Long total = spikeAndTotal.getRight();
                 double amount = (spike.getValue() + 0.0) / total;
@@ -39,7 +53,33 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                             event,
                             "jp2file",
                             getComponent(),
-                            "Found suspicious color spike for color '" + spike.getColor() + "'. " + amount * 100 + "% of the graph is contained in this spike.");
+                            "Found suspicious color spike for color '" + spike.getColor() + "'. " + amount * 100
+                                    + "% of the graph is contained in this spike.");
+                }
+
+                double lowLightPercent = percentColorsInRange(minColorConsideredBlack, maxColorConsideredBlack, histogram);
+                double highLightPercent = percentColorsInRange(minColorConsideredWhite, maxColorConsideredWhite, histogram);
+                String lowColorForPrint = minColorConsideredBlack
+                        + (minColorConsideredBlack == maxColorConsideredBlack ? "" : "-" + maxColorConsideredBlack);
+                String highColorForPrint = minColorConsideredWhite
+                        + (minColorConsideredWhite == maxColorConsideredWhite ? "" : "-" + maxColorConsideredWhite);
+
+                if (lowLightPercent > maxPercentAllowedNearBlack) {
+                    flaggingCollector.addFlag(
+                            event,
+                            "jp2file",
+                            getComponent(),
+                            "Found possible low-light blowout: more than " + maxPercentAllowedNearBlack
+                                    + "% pixels of color " + lowColorForPrint + ", found " + lowLightPercent + "%");
+                }
+
+                if (highLightPercent > maxPercentAllowedNearWhite) {
+                    flaggingCollector.addFlag(
+                            event,
+                            "jp2file",
+                            getComponent(),
+                            "Found possible high-light blowout: more than " + maxPercentAllowedNearWhite
+                                    + "% pixels of color " + highColorForPrint + ", found " + highLightPercent + "%");
                 }
             }
         } catch (Exception e) {
@@ -48,11 +88,30 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
 
     }
 
-    private Pair<Spike, Long> findSpike(Histogram histogram) {
-        long total = 0;
-        Spike highest = null;
+    private double percentColorsInRange(int minColor, int maxColor, Histogram histogram) {
+        double totalColorCount = 0;
+        double intervalColorCount = 0;
+
         long[] values = histogram.values();
         for (int i = 0; i < values.length; i++) {
+            totalColorCount += values[i];
+            if (minColor <= i && i <= maxColor) {
+                intervalColorCount += values[i];
+            }
+        }
+
+        return (intervalColorCount / totalColorCount) * 100;
+    }
+
+    /*
+     * Find highest spike that would not be found by the low-light or high-light checks
+     */
+    private Pair<Spike, Long> findHighestSpike(Histogram histogram) {
+        long total = 0;
+        Spike highest = null;
+
+        long[] values = histogram.values();
+        for (int i = maxColorConsideredBlack + 1; i < minColorConsideredWhite - 1; i++) {
             long value = values[i];
             Spike spike = new Spike(i, value);
             if (highest == null || highest.compareTo(spike) < 0) {
@@ -71,7 +130,6 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
      * Note: this class has a natural ordering that is inconsistent with equals
      */
     private class Spike implements Comparable<Spike> {
-
         private int color;
         private long value;
 
