@@ -17,12 +17,12 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private ResultCollector resultCollector;
     private double threshold;
 
-    private int minColorConsideredBlack = 0;
-    private int maxColorConsideredBlack = 2;
-    private int minColorConsideredWhite = 255;
-    private int maxColorConsideredWhite = 255;
-    private double maxPercentAllowedNearBlack = 2;
-    private double maxPercentAllowedNearWhite = 0.5;
+    private int minColorConsideredBlack;
+    private int maxColorConsideredBlack;
+    private int minColorConsideredWhite;
+    private int maxColorConsideredWhite;
+    private double maxPercentAllowedNearBlack;
+    private double maxPercentAllowedNearWhite;
 
     public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, double threshold,
                                     int minColorConsideredBlack, int maxColorConsideredBlack, int minColorConsideredWhite,
