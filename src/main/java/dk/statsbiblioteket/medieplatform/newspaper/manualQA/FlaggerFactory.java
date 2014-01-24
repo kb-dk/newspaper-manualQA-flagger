@@ -1,15 +1,17 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.XmlFileIncrementalWriter;
 import org.w3c.dom.Document;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 public class FlaggerFactory implements EventHandlerFactory {
     // How much a value is allowed to deviate from the average of its two neighbours (in pct, >0) before
@@ -37,6 +39,8 @@ public class FlaggerFactory implements EventHandlerFactory {
     @Override
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
+        treeEventHandlers.add(new StatisticCollector(new XmlFileIncrementalWriter(
+                "target/statistics/Integration/statistics.xml"))); //ToDo use configuration option
         treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector, 0, 10));
         treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
                 CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES));

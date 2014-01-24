@@ -1,6 +1,13 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
-import dk.statsbiblioteket.medieplatform.autonomous.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.Properties;
+
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
+import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.TreeIterator;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
@@ -10,22 +17,8 @@ import dk.statsbiblioteket.util.xml.DOM;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.util.Properties;
-
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-/**
- * Created with IntelliJ IDEA.
- * User: csr
- * Date: 1/17/14
- * Time: 2:55 PM
- * To change this template use File | Settings | File Templates.
- */
 public class ManualQAComponentIT  {
 
     private final static String TEST_BATCH_ID = "400022028241";
@@ -93,7 +86,6 @@ public class ManualQAComponentIT  {
 
     private File getBatchFolder() {
         String pathToTestBatch = System.getProperty("integration.test.newspaper.testdata");
-        return new File(pathToTestBatch);
+        return new File(pathToTestBatch, "small-test-batch/B" + TEST_BATCH_ID + "-RT1");
     }
-
 }
