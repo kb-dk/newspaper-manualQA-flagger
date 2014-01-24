@@ -113,18 +113,49 @@ public class MixHandler extends DefaultTreeEventHandler {
     }
 
     private void validateDimensions(AttributeParsingEvent event, Document doc) {
-        int minImageWidth = Integer.parseInt(properties.getProperty(ConfigConstants.MIN_IMAGE_WIDTH));
-        int maxImageWidth = Integer.parseInt(properties.getProperty(ConfigConstants.MAX_IMAGE_WIDTH));
-        int minImageHeight = Integer.parseInt(properties.getProperty(ConfigConstants.MIN_IMAGE_HEIGHT));
-        int maxImageHeight = Integer.parseInt(properties.getProperty(ConfigConstants.MAX_IMAGE_HEIGHT));
+        int minImageWidth, maxImageWidth, minImageHeight, maxImageHeight, width, height;
+        try {
+            minImageWidth = Integer.parseInt(properties.getProperty(ConfigConstants.MIN_IMAGE_WIDTH));
+        } catch (NumberFormatException e) {
+            addFlag(event, "Internal error: couldn't get and parse MIN_IMAGE_WIDTH. " + e.getMessage());
+            return;
+        }
+        try {
+            maxImageWidth = Integer.parseInt(properties.getProperty(ConfigConstants.MAX_IMAGE_WIDTH));
+        } catch (NumberFormatException e) {
+            addFlag(event, "Internal error: couldn't get and parse MAX_IMAGE_WIDTH. " + e.getMessage());
+            return;
+        }
+        try {
+            minImageHeight = Integer.parseInt(properties.getProperty(ConfigConstants.MIN_IMAGE_HEIGHT));
+        } catch (NumberFormatException e) {
+            addFlag(event, "Internal error: couldn't get and parse MAX_IMAGE_WIDTH. " + e.getMessage());
+            return;
+        }
+        try {
+            maxImageHeight = Integer.parseInt(properties.getProperty(ConfigConstants.MAX_IMAGE_HEIGHT));
+        } catch (NumberFormatException e) {
+            addFlag(event, "Internal error: couldn't get and parse MAX_IMAGE_WIDTH. " + e.getMessage());
+            return;
+        }
         final String xpathWidth = "/mix:mix/mix:BasicImageInformation/mix:BasicImageCharacteristics/mix:imageWidth";
         final String xpathHeight = "/mix:mix/mix:BasicImageInformation/mix:BasicImageCharacteristics/mix:imageHeight";
-        int width = Integer.parseInt(mixXpathSelector.selectString(doc, xpathWidth));
-        int height = Integer.parseInt(mixXpathSelector.selectString(doc, xpathHeight));
+        try {
+            width = Integer.parseInt(mixXpathSelector.selectString(doc, xpathWidth));
+        } catch (NumberFormatException e) {
+            addFlag(event, "Internal error: couldn't get and parse MAX_IMAGE_WIDTH. " + e.getMessage());
+            return;
+        }
+        try {
+           height = Integer.parseInt(mixXpathSelector.selectString(doc, xpathHeight));
+        } catch (NumberFormatException e) {
+            addFlag(event, "Internal error: couldn't get and parse MAX_IMAGE_WIDTH. " + e.getMessage());
+            return;
+        }
 
-        if ((minImageWidth > width) || (width > maxImageWidth)) {
-            addFlag(event, "Image width should have a value from " + minImageWidth + " to " + maxImageWidth + " but was found "
-                    + " to be: " + width);
+        if ((minImageWidth> width) || (width > maxImageWidth)) {
+            addFlag(event, "Image width should have a value from " + minImageWidth + " to " + maxImageWidth
+                    + " but was found " + " to be: " + width);
         }
 
         if ((minImageHeight > height) || (height > maxImageHeight)) {
