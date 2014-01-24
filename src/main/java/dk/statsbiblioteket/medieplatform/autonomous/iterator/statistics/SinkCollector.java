@@ -20,7 +20,7 @@ public class SinkCollector extends GeneralCollector {
     }
 
     public GeneralCollector handleNodeEnd(NodeEndParsingEvent event) {
-        if (event.getName().split("/").length == 4) {
+        if (event.getName().equals(getName())) {
             return parent;
         } else return this;
     }

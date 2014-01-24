@@ -3,6 +3,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.statistics;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.GeneralCollector;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.SinkCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
 
 public class FilmCollector extends GeneralCollector {
@@ -18,8 +19,9 @@ public class FilmCollector extends GeneralCollector {
         if (nameParts.length == 3) {
             if (nameParts[2].equals("UNMATCHED")) {
                 return new UnmatchedCollector(event.getName(), this, getWriter());
+            } else if (nameParts[2].equals("FILM-ISO-target")) {
+                return new SinkCollector(event.getName(), this);
             }
-            getStatistics().addCount(NUMBER_OF_EDITIONS_STAT, 1);
             return new EditionCollector(event.getName(), this, getWriter());
         } else {
             throw new RuntimeException("");
