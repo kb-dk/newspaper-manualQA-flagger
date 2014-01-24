@@ -154,6 +154,17 @@ public class AltoWordAccuracyCheckerTest {
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
+    @Test
+    public void testRunningAverage() {
+        AltoWordAccuracyChecker.RunningAverage runningAverage = new AltoWordAccuracyChecker.RunningAverage();
+        runningAverage.addValue(3.0);
+        runningAverage.addValue(5.0);
+        runningAverage.addValue(6.0);
+        //Running average is 4 2/3, so
+        assertTrue(runningAverage.getCurrentValue() > 4.6666);
+        assertTrue(runningAverage.getCurrentValue() < 4.6667);
+    }
+
 
     private AttributeParsingEvent generateAttributeEvent(String name, String accuracy) {
         final String alto = AltoMocker.getAlto(accuracy);

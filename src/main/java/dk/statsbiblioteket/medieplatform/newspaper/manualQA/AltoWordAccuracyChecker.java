@@ -128,6 +128,8 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
             flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Average OCR accuracy is less" +
                     " than the minimum expected (" + minimumAcceptable + ") : " + runningAverage.getCurrentValue());
         }
+        //Remove the event from the map so it can be garbage collected.
+        averages.remove(event.getName());
     }
 
 }
