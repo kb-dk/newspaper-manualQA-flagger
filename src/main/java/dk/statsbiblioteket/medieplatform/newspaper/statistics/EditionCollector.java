@@ -5,6 +5,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.GeneralCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
 
+/**
+ * Handles the collection of edition level statistics.
+ */
 public class EditionCollector extends GeneralCollector {
     public static final String NUMBER_OF_PAGES_STAT = "NumberOfPages";
 

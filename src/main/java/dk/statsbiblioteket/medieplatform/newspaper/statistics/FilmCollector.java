@@ -5,7 +5,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.GeneralCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.SinkCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
-
+/**
+ * Handles the collection of film level statistics.
+ */
 public class FilmCollector extends GeneralCollector {
     public static final String NUMBER_OF_EDITIONS_STAT = "NumberOfEditions";
 

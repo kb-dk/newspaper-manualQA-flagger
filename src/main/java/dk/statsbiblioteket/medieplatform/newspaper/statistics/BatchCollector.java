@@ -6,6 +6,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.GeneralC
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.SinkCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
 
+/**
+ * Handles the collection of batch level statistics.
+ */
 public class BatchCollector extends GeneralCollector {
     public static final String NUMBER_OF_FILMS_STAT = "NumberOfFilms";
 

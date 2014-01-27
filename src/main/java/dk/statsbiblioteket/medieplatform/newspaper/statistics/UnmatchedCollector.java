@@ -5,6 +5,11 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.GeneralCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
 
+/**
+ * Handles the collection of statistics from the unmatched node.
+ *
+ * Uses SinkCollectors as children.
+ */
 public class UnmatchedCollector extends GeneralCollector {
     public static final String NUMBER_OF_UNMATCHED_PAGES_STAT = "NumberOfUnmatchedPages";
 
