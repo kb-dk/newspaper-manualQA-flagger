@@ -26,7 +26,6 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
             out = XMLOutputFactory.newInstance().createXMLStreamWriter(
                     new OutputStreamWriter(outputStream, "utf-8"));
             out.writeStartDocument();
-            out.writeStartElement("Statistics");
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize xml writer for statistics.", e);
         }
