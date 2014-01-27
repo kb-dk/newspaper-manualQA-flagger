@@ -1,31 +1,18 @@
 package dk.statsbiblioteket.medieplatform.newspaper.statistics;
 
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.GeneralCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
 
 /**
  * Handles the collection of edition level statistics.
  */
-public class EditionCollector extends GeneralCollector {
-    public static final String NUMBER_OF_PAGES_STAT = "NumberOfPages";
-
-    public EditionCollector(String name, GeneralCollector parentCollector, StatisticWriter writer) {
-        super(name, parentCollector, writer);
-    }
-
+public class EditionCollector extends StatisticCollector {
     @Override
-    public GeneralCollector handleNodeBegin(NodeBeginsParsingEvent event) {
-        if (event.getName().split("/").length == 4) {
-            getStatistics().addCount(NUMBER_OF_PAGES_STAT, 1);
-            return new PageCollector(event.getName(), this, getWriter());
-        } else throw new RuntimeException("Unexpected event " + event);
-    }
-
-    @Override
-    public void handleAttribute(AttributeParsingEvent event) {
-
+    public StatisticCollector createChild(String event) {
+            if (event.endsWith("brik")) {
+                return new BrikCollector();
+            } else {
+                return new PageCollector();
+            }
     }
 
     @Override

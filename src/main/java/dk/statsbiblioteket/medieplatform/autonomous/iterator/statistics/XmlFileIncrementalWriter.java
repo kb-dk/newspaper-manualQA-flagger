@@ -51,6 +51,11 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
         }
     }
 
+    /**
+     * Will write a statistic element. Ex: addStatistic(pages, 3)
+     * will add a line:
+     * <pages>1</pages>.
+     */
     @Override
     public void addStatistic(String name, long metric) {
         try {
@@ -62,8 +67,13 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
         }
     }
 
+    /**
+     * Will write a statistic element. Ex: addStatistic(ocrquality, new WeightedMean(12,24))
+     * will add a line:
+     * <ocrquality>0.5</ocrquality>.
+     */
     @Override
-    public void addStatistic(String name, GeneralCollector.RelativeCount metric) {
+    public void addStatistic(String name, WeightedMean metric) {
         try {
             out.writeStartElement(name);
             out.writeCharacters(metric.toString());

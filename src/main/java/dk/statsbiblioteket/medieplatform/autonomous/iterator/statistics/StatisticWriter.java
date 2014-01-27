@@ -28,7 +28,7 @@ public interface StatisticWriter {
      * @param name The name of the measurement.
      * @param metric The N/M measurement.
      */
-    void addStatistic(String name, GeneralCollector.RelativeCount metric);
+    void addStatistic(String name, WeightedMean metric);
 
     void finish();
 }
