@@ -112,6 +112,11 @@ public class MixHandler extends DefaultTreeEventHandler {
         }
     }
 
+    /**
+     * Check that image dimensions fall within the allowed ranges.
+     * @param event
+     * @param doc
+     */
     private void validateDimensions(AttributeParsingEvent event, Document doc) {
         int minImageWidth, maxImageWidth, minImageHeight, maxImageHeight, width, height;
         try {
