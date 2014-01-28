@@ -166,7 +166,7 @@
                 LITxtHolder.prepend(node.text()).prepend(tagName);
             } else {
                 this.delve_nextAppendTo = ul;
-                LITxtHolder.prepend(node.immediateText()+(!jdo.noDots ? '..' : '')).prepend(tagName);
+                LITxtHolder.prepend(node.immediateText()+(attrs.length!=0 ? attrs[0].value : '')).prepend(tagName);
                 kids.each(function() { thiss.delve($(this)); });
                 this.delve_nextAppendTo = this.delve_nextAppendTo.parent().parent();
             }
