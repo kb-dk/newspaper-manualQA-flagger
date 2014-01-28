@@ -6,7 +6,7 @@ import java.util.TreeMap;
 /**
  * Models the collected statistics for this collector.
  */
-class Statistics {
+public class Statistics {
     protected Map<String, Long> countMap = new TreeMap();
     protected Map<String, WeightedMean> relativeCountMap = new TreeMap();
 

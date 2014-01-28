@@ -1,11 +1,14 @@
 package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
 
+import java.math.BigDecimal;
+
 /**
  * Defines a weighted count.
  *
  * @see dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics#addRelative(String, WeightedMean)
  */
-class WeightedMean extends Number {
+public class WeightedMean extends Number {
+    public static final int OUTPUT_NUMBER_OF_DECIMALS = 2;
     final double count;
     final double total;
 
@@ -27,7 +30,11 @@ class WeightedMean extends Number {
 
     @Override
     public String toString() {
-        if (count > 0 && total > 0) return Double.toString(count/total);
+        if (count > 0 && total > 0) {
+            BigDecimal bd = new BigDecimal(Double.toString(count/total));
+            bd = bd.setScale(OUTPUT_NUMBER_OF_DECIMALS, BigDecimal.ROUND_HALF_UP);
+            return bd.toString();
+        }
         else return "";
     }
 

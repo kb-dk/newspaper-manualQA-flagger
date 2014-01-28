@@ -85,12 +85,14 @@ public abstract class StatisticCollector {
     }
 
     private void writeStatistics() {
-        for (Map.Entry<String, Long> measurement : statistics.countMap.entrySet()) {
-            getWriter().addStatistic(measurement.getKey(), measurement.getValue());
-        }
+        if (writeNode()) {
+            for (Map.Entry<String, Long> measurement : statistics.countMap.entrySet()) {
+                getWriter().addStatistic(measurement.getKey(), measurement.getValue());
+            }
 
-        for (Map.Entry<String, WeightedMean> measurement : statistics.relativeCountMap.entrySet()) {
-            getWriter().addStatistic(measurement.getKey(), measurement.getValue());
+            for (Map.Entry<String, WeightedMean> measurement : statistics.relativeCountMap.entrySet()) {
+                getWriter().addStatistic(measurement.getKey(), measurement.getValue());
+            }
         }
     }
 
@@ -113,11 +115,11 @@ public abstract class StatisticCollector {
         return newCollector;
     }
 
-        /**
-         * Writes statistics and adds statistics to parent.
-         * @param event The event identifying the node which has finished.
-         * @return The parent collector
-         */
+    /**
+     * Writes statistics and adds statistics to parent.
+     * @param event The event identifying the node which has finished.
+     * @return The parent collector
+     */
     public StatisticCollector handleNodeEnd(NodeEndParsingEvent event) {
         if (event.getName().equals(name)) {
             writeStatistics();
