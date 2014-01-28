@@ -5,11 +5,11 @@ package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
  *
  * @see dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics#addRelative(String, WeightedMean)
  */
-class WeightedMean {
-    final float count;
-    final float total;
+class WeightedMean extends Number {
+    final double count;
+    final double total;
 
-    public WeightedMean(float count, float total) {
+    public WeightedMean(double count, double total) {
         this.count = count;
         this.total = total;
     }
@@ -27,7 +27,7 @@ class WeightedMean {
 
     @Override
     public String toString() {
-        if (count > 0 && total > 0) return Float.toString(count/total);
+        if (count > 0 && total > 0) return Double.toString(count/total);
         else return "";
     }
 
@@ -38,16 +38,36 @@ class WeightedMean {
 
         WeightedMean that = (WeightedMean) o;
 
-        if (Float.compare(that.count, count) != 0) return false;
-        if (Float.compare(that.total, total) != 0) return false;
+        if (Double.compare(that.count, count) != 0) return false;
+        if (Double.compare(that.total, total) != 0) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = (count != +0.0f ? Float.floatToIntBits(count) : 0);
-        result = 31 * result + (total != +0.0f ? Float.floatToIntBits(total) : 0);
-        return result;
+        long result = (count != +0.0f ? Double.doubleToLongBits(count) : 0);
+        result = 31 * result + (total != +0.0f ? Double.doubleToLongBits(total) : 0);
+        return (int)result;
+    }
+
+    @Override
+    public int intValue() {
+        return (int)doubleValue();
+    }
+
+    @Override
+    public long longValue() {
+        return (long)doubleValue();
+    }
+
+    @Override
+    public float floatValue() {
+        return (float)doubleValue();
+    }
+
+    @Override
+    public double doubleValue() {
+        return count/total;
     }
 }
