@@ -3,4 +3,4 @@
 SCRIPT_DIR=$(dirname $(readlink -f $0))
 
 java -classpath "$SCRIPT_DIR/../conf:$SCRIPT_DIR/../lib/*" \
-   dk.statsbiblioteket.medieplatform.newspaper.ManualQAFlaggerComponent -c $SCRIPT_DIR/../conf/config.properties
+   dk.statsbiblioteket.medieplatform.newspaper.manualQA.ManualQAFlaggerComponent -c $SCRIPT_DIR/../conf/config.properties
