@@ -128,6 +128,10 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         return value < minAllowedValue || value > maxAllowedValue;
     }
 
+    /**
+     * Formats a string for presentation, containing the positions (in the histogram) of the errors found
+     * @return The formatted string
+     */
     private String errorPositionsToString() {
         String s = "";
         boolean hadOne = false;
