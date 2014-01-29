@@ -29,7 +29,7 @@ public class ManualQAComponentIT  {
     private FlaggingCollector flaggingCollector;
 
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void loadGeneralConfiguration() throws Exception {
         String pathToProperties = System.getProperty("integration.test.newspaper.properties");
         properties = new Properties();
