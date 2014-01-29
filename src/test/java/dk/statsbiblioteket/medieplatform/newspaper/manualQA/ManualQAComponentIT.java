@@ -14,6 +14,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Event
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.filesystem.transforming.TransformingIteratorForFileSystems;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 
@@ -22,55 +23,80 @@ import static org.testng.Assert.assertTrue;
 public class ManualQAComponentIT  {
 
     private final static String TEST_BATCH_ID = "400022028241";
+    private File genericPropertyFile;
+    private Properties properties;
+    private ResultCollector resultCollector;
+    private FlaggingCollector flaggingCollector;
 
+
+    @BeforeMethod
+    public void loadGeneralConfiguration() throws Exception {
+        String pathToProperties = System.getProperty("integration.test.newspaper.properties");
+        properties = new Properties();
+
+        genericPropertyFile = new File(pathToProperties);
+        properties.load(new FileInputStream(genericPropertyFile));
+    }
 
     /**
      * Test that a reasonable batch can be run against the flagger component without generating any
-     * errors, but generating some flags.
+     * errors or flags when the batch and configuration agree on the setup..
      * @throws Exception
      */
     @Test(groups = "integrationTest")
-    public void testMetadataGood() throws Exception {
-        String pathToProperties = System.getProperty("integration.test.newspaper.properties");
-        Properties properties = new Properties();
-
-        File genericProperties = new File(pathToProperties);
-        File specificProperties = new File(genericProperties.getParentFile(),
-                "newspaper-manualQA-flagger-config/integration.test.newspaper.properties");
-
+    public void testConsistentBatch() throws Exception {
+        File specificProperties = new File(genericPropertyFile.getParentFile(),
+                "newspaper-manualQA-flagger-config/config.properties");
         properties.load(new FileInputStream(specificProperties));
 
+        validateBatch();
+
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+        assertTrue(!flaggingCollector.hasFlags(), flaggingCollector.toReport());
+    }
+
+    /**
+     * Test that a the default batch with a configuration inconsistent with the metadata in the batch. This should
+     * generate a lot of flags.
+     * @throws Exception
+     */
+    @Test(groups = "integrationTest")
+    public void testInconsistentBatch() throws Exception {
+        File specificProperties = new File("src/test/config/inconsistent-flagging-config.properties");
+        properties.load(new FileInputStream(specificProperties));
+        validateBatch();
+
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+        assertTrue(flaggingCollector.hasFlags());
+    }
+
+    public InputStream retrieveBatchStructure() {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream("assumed-valid-structure.xml");
+    }
+
+    private void validateBatch()  throws Exception  {
         TreeIterator iterator = getIterator();
         EventRunner runner = new EventRunner(iterator);
-        ResultCollector resultCollector = new ResultCollector(getClass().getSimpleName(), "v0.1");
+        resultCollector = new ResultCollector(getClass().getSimpleName(), "v0.1");
         Batch batch = new Batch();
 
         batch.setBatchID(TEST_BATCH_ID);
         batch.setRoundTripNumber(1);
-        InputStream batchXmlStructureStream = retrieveBatchStructure(batch);
+        InputStream batchXmlStructureStream = retrieveBatchStructure();
 
         if (batchXmlStructureStream == null) {
             throw new RuntimeException("Failed to resolve batch manifest from data collector");
         }
         Document batchXmlManifest = DOM.streamToDOM(batchXmlStructureStream);
 
-        FlaggingCollector flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1");
+        flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1");
 
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, batchXmlManifest, flaggingCollector, properties);
 
         runner.runEvents(eventHandlerFactory.createEventHandlers(), resultCollector);
 
 
-        System.out.println(resultCollector.toReport());
-        System.out.println(flaggingCollector.toReport());
-        assertTrue(resultCollector.isSuccess());
-        assertTrue(flaggingCollector.hasFlags());
     }
-
-    public InputStream retrieveBatchStructure(Batch batch) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream("assumed-valid-structure.xml");
-    }
-
 
     /**
      * Creates and returns a iteration based on the test batch file structure found in the test/ressources folder.
