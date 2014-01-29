@@ -17,6 +17,9 @@ import java.util.Properties;
 /**
  * This class handles issues raised by metadata in mix-files which require manual QA intervention.
  * These are typically changes in scanner-related hardware, software, and wetware.
+ *
+ * The code is written to produce just one flag per issue, although the issue will typically be detected on many pages -
+ * possibly on every page on a film or batch.
  */
 public class MixHandler extends DefaultTreeEventHandler {
     private ResultCollector resultCollector;
