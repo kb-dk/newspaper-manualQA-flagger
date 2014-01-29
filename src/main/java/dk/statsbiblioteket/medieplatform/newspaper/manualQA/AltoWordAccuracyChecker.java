@@ -105,14 +105,22 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
 
     @Override
     public void handleNodeEnd(NodeEndParsingEvent event) {
-        RunningAverage runningAverage = averages.get(event.getName());
+        String eventName = event.getName();
+        RunningAverage runningAverage = averages.get(eventName);
         if (runningAverage == null) {
             //this happens if we are at the end of any node other than a film or edition node.
             return;
         }
-        logger.debug("Average accuracy for " + event.getName() + " is " + runningAverage.getCurrentValue() + " from (" + runningAverage.count + ")");
+        String lastElement = eventName.substring(eventName.lastIndexOf("/"));
+        String type;
+        if (lastElement.matches(".*-.*-.*-.*")) {
+            type = "Edition";
+        } else {
+            type = "Film";
+        }
+        logger.debug("Average accuracy for the " + type + " " + event.getName() + " is " + runningAverage.getCurrentValue() + " from (" + runningAverage.count + ")");
         if (runningAverage.getCurrentValue() < minimumAcceptable) {
-            flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Average OCR accuracy is less" +
+            flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Average OCR accuracy for this " + type + " is less" +
                     " than the minimum expected (" + minimumAcceptable + ") : " + runningAverage.getCurrentValue());
         }
         //Remove the event from the map so it can be garbage collected.
