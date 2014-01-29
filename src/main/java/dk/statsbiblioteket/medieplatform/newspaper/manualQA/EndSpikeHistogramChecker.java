@@ -103,8 +103,10 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
         return (intervalColorCount / totalColorCount) * 100;
     }
 
-    /*
+    /**
      * Find highest spike that would not be found by the low-light or high-light checks
+     * @param histogram Histogram in which such a highest spike should be found
+     * @return The highest spike, and the total of examined histogram-values, as a pair
      */
     private Pair<Spike, Long> findHighestSpike(Histogram histogram) {
         long total = 0;
