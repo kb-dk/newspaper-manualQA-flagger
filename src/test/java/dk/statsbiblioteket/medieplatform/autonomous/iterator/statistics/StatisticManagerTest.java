@@ -44,7 +44,7 @@ public class StatisticManagerTest extends XmlFileTest {
                 "  <Batch name=\"4099\">\n" +
                 "    <Film name=\"film1\"></Film>\n" +
                 "    <Film name=\"film2\"></Film>\n" +
-                "    <Filmes>2</Filmes>\n" +
+                "    <Films>2</Films>\n" +
                 "  </Batch>\n" +
                 "</Statistics>");
     }
@@ -77,14 +77,14 @@ public class StatisticManagerTest extends XmlFileTest {
                 "    <Film name=\"film1\">\n" +
                 "      <Edition name=\"2012-11-11-1\"></Edition>\n" +
                 "      <Edition name=\"2012-11-12-1\"></Edition>\n" +
-                "      <Editiones>2</Editiones>\n" +
+                "      <Editions>2</Editions>\n" +
                 "    </Film>\n" +
                 "    <Film name=\"film2\">\n" +
                 "      <Edition name=\"2012-11-13-1\"></Edition>\n" +
-                "      <Editiones>1</Editiones>\n" +
+                "      <Editions>1</Editions>\n" +
                 "    </Film>\n" +
-                "    <Editiones>3</Editiones>\n" +
-                "    <Filmes>2</Filmes>\n" +
+                "    <Editions>3</Editions>\n" +
+                "    <Films>2</Films>\n" +
                 "  </Batch>\n" +
                 "</Statistics>");
     }
@@ -122,23 +122,20 @@ public class StatisticManagerTest extends XmlFileTest {
                 "  <Batch name=\"4099\">\n" +
                 "    <Film name=\"film1\">\n" +
                 "      <Edition name=\"2012-11-11-1\">\n" +
-                "        <Page name=\"page1\"></Page>\n" +
-                "        <Page name=\"page2\"></Page>\n" +
                 "        <Pages>2</Pages>\n" +
                 "      </Edition>\n" +
-                "      <Editiones>1</Editiones>\n" +
+                "      <Editions>1</Editions>\n" +
                 "      <Pages>2</Pages>\n" +
                 "    </Film>\n" +
                 "    <Film name=\"film2\">\n" +
                 "      <Edition name=\"2012-11-13-1\">\n" +
-                "        <Page name=\"page3\"></Page>\n" +
                 "        <Pages>1</Pages>\n" +
                 "      </Edition>\n" +
-                "      <Editiones>1</Editiones>\n" +
+                "      <Editions>1</Editions>\n" +
                 "      <Pages>1</Pages>\n" +
                 "    </Film>\n" +
-                "    <Editiones>2</Editiones>\n" +
-                "    <Filmes>2</Filmes>\n" +
+                "    <Editions>2</Editions>\n" +
+                "    <Films>2</Films>\n" +
                 "    <Pages>3</Pages>\n" +
                 "  </Batch>\n" +
                 "</Statistics>");
