@@ -18,7 +18,8 @@
 <div id='tree'></div>
 
 <script>
-  var filepath = 'statistics.xml'
+  var batchid = location.search.split('batchid=')[1]
+  var filepath = "data/" + batchid + '-statistics.xml'
   $(function() { new XMLTree({
     fpath: filepath, container: '#tree', startExpanded: false, openAtPath: 'Batch' , attrs: 'hidden'
   }); });

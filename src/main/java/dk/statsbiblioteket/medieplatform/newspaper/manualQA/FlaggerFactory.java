@@ -20,6 +20,8 @@ public class FlaggerFactory implements EventHandlerFactory {
     // The maximum number of peaks/valleys allowed before flagged as an error
     private static final int CHOPPY_CHECK_MAX_IRREGULARITIES = 4;
 
+    private static String STATISTICS_FILE_LOCATION_PROPERTY = "manualqaflagger.statistics.filelocation";
+
     private final ResultCollector resultCollector;
     private final Batch batch;
     private final Document batchXmlStructure;
@@ -40,7 +42,9 @@ public class FlaggerFactory implements EventHandlerFactory {
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
         treeEventHandlers.add(new StatisticManager(new XmlFileIncrementalWriter(
-                "target/statistics/Integration/statistics.xml"))); //ToDo use configuration option
+                properties.getProperty(STATISTICS_FILE_LOCATION_PROPERTY, "target/statistics/Integration")
+                         + "/" + batch.getFullID() + "-statistics.xml"
+        )));
         treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector, 0, 10));
         treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
                 CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES));

@@ -5,11 +5,14 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.statistics.BatchCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wraps a collector based statemachine into a DefaultTreeEventHandler.
  */
 public class StatisticManager extends DefaultTreeEventHandler {
+    private static Logger log = LoggerFactory.getLogger(StatisticManager.class);
     private final StatisticWriter writer;
     private StatisticCollector collector;
 
