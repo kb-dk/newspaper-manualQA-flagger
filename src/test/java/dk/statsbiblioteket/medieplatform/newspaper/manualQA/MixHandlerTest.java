@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -96,6 +97,7 @@ public class MixHandlerTest {
     public void testHandleNoFlag() {
         MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
         mixHandler.handleAttribute(event);
+        mixHandler.handleFinish();
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
         assertTrue(resultCollector.isSuccess());
     }
@@ -110,7 +112,29 @@ public class MixHandlerTest {
         properties.setProperty(ConfigConstants.SCANNER_SERIAL_NOS, "h2s04,h2s05");
         MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
         mixHandler.handleAttribute(event);
-        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        mixHandler.handleFinish();
+        String report = flaggingCollector.toReport();
+        assertEquals(report.split("<manualqafile>").length - 1, 1);
+        assertTrue(report.contains("h2r07"));
+        assertTrue(flaggingCollector.hasFlags(), report);
+        assertTrue(resultCollector.isSuccess());
+    }
+
+    /**
+     * Tests that multiple new files with the same new model number give only one flag.
+     */
+    @Test
+    public void testHandleModelSerialNumbersMultipleSame() {
+        properties.setProperty(ConfigConstants.SCANNER_SERIAL_NOS, "h2s04,h2s05");
+        MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
+        mixHandler.handleAttribute(event);
+        mixHandler.handleAttribute(event);
+        mixHandler.handleFinish();
+        String report = flaggingCollector.toReport();
+        assertEquals(report.split("<manualqafile>").length - 1, 1);
+        assertTrue(report.contains("h2r07"));
+        assertTrue(report.contains("2 time(s)"), report);
+        assertTrue(flaggingCollector.hasFlags(), report);
         assertTrue(resultCollector.isSuccess());
     }
 
@@ -119,17 +143,66 @@ public class MixHandlerTest {
         properties.setProperty(ConfigConstants.SCANNER_MODELS, "MODEL_A,MODEL_B");
         MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
         mixHandler.handleAttribute(event);
-        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
-        assertTrue(resultCollector.isSuccess());
+        mixHandler.handleFinish();
+        String report = flaggingCollector.toReport();
+        assertEquals(report.split("<manualqafile>").length - 1, 1, report);
+        assertTrue(report.contains("Nutrimat"), report);
+        assertTrue(flaggingCollector.hasFlags(), report);
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+    }
+
+    /**
+     * Tests that two files with two new model names gives two flags.
+     */
+    @Test
+    public void testHandleModelMultipleDifferent() {
+        properties.setProperty(ConfigConstants.SCANNER_MODELS, "MODEL_A,MODEL_B");
+        MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
+        mixHandler.handleAttribute(event);
+        final String newXml =  MixMocker.getMixXml(
+                "AcmeCorp",
+                "AcmeMax",
+                "AK47",
+                "h2r07",
+                "vi",
+                "0.0.1beta",
+                "Statsbiblioteket;Anand",
+                "",
+                "6121",
+                "8661"
+        );
+        AttributeParsingEvent secondNewModelEvent = new AttributeParsingEvent(event.getName().replace("3A", "3B")) {
+            @Override
+            public InputStream getData() throws IOException {
+                return new ByteArrayInputStream(newXml.getBytes());
+            }
+
+            @Override
+            public String getChecksum() throws IOException {
+                throw new RuntimeException("not implemented");
+            }
+        };
+        mixHandler.handleAttribute(secondNewModelEvent);
+        mixHandler.handleFinish();
+        String report = flaggingCollector.toReport();
+        assertEquals(report.split("<manualqafile>").length - 1, 2, report);
+        assertTrue(report.contains("Nutrimat"), report);
+        assertTrue(report.contains("AcmeMax"));
+        assertTrue(flaggingCollector.hasFlags(), report);
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
     }
 
     @Test
-    public void testHandleProduder() {
+    public void testHandleProducer() {
         properties.setProperty(ConfigConstants.IMAGE_PRODUCERS, "Anand, Sigismund");
         MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
         mixHandler.handleAttribute(event);
-        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
-        assertTrue(resultCollector.isSuccess());
+        mixHandler.handleFinish();
+        String report = flaggingCollector.toReport();
+        assertEquals(report.split("<manualqafile>").length - 1, 1, report);
+        assertTrue(report.contains("Statsbiblioteket"), report);
+        assertTrue(flaggingCollector.hasFlags(), report);
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
     }
 
     @Test
@@ -137,8 +210,12 @@ public class MixHandlerTest {
         properties.setProperty(ConfigConstants.SCANNER_MODEL_NUMBERS, "AK48,Mark2");
         MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
         mixHandler.handleAttribute(event);
-        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
-        assertTrue(resultCollector.isSuccess());
+        mixHandler.handleFinish();
+        String report = flaggingCollector.toReport();
+        assertEquals(report.split("<manualqafile>").length - 1, 1, report);
+        assertTrue(report.contains("AK47"), report);
+        assertTrue(flaggingCollector.hasFlags(), report);
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
     }
 
     @Test
@@ -146,8 +223,12 @@ public class MixHandlerTest {
         properties.setProperty(ConfigConstants.SCANNER_SOFTWARES, "vi;0.0.1alpha,emacs;0.0.2alpha");
         MixHandler mixHandler= new MixHandler(resultCollector, properties, flaggingCollector);
         mixHandler.handleAttribute(event);
-        assertTrue(flaggingCollector.hasFlags());
-        assertTrue(resultCollector.isSuccess());
+        mixHandler.handleFinish();
+        String report = flaggingCollector.toReport();
+        assertEquals(report.split("<manualqafile>").length - 1, 1, report);
+        assertTrue(report.contains("vi;0.0.1beta"), report);
+        assertTrue(flaggingCollector.hasFlags(), report);
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
     }
 
     @Test

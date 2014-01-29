@@ -12,6 +12,8 @@ import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -23,6 +25,36 @@ public class MixHandler extends DefaultTreeEventHandler {
     private FlaggingCollector flaggingCollector;
     private Properties properties;
     private XPathSelector mixXpathSelector;
+
+    private static class FlaggableElement {
+        AttributeParsingEvent firstOccurrence;
+        String newName;
+        String message;
+        int count;
+
+        private FlaggableElement(AttributeParsingEvent firstOccurrence, String newName, String message) {
+            this.newName = newName;
+            this.message = message;
+            this.firstOccurrence = firstOccurrence;
+            count = 1;
+        }
+
+        public void incrementCount() {
+            count++;
+        }
+
+        @Override
+        public String toString() {
+            return message + newName + ". This occurs " + count + " time(s).";
+        }
+    }
+
+    private Map<String, FlaggableElement> newManufacturers;
+    private Map<String, FlaggableElement> newModels;
+    private Map<String, FlaggableElement> newModelNumbers;
+    private Map<String, FlaggableElement> newSerialNumbers;
+    private Map<String, FlaggableElement> newSoftwares;
+    private Map<String, FlaggableElement> newProducers;
 
     /**
      * Constructor for this class.
@@ -38,6 +70,12 @@ public class MixHandler extends DefaultTreeEventHandler {
         this.mixXpathSelector = DOM.createXPathSelector(
                 "avis", "http://www.statsbiblioteket.dk/avisdigitalisering/microfilm/1/0/",
                 "mix", "http://www.loc.gov/mix/v20");
+        newManufacturers = new HashMap<>();
+        newModels = new HashMap<>();
+        newModelNumbers = new HashMap<>();
+        newSerialNumbers = new HashMap<>();
+        newSoftwares = new HashMap<>();
+        newProducers = new HashMap<>();
 
     }
 
@@ -60,15 +98,24 @@ public class MixHandler extends DefaultTreeEventHandler {
         }
 
         final String xpathManufacturer = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:scannerManufacturer";
-        validate(event, doc, ConfigConstants.SCANNER_MANUFACTURERS, xpathManufacturer, "Found a new scanner manufacturer");
+        validate(event, doc, ConfigConstants.SCANNER_MANUFACTURERS, xpathManufacturer, "2K-17: The name of the Scanner Manufacturer is not" +
+                " one of those in the list of known manufacturers. This may mean that a new scanner has been deployed or that the" +
+                " designation of the scanner in the metadata has been changed. New manufacturer: ");
         final String xpathModel = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelName";
-        validate(event, doc, ConfigConstants.SCANNER_MODELS, xpathModel, "Found new scanner model name");
+        validate(event, doc, ConfigConstants.SCANNER_MODELS, xpathModel, "2K-18: The name of the Scanner Model is not" +
+                " one of those on the list of known models. This may mean that a new model has been deployed or that the" +
+                " designation of the scanner in the metadata has been changed. New model: ");
         final String xpathModelNumber
                 = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelNumber";
-        validate(event, doc, ConfigConstants.SCANNER_MODEL_NUMBERS, xpathModelNumber, "Found new scanner model number");
+        validate(event, doc, ConfigConstants.SCANNER_MODEL_NUMBERS, xpathModelNumber, "2K-19: The model-number for the scanner " +
+                "is not one of those in the list of known model numbers. This may mean that a new scanner model has been " +
+                "deployed or that the designation of the scanner in the metadata has changed. New mode number: ");
         final String xpathModelSerialNo
                 = "/mix:mix/mix:ImageCaptureMetadata/mix:ScannerCapture/mix:ScannerModel/mix:scannerModelSerialNo";
-        validate(event, doc, ConfigConstants.SCANNER_SERIAL_NOS, xpathModelSerialNo, "Found new scanner serial number");
+        validate(event, doc, ConfigConstants.SCANNER_SERIAL_NOS, xpathModelSerialNo, "2K-20: The serial number for the scanner" +
+                " is not one of those in the list of known serial numbers. This may mean that a new scanner has been deployed" +
+                " and therefore that scans generated from it should be carefully checked to ensure that it is set up" +
+                " as required. New Serial Number: ");
         validateProducers(event, doc);
         validateSoftwareVersions(event, doc);
         if (!event.getName().endsWith("-brik.mix.xml")) {
@@ -91,7 +138,10 @@ public class MixHandler extends DefaultTreeEventHandler {
             String softwareVersion = mixXpathSelector.selectString(versionNode, "mix:scanningSoftwareVersionNo");
             String foundSoftwareVersion = softwareName + ";" + softwareVersion;
             if (!Arrays.asList(allowedSoftwareVersions).contains(foundSoftwareVersion)) {
-                addFlag(event, "Found new software version: " + foundSoftwareVersion);
+                String message = "2K-20, 2K-21: The metadata refers to a version of the software used in the scanning process which" +
+                        " is not among the known software. This may mean that Ninestars has deployed new or updated software. The new" +
+                        " software is: ";
+                addOrIncrement(newSoftwares, event, message, foundSoftwareVersion);
             }
         }
     }
@@ -107,7 +157,10 @@ public class MixHandler extends DefaultTreeEventHandler {
         String[] producers = mixXpathSelector.selectString(doc, xpathProducers).split(";");
         for (String producer: producers) {
             if (!Arrays.asList(allowedProducers).contains(producer)) {
-                addFlag(event, "Unknown or new producer found: " + producer);
+                String message = "2K-16: The list of producers in the metadata contains a previously unknown name, possibly a new" +
+                        " scanner-operator. The scans generated should be carefully checked to ensure that they" +
+                        " are satisfactory. The new producer is: ";
+                addOrIncrement(newProducers, event, message, producer);
             }
         }
     }
@@ -152,7 +205,7 @@ public class MixHandler extends DefaultTreeEventHandler {
             return;
         }
         try {
-           height = Integer.parseInt(mixXpathSelector.selectString(doc, xpathHeight));
+            height = Integer.parseInt(mixXpathSelector.selectString(doc, xpathHeight));
         } catch (NumberFormatException e) {
             addFlag(event, "Couldn't get and parse xpathHeight. " + e.getMessage());
             return;
@@ -182,11 +235,58 @@ public class MixHandler extends DefaultTreeEventHandler {
         String[] allowedValues = properties.getProperty(property).split(",");
         String actualValue = mixXpathSelector.selectString(doc, xpath).trim();
         if (!Arrays.asList(allowedValues).contains(actualValue)) {
-            addFlag(event, message + ": " + actualValue);
+            switch (property) {
+                case ConfigConstants.SCANNER_MANUFACTURERS :
+                    addOrIncrement(newManufacturers, event, message, actualValue);
+                    break;
+                case ConfigConstants.SCANNER_MODELS :
+                    addOrIncrement(newModels, event, message, actualValue);
+                    break;
+                case ConfigConstants.SCANNER_MODEL_NUMBERS :
+                    addOrIncrement(newModelNumbers, event, message, actualValue);
+                    break;
+                case ConfigConstants.SCANNER_SERIAL_NOS :
+                    addOrIncrement(newSerialNumbers, event, message, actualValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void addOrIncrement(Map<String, FlaggableElement> flaggableElementMap, AttributeParsingEvent event, String message, String actualValue) {
+        if (flaggableElementMap.containsKey(actualValue)) {
+            flaggableElementMap.get(actualValue).incrementCount();
+        } else {
+            FlaggableElement newManufacturer = new FlaggableElement(event, actualValue, message);
+            flaggableElementMap.put(actualValue, newManufacturer);
         }
     }
 
     private void addFlag(AttributeParsingEvent event, String message) {
         flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), message);
+    }
+
+    @Override
+    public void handleFinish() {
+        for (FlaggableElement flaggableElement: newManufacturers.values()) {
+            addFlag(flaggableElement.firstOccurrence, flaggableElement.toString());
+        }
+        for (FlaggableElement flaggableElement: newProducers.values()) {
+            addFlag(flaggableElement.firstOccurrence, flaggableElement.toString());
+        }
+        for (FlaggableElement flaggableElement: newModels.values()) {
+            addFlag(flaggableElement.firstOccurrence, flaggableElement.toString());
+        }
+        for (FlaggableElement flaggableElement: newModelNumbers.values()) {
+            addFlag(flaggableElement.firstOccurrence, flaggableElement.toString());
+        }
+        for (FlaggableElement flaggableElement: newSerialNumbers.values()) {
+            addFlag(flaggableElement.firstOccurrence, flaggableElement.toString());
+        }
+        for (FlaggableElement flaggableElement: newSoftwares.values()) {
+            addFlag(flaggableElement.firstOccurrence, flaggableElement.toString());
+        }
+
     }
 }

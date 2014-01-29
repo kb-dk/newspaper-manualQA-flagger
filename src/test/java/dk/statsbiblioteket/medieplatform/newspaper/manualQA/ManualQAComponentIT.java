@@ -18,6 +18,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class ManualQAComponentIT  {
@@ -48,11 +49,9 @@ public class ManualQAComponentIT  {
         File specificProperties = new File(genericPropertyFile.getParentFile(),
                 "newspaper-manualQA-flagger-config/config.properties");
         properties.load(new FileInputStream(specificProperties));
-
         validateBatch();
-
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
-        assertTrue(!flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     /**
@@ -65,9 +64,8 @@ public class ManualQAComponentIT  {
         File specificProperties = new File("src/test/config/inconsistent-flagging-config.properties");
         properties.load(new FileInputStream(specificProperties));
         validateBatch();
-
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
-        assertTrue(flaggingCollector.hasFlags());
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     public InputStream retrieveBatchStructure() {
