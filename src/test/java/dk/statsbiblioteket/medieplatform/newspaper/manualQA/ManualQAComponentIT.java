@@ -72,6 +72,7 @@ public class ManualQAComponentIT  {
         validateBatch();
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        logger.debug(flaggingCollector.toReport());
     }
 
     public InputStream retrieveBatchStructure() {
