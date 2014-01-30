@@ -8,8 +8,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticManager;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.XmlFileIncrementalWriter;
 import org.w3c.dom.Document;
 
@@ -19,6 +19,8 @@ public class FlaggerFactory implements EventHandlerFactory {
     private static final double CHOPPY_CHECK_THRESHOLD = 0.5;
     // The maximum number of peaks/valleys allowed before flagged as an error
     private static final int CHOPPY_CHECK_MAX_IRREGULARITIES = 4;
+
+    private static String STATISTICS_FILE_LOCATION_PROPERTY = "manualqaflagger.statistics.filelocation";
 
     private final ResultCollector resultCollector;
     private final Batch batch;
@@ -39,8 +41,10 @@ public class FlaggerFactory implements EventHandlerFactory {
     @Override
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
-        treeEventHandlers.add(new StatisticCollector(new XmlFileIncrementalWriter(
-                "target/statistics/Integration/statistics.xml"))); //ToDo use configuration option
+        treeEventHandlers.add(new StatisticManager(new XmlFileIncrementalWriter(
+                properties.getProperty(STATISTICS_FILE_LOCATION_PROPERTY, "target/statistics/Integration")
+                         + "/" + batch.getFullID() + "-statistics.xml"
+        )));
         treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector, 0, 10));
         treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
                 CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES));

@@ -21,14 +21,7 @@ public interface StatisticWriter {
      * @param name The name of the measurement.
      * @param metric The N measurement.
      */
-    void addStatistic(String name, long metric);
-
-    /**
-     * Adds a relativ measurement, eg. N out of M.
-     * @param name The name of the measurement.
-     * @param metric The N/M measurement.
-     */
-    void addStatistic(String name, GeneralCollector.RelativeCount metric);
+    void addStatistic(String name, Number metric);
 
     void finish();
 }

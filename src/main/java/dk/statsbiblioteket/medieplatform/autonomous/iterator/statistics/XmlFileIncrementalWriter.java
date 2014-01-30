@@ -9,15 +9,19 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Writes statistics to a xml fil as the different statistics are generated minimising the
  * in-memory model.
  */
 public class XmlFileIncrementalWriter implements StatisticWriter {
+    private static Logger log = LoggerFactory.getLogger(XmlFileIncrementalWriter.class);
     private final XMLStreamWriter out;
 
     public XmlFileIncrementalWriter(String outputFilePath) {
+        log.info("Preparing to write statistics to " + outputFilePath);
         try {
             File outputFile = new File(outputFilePath);
             FileUtils.forceMkdir(outputFile.getParentFile());
@@ -51,19 +55,13 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
         }
     }
 
+    /**
+     * Will write a statistic element. Ex: addStatistic(pages, 3)
+     * will add a line:
+     * <pages>1</pages>.
+     */
     @Override
-    public void addStatistic(String name, long metric) {
-        try {
-            out.writeStartElement(name);
-            out.writeCharacters(Long.toString(metric));
-            out.writeEndElement();
-        } catch (XMLStreamException e) {
-            throw new RuntimeException("Failed to write statistic.", e);
-        }
-    }
-
-    @Override
-    public void addStatistic(String name, GeneralCollector.RelativeCount metric) {
+    public void addStatistic(String name, Number metric) {
         try {
             out.writeStartElement(name);
             out.writeCharacters(metric.toString());
@@ -82,5 +80,6 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
         } catch (XMLStreamException e) {
             throw new RuntimeException("Failed to close xml writer.", e);
         }
+        log.info("Finished writting statistics ");
     }
 }

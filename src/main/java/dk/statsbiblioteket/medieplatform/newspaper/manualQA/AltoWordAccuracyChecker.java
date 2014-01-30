@@ -1,5 +1,10 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
@@ -10,11 +15,6 @@ import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * This handler operates at the film-level and computes running averages of the ABBYY Predicted Accuracy for both
@@ -35,12 +35,11 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
      * Map from an eventId to the running average accuracy of all alto files within the corresponding directory.
      */
     Map<String, RunningAverage> averages;
-    XPathSelector xpath;
+    private static final XPathSelector xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
 
     public AltoWordAccuracyChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Properties properties) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
-        this.xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
         averages = new HashMap<String, RunningAverage>();
         minimumAcceptable = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_AVERAGE_ACCURACY));
         minimumAcceptablePerfile = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_PERFILE_ACCURACY));
@@ -71,27 +70,15 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
         if (!event.getName().endsWith("alto.xml")) {
             return;
         }
-        Document doc;
-        try {
-            doc = DOM.streamToDOM(event.getData(), true);
-            if (doc == null) {
-                resultCollector
-                        .addFailure(event.getName(), "exception", getClass().getSimpleName(), "Could not parse xml");
-                return;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        final String accuracyXPath="alto:alto/alto:Layout/alto:Page/@ACCURACY";
-        String accuracyString = xpath.selectString(doc, accuracyXPath);
         Double accuracy = null;
         try {
-            accuracy = Double.parseDouble(accuracyString);
+            accuracy = readAccuracy(event);
         } catch (NumberFormatException e) {
             flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "No ACCURACY attribute found in alto:Page" +
                     " element in this file.");
             return;
         }
+
         if (accuracy < minimumAcceptablePerfile && (!ignoreZero || accuracy > 0)) {
             flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Accuracy for alto file is less " +
                     "than the prescribed minimum (" + minimumAcceptablePerfile + ") :" + accuracy);
@@ -118,18 +105,40 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
 
     @Override
     public void handleNodeEnd(NodeEndParsingEvent event) {
-        RunningAverage runningAverage = averages.get(event.getName());
+        String eventName = event.getName();
+        RunningAverage runningAverage = averages.get(eventName);
         if (runningAverage == null) {
             //this happens if we are at the end of any node other than a film or edition node.
             return;
         }
-        logger.debug("Average accuracy for " + event.getName() + " is " + runningAverage.getCurrentValue() + " from (" + runningAverage.count + ")");
+        String lastElement = eventName.substring(eventName.lastIndexOf("/"));
+        String type;
+        if (lastElement.matches(".*-.*-.*-.*")) {
+            type = "Edition";
+        } else {
+            type = "Film";
+        }
+        logger.debug("Average accuracy for the " + type + " " + event.getName() + " is " + runningAverage.getCurrentValue() + " from (" + runningAverage.count + ")");
         if (runningAverage.getCurrentValue() < minimumAcceptable) {
-            flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Average OCR accuracy is less" +
+            flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "Average OCR accuracy for this " + type + " is less" +
                     " than the minimum expected (" + minimumAcceptable + ") : " + runningAverage.getCurrentValue());
         }
         //Remove the event from the map so it can be garbage collected.
         averages.remove(event.getName());
     }
 
+    public static Double readAccuracy(AttributeParsingEvent event) throws NumberFormatException {
+        Document doc;
+        try {
+            doc = DOM.streamToDOM(event.getData(), true);
+            if (doc == null) {
+                throw new RuntimeException("Could not parse xml");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        final String accuracyXPath="alto:alto/alto:Layout/alto:Page/@ACCURACY";
+        String accuracyString = xpath.selectString(doc, accuracyXPath);
+        return Double.parseDouble(accuracyString);
+    }
 }

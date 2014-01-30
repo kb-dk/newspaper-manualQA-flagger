@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Batch Statistics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Newspaper batch statistics">
+  <meta name="author" content="The State and University Library, Denmark">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <!-- Styles -->
+  <link rel="stylesheet" type="text/css" href="xmltree/xmltree.css">
+  <script src='jquery-2.0.3.min.js'></script>
+  <script type="text/javascript" src="xmltree/xmltree.js"></script>
+
+</head>
+<body>
+<h1>Batch Statistics</h1>
+<div id='tree'></div>
+
+<script>
+  var batchid = location.search.split('batchid=')[1]
+  var filepath = "data/" + batchid + '-statistics.xml'
+  $(function() { new XMLTree({
+    fpath: filepath, container: '#tree', startExpanded: false, openAtPath: 'Batch' , attrs: 'hidden'
+  }); });
+</script>
+
+</body>
+</html>

@@ -4,50 +4,17 @@ import java.lang.reflect.Method;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.newspaper.statistics.EditionCollector;
-import dk.statsbiblioteket.medieplatform.newspaper.statistics.FilmCollector;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
-
-public class StatisticCollectorTest extends XmlFileTest {
-    /** Instance of the StatisticCollector Under Test. */
-    private StatisticCollector collectorUT;
+public class StatisticManagerTest extends XmlFileTest {
+    /** Instance of the StatisticManager Under Test. */
+    private StatisticManager collectorUT;
     private static final String DEFAULT_BATCH = "4099";
 
     @BeforeMethod
     public void setupMethod(Method method) {
-        collectorUT = new StatisticCollector(createWriter(method.getName()));
-    }
-
-    @Test
-    public void batchNodeLocationTest() {
-        collectorUT.handleNodeBegin(new NodeBeginsParsingEvent(DEFAULT_BATCH));
-        assertEquals(collectorUT.getCollector().getName(), DEFAULT_BATCH);
-    }
-
-    @Test
-    public void filmNodeLocationTest() {
-        collectorUT.handleNodeBegin(new NodeBeginsParsingEvent(DEFAULT_BATCH));
-        String filmNode= DEFAULT_BATCH + "/film1";
-        collectorUT.handleNodeBegin(new NodeBeginsParsingEvent(filmNode));
-        GeneralCollector filmCollector = collectorUT.getCollector();
-        assertNotNull(filmCollector);
-        assertTrue(filmCollector instanceof FilmCollector);
-        assertEquals(filmCollector.getName(), filmNode);
-    }
-
-    @Test
-    public void editionNodeLocationTest() {
-        collectorUT.handleNodeBegin(new NodeBeginsParsingEvent(DEFAULT_BATCH));
-        collectorUT.handleNodeBegin(new NodeBeginsParsingEvent(DEFAULT_BATCH + "/FILM1"));
-        String nodeName = DEFAULT_BATCH+"/FILM1/2012-11-11-1";
-        collectorUT.handleNodeBegin(new NodeBeginsParsingEvent(nodeName));
-        GeneralCollector editionCollector = collectorUT.getCollector();
-        assertNotNull(editionCollector);
-        assertTrue(editionCollector instanceof EditionCollector);
-        assertEquals(editionCollector.getName(), nodeName);
+        collectorUT = new StatisticManager(createWriter(method.getName()));
     }
 
     @Test
@@ -55,7 +22,10 @@ public class StatisticCollectorTest extends XmlFileTest {
         collectorUT.handleNodeBegin(new NodeBeginsParsingEvent(DEFAULT_BATCH));
         collectorUT.handleNodeEnd(new NodeEndParsingEvent(DEFAULT_BATCH));
         collectorUT.handleFinish();
-        assertOutputEqual("<Statistics><Batch name=\"4099\"></Batch></Statistics>");
+        assertOutputEqual(
+                "<Statistics>" +
+                "  <Batch name=\"4099\"></Batch>" +
+                "</Statistics>");
     }
 
     @Test
@@ -69,6 +39,14 @@ public class StatisticCollectorTest extends XmlFileTest {
         collectorUT.handleNodeEnd(new NodeEndParsingEvent(DEFAULT_BATCH + "/" + FILM2));
         collectorUT.handleNodeEnd(new NodeEndParsingEvent(DEFAULT_BATCH));
         collectorUT.handleFinish();
+        assertOutputEqual(
+                "<Statistics>\n" +
+                "  <Batch name=\"4099\">\n" +
+                "    <Film name=\"film1\"></Film>\n" +
+                "    <Film name=\"film2\"></Film>\n" +
+                "    <Films>2</Films>\n" +
+                "  </Batch>\n" +
+                "</Statistics>");
     }
 
     @Test
@@ -93,6 +71,22 @@ public class StatisticCollectorTest extends XmlFileTest {
 
         collectorUT.handleNodeEnd(new NodeEndParsingEvent(DEFAULT_BATCH));
         collectorUT.handleFinish();
+        assertOutputEqual(
+                "<Statistics>\n" +
+                "  <Batch name=\"4099\">\n" +
+                "    <Film name=\"film1\">\n" +
+                "      <Edition name=\"2012-11-11-1\"></Edition>\n" +
+                "      <Edition name=\"2012-11-12-1\"></Edition>\n" +
+                "      <Editions>2</Editions>\n" +
+                "    </Film>\n" +
+                "    <Film name=\"film2\">\n" +
+                "      <Edition name=\"2012-11-13-1\"></Edition>\n" +
+                "      <Editions>1</Editions>\n" +
+                "    </Film>\n" +
+                "    <Editions>3</Editions>\n" +
+                "    <Films>2</Films>\n" +
+                "  </Batch>\n" +
+                "</Statistics>");
     }
 
     @Test
@@ -123,5 +117,27 @@ public class StatisticCollectorTest extends XmlFileTest {
 
         collectorUT.handleNodeEnd(new NodeEndParsingEvent(DEFAULT_BATCH));
         collectorUT.handleFinish();
+        assertOutputEqual(
+                "<Statistics>\n" +
+                "  <Batch name=\"4099\">\n" +
+                "    <Film name=\"film1\">\n" +
+                "      <Edition name=\"2012-11-11-1\">\n" +
+                "        <Pages>2</Pages>\n" +
+                "      </Edition>\n" +
+                "      <Editions>1</Editions>\n" +
+                "      <Pages>2</Pages>\n" +
+                "    </Film>\n" +
+                "    <Film name=\"film2\">\n" +
+                "      <Edition name=\"2012-11-13-1\">\n" +
+                "        <Pages>1</Pages>\n" +
+                "      </Edition>\n" +
+                "      <Editions>1</Editions>\n" +
+                "      <Pages>1</Pages>\n" +
+                "    </Film>\n" +
+                "    <Editions>2</Editions>\n" +
+                "    <Films>2</Films>\n" +
+                "    <Pages>3</Pages>\n" +
+                "  </Batch>\n" +
+                "</Statistics>");
     }
 }

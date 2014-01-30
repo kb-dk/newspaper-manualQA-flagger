@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<Statistics>
+  <Batch name="B400022028241-RT1">
+    <Film name="400022028241-1">
+      <Edition name="1795-06-01">
+        <Briks>1</Briks>
+        <Pages>3</Pages>
+        <OCR-Accuracy>83.88</OCR-Accuracy>
+      </Edition>
+      <Edition name="1795-06-15-01">
+        <Briks>1</Briks>
+        <Pages>3</Pages>
+        <OCR-Accuracy>85.39</OCR-Accuracy>
+      </Edition>
+      <Edition name="1795-06-15-02">
+        <Briks>1</Briks>
+        <Pages>3</Pages>
+        <OCR-Accuracy>86.99</OCR-Accuracy>
+      </Edition>
+      <Briks>3</Briks>
+      <Editions>3</Editions>
+      <Pages>9</Pages>
+      <UnmatchedPages>1</UnmatchedPages>
+      <OCR-Accuracy>85.42</OCR-Accuracy>
+    </Film>
+    <Briks>3</Briks>
+    <Editions>3</Editions>
+    <Films>1</Films>
+    <Pages>9</Pages>
+    <UnmatchedPages>1</UnmatchedPages>
+    <OCR-Accuracy>85.42</OCR-Accuracy>
+  </Batch>
+</Statistics>
