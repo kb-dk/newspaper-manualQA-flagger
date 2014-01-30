@@ -52,6 +52,7 @@ public class FlaggerFactory implements EventHandlerFactory {
         treeEventHandlers.add(new FilmHandler(resultCollector, flaggingCollector));
         treeEventHandlers.add(new MixHandler(resultCollector, properties, flaggingCollector));
         treeEventHandlers.add(new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties));
+        // TODO ADD: treeEventHandlers.add(new DarknessHistogramChecker(resultCollector, flaggingCollector, properties));
         return treeEventHandlers;
     }
 }
