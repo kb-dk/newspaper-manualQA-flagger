@@ -7,10 +7,10 @@ import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCol
 import dk.statsbiblioteket.util.Pair;
 
 /**
- * Alle histogrammerne havde en meget stor spike i 0 eller 2. (pga. mærkelig scanner). Det er ikke undgåeligt. Dette er
- * ikke en spike i kurvemæssig forstand. Det er en enkelt farve, så står op som et søm i grafen. Det samme kunne være
- * tilfældet i den anden ende. Hvis denne spike er for stor, tænker her 2% af det samlede antal pixel, skal billedet
- * flages.
+ * At the time of implementing this, all histograms we have seen had a very big spike for a color number 0, 1, or 2. It seems
+ * this cannot be avoided. This is not a spike in the normal curve-wise sense. It is a single color that juts up as a pin in the
+ * graph. The same could be the case at the other end. If this spike is too high, say 2% of the total number of pixels, the image
+ * should be flagged.
  */
 public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector flaggingCollector;
