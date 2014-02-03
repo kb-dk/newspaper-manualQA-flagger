@@ -21,4 +21,6 @@ public class ConfigConstants {
     public static final String MAX_IMAGE_WIDTH = "flag.mix.maximagewidth";
     public static final String MIN_IMAGE_HEIGHT = "flag.mix.minimageheight";
     public static final String MAX_IMAGE_HEIGHT = "flag.mix.maximageheight";
+
+    public static final String MAX_FLAGS = "flag.maxtotalflags";
 }

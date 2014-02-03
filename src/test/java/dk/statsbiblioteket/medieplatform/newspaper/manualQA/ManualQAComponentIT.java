@@ -94,7 +94,7 @@ public class ManualQAComponentIT  {
         }
         Document batchXmlManifest = DOM.streamToDOM(batchXmlStructureStream);
 
-        flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1");
+        flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1", 100);
 
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, batchXmlManifest, flaggingCollector, properties);
 

@@ -24,6 +24,10 @@ public class FlaggingCollector {
     private final Manualqainput report;
     private Batch batch;
     private FlaggingFinder flaggingFinder;
+    private Manualqafile lastQaFile;
+
+    private int flagCount;
+    private int maxFlags;
 
     /**
      * Create a new flagging collector
@@ -31,15 +35,18 @@ public class FlaggingCollector {
      * @param batch             the batch
      * @param batchXmlStructure the batch structure xml
      * @param version           the version of the component?
+     * @param maxFlags          the maximum number of flags which can be added. Any additional flags will simply be
+     *                          reported as a raw total as part of the description of the last flag added.
      */
-    public FlaggingCollector(Batch batch, Document batchXmlStructure, String version) {
-
+    public FlaggingCollector(Batch batch, Document batchXmlStructure, String version, int maxFlags) {
         this.batch = batch;
         flaggingFinder = new FlaggingFinder(batchXmlStructure);
         objectFactory = new ObjectFactory();
         report = objectFactory.createManualqainput();
         report.setManualqafiles(objectFactory.createManualqafiles());
         report.setVersion(toBigDecimal(version));
+        this.maxFlags = maxFlags;
+        flagCount = 0;
     }
 
 
@@ -65,6 +72,7 @@ public class FlaggingCollector {
 
     private void addFlagPrivate(ParsingEvent reference, String type, String component, String description,
                                 String... details) {
+        flagCount++;
         Manualqafile manualQAFile = objectFactory.createManualqafile();
         manualQAFile.setComponent(component);
         manualQAFile.setDescription(description);
@@ -78,7 +86,14 @@ public class FlaggingCollector {
             manualQAFile.setDetails(detailsBlock);
 
         }
-        report.getManualqafiles().getManualqafile().add(manualQAFile);
+        if (flagCount < maxFlags) {
+           report.getManualqafiles().getManualqafile().add(manualQAFile);
+        } else {
+            manualQAFile.setDescription("The number of issues found that require checking exceeds the maximum expected." +
+                    " The number of issues found was " + flagCount + ", but only " + maxFlags + " can be reported. The " +
+                    "cause of the last issue was '" + description + "'");
+            lastQaFile = manualQAFile;
+        }
     }
 
     /**
@@ -94,6 +109,9 @@ public class FlaggingCollector {
      * @return the xml report as String
      */
     public String toReport() {
+        if (lastQaFile != null) {
+            report.getManualqafiles().getManualqafile().add(lastQaFile);
+        }
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Marshaller marshaller = context.createMarshaller();

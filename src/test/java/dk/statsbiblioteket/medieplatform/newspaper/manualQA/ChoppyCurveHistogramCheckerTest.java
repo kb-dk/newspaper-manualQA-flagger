@@ -15,7 +15,7 @@ public class ChoppyCurveHistogramCheckerTest {
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
 
         ChoppyCurveHistogramChecker histogramHandler = new ChoppyCurveHistogramChecker(
                 resultCollector, flaggingCollector, 0.1, 4);
@@ -33,7 +33,7 @@ public class ChoppyCurveHistogramCheckerTest {
     @Test
     public void testHandleAttributeBad() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
 
         ChoppyCurveHistogramChecker histogramHandler = new ChoppyCurveHistogramChecker(
                 resultCollector, flaggingCollector, 0.1, 4);

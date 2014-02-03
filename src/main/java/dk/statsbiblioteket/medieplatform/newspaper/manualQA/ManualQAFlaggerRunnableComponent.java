@@ -52,10 +52,17 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
 
         Document batchXmlStructure = DOM.streamToDOM(batchXmlStructureStream);
 
-
+        int maxFlags = 0;
+        try {
+            maxFlags = Integer.parseInt(properties.getProperty(dk.statsbiblioteket.medieplatform.newspaper.manualQA.ConfigConstants.MAX_FLAGS));
+        } catch (NumberFormatException e) {
+            final String message = "Property " + dk.statsbiblioteket.medieplatform.newspaper.manualQA.ConfigConstants.MAX_FLAGS + " is not set" +
+                    " to an integer value.";
+            log.error(message);
+            throw new RuntimeException(message, e);
+        }
         FlaggingCollector flaggingCollector = new FlaggingCollector(
-                batch, batchXmlStructure, getComponentVersion());
-
+                batch, batchXmlStructure, getComponentVersion(), maxFlags);
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(
                 resultCollector, batch, batchXmlStructure, flaggingCollector, properties);
         List<TreeEventHandler> eventHandlers = eventHandlerFactory.createEventHandlers();

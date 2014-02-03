@@ -16,7 +16,7 @@ public class HistogramAverageHandlerTest {
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         Batch batch = new Batch("40000");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(batch, null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(batch, null, "0.1-SNAPSHOT", 100);
         HistogramAverageHandler histogramHandler = new HistogramAverageHandler(
                 resultCollector, flaggingCollector, batch);
         AttributeParsingEvent event = createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml","<histogram xmlns=\"http://www.statsbiblioteket.dk/avisdigitalisering/histogram/1/0/\">\n" +

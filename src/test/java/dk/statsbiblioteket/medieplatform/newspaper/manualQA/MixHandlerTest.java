@@ -4,11 +4,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
-import dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers.FilmMocker;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers.MixMocker;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
@@ -59,7 +57,7 @@ public class MixHandlerTest {
         Batch batch = new Batch();
         flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         resultCollector = new ResultCollector("foo", "bar");
 
         final String additionalSoftware = extraSoftware.replace("___softwares___", "emacs").replace("___versions___",

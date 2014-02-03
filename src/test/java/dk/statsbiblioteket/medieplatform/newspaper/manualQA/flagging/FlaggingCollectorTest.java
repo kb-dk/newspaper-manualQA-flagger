@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static net.sf.ezmorph.test.ArrayAssertions.assertEquals;
+
 public class FlaggingCollectorTest {
 
     private static final String EMPTY
@@ -22,7 +24,7 @@ public class FlaggingCollectorTest {
         FlaggingCollector collector = new FlaggingCollector(
                 new Batch("B400022028241"), DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "0.1-SNAPSHOT");
+                        "batchStructure.xml")), "0.1-SNAPSHOT", 100);
 
 
         String report = collector.toReport();
@@ -68,6 +70,34 @@ public class FlaggingCollectorTest {
                         "            <description>this is the description2</description>\n" +
                         "        </manualqafile>"));
 
+    }
+
+    @Test
+    public void testMaxFlags() {
+        int maxFlags = 10;
+        FlaggingCollector collector = new FlaggingCollector(
+                       new Batch("B400022028241"), DOM.streamToDOM(
+                       Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                               "batchStructure.xml")), "0.1-SNAPSHOT", maxFlags);
+
+        for (int i = 0; i < 1000; i++) {
+            collector.addFlag(
+                            new AttributeParsingEvent(
+                                    "B400022028241-RT1/400022028241-1/1795-06-15-02/adresseavisen1759-1795-06-15-02.edition.xml") {
+                                @Override
+                                public InputStream getData() throws IOException {
+                                    return null;
+                                }
+
+                                @Override
+                                public String getChecksum() throws IOException {
+                                    return null;
+                                }
+                            }, "metadata", "testComponent2", "this is the description2");
+        }
+        String report = collector.toReport();
+        int qafiles = report.split("</manualqafile>").length -1;
+        assertEquals(maxFlags, qafiles);
     }
 
 

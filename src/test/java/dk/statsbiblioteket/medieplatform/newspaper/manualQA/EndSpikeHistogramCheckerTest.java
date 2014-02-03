@@ -16,7 +16,7 @@ public class EndSpikeHistogramCheckerTest {
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, 0.1, 0, 2, 255, 255, 2, 0.5);
@@ -30,7 +30,7 @@ public class EndSpikeHistogramCheckerTest {
     @Test
     public void testHandleAttributeBadSpike() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, 0.05, 0, 2, 255, 255, 100, 100);
         AttributeParsingEvent event = createAttributeEvent(
@@ -43,7 +43,7 @@ public class EndSpikeHistogramCheckerTest {
     @Test
     public void testHandleAttributeBadLowLightBlowout() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, 1, 0, 2, 255, 255, 2, 100);
         AttributeParsingEvent event = createAttributeEvent(
@@ -56,7 +56,7 @@ public class EndSpikeHistogramCheckerTest {
     @Test
     public void testHandleAttributeBadHighLightBlowout() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, 1, 0, 2, 255, 255, 100, 0.5);
         AttributeParsingEvent event = createAttributeEvent(

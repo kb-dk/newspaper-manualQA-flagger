@@ -41,7 +41,7 @@ public class AltoWordAccuracyCheckerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         AltoWordAccuracyChecker altoWordAccuracyChecker =
                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/film1/edition1/1.alto.xml", "15.0");
@@ -59,7 +59,7 @@ public class AltoWordAccuracyCheckerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         AltoWordAccuracyChecker altoWordAccuracyChecker =
                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/film1/edition1/1.alto.xml", "0.0");
@@ -73,7 +73,7 @@ public class AltoWordAccuracyCheckerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         AltoWordAccuracyChecker altoWordAccuracyChecker =
                  new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/film1/2001-01-02-03/1.alto.xml", "50.0");
@@ -92,7 +92,7 @@ public class AltoWordAccuracyCheckerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         AltoWordAccuracyChecker altoWordAccuracyChecker =
                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/12345272-07/edition1/1.alto.xml", "65.0");
@@ -120,7 +120,7 @@ public class AltoWordAccuracyCheckerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         AltoWordAccuracyChecker altoWordAccuracyChecker =
                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/film1/edition1/1.alto.xml", "65.0");
@@ -144,7 +144,7 @@ public class AltoWordAccuracyCheckerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         AltoWordAccuracyChecker altoWordAccuracyChecker =
                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/film1/edition1/1.alto.xml", "50.0");
