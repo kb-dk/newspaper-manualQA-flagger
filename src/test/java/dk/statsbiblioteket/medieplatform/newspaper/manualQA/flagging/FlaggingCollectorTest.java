@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static net.sf.ezmorph.test.ArrayAssertions.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class FlaggingCollectorTest {
 
@@ -72,6 +73,10 @@ public class FlaggingCollectorTest {
 
     }
 
+    /**
+     * Test that we can set the maximum number of flags, that the limit is respected, and that the last flag description
+     * includes the total number of flags generated.
+     */
     @Test
     public void testMaxFlags() {
         int maxFlags = 10;
@@ -98,6 +103,7 @@ public class FlaggingCollectorTest {
         String report = collector.toReport();
         int qafiles = report.split("</manualqafile>").length -1;
         assertEquals(maxFlags, qafiles);
+        assertTrue(report.contains("1000"), report);
     }
 
 
