@@ -28,7 +28,7 @@ public class EditionModsHandlerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                         Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                                "batchStructure.xml")), "42.24");
+                                "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
@@ -55,7 +55,7 @@ public class EditionModsHandlerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                         Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                                "batchStructure.xml")), "42.24");
+                                "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
@@ -82,7 +82,7 @@ public class EditionModsHandlerTest {
             Batch batch = new Batch();
             FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                             Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                                    "batchStructure.xml")), "42.24");
+                                    "batchStructure.xml")), "42.24", 100);
             ResultCollector resultCollector = new ResultCollector("foo", "bar");
             EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch);
             AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {

@@ -38,3 +38,14 @@ properties (values given below are dummy-examples):
     #the page.
     flag.alto.zeroaccuracy.ignore=true
 
+    #The maximum number of flags that can be created. If more issues are detected then these are reported as a
+    #simple count as part of the message of the last flag reported. This is necessary because
+    #i) There are no resources to manually check an unlimited number of issues
+    #ii) If there are very many issues then they are probably systematic and there is no need to review them all
+    #individually, and
+    #iii) The backend systems become unstable if one writes overly-large xml documents back to DOMS.
+    #
+    #An initial value of 100 for this parameter is probably reasonable.
+    #
+    flag.maxtotalflags=
+

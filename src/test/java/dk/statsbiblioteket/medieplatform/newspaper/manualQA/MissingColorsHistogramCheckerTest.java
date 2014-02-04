@@ -16,7 +16,7 @@ public class MissingColorsHistogramCheckerTest {
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new MissingColorsHistogramChecker(
                 resultCollector, flaggingCollector, 0, 10);
@@ -30,7 +30,7 @@ public class MissingColorsHistogramCheckerTest {
     @Test
     public void testHandleAttributeBad() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT");
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new MissingColorsHistogramChecker(
                 resultCollector, flaggingCollector, 0, 10);

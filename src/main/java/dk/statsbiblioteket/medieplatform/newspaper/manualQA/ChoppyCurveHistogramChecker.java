@@ -72,6 +72,7 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
 
     /**
      * Count local "peaks and valleys" that might break the continuity of the histogram curve
+     * @param histogram The histogram for which to count local irregularities
      * @return number of irregularities
      */
     private int countIrregularities(Histogram histogram) {
@@ -128,6 +129,10 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         return value < minAllowedValue || value > maxAllowedValue;
     }
 
+    /**
+     * Formats a string for presentation, containing the positions (in the histogram) of the errors found
+     * @return The formatted string
+     */
     private String errorPositionsToString() {
         String s = "";
         boolean hadOne = false;

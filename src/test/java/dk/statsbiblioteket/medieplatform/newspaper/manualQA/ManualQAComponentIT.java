@@ -14,6 +14,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Event
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.filesystem.transforming.TransformingIteratorForFileSystems;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
@@ -22,6 +24,8 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class ManualQAComponentIT  {
+
+    private Logger logger = LoggerFactory.getLogger(ManualQAComponentIT.class);
 
     private final static String TEST_BATCH_ID = "400022028241";
     private File genericPropertyFile;
@@ -48,6 +52,7 @@ public class ManualQAComponentIT  {
     public void testConsistentBatch() throws Exception {
         File specificProperties = new File(genericPropertyFile.getParentFile(),
                 "newspaper-manualQA-flagger-config/config.properties");
+        logger.debug("Doing validation with generic config.properties");
         properties.load(new FileInputStream(specificProperties));
         validateBatch();
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
@@ -62,10 +67,12 @@ public class ManualQAComponentIT  {
     @Test(groups = "integrationTest")
     public void testInconsistentBatch() throws Exception {
         File specificProperties = new File("src/test/config/inconsistent-flagging-config.properties");
+        logger.debug("Doing validation with properties from " + specificProperties.getAbsolutePath());
         properties.load(new FileInputStream(specificProperties));
         validateBatch();
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        logger.debug(flaggingCollector.toReport());
     }
 
     public InputStream retrieveBatchStructure() {
@@ -87,7 +94,7 @@ public class ManualQAComponentIT  {
         }
         Document batchXmlManifest = DOM.streamToDOM(batchXmlStructureStream);
 
-        flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1");
+        flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1", 100);
 
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, batchXmlManifest, flaggingCollector, properties);
 

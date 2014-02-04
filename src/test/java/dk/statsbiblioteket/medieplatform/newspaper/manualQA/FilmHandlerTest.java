@@ -4,7 +4,6 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
-import dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers.EditionModsMocker;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers.FilmMocker;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.testng.annotations.Test;
@@ -30,7 +29,7 @@ public class FilmHandlerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         FilmHandler filmHandler = new FilmHandler(resultCollector, flaggingCollector);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
@@ -58,7 +57,7 @@ public class FilmHandlerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         FilmHandler filmHandler = new FilmHandler(resultCollector, flaggingCollector);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
@@ -86,7 +85,7 @@ public class FilmHandlerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         FilmHandler filmHandler = new FilmHandler(resultCollector, flaggingCollector);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
@@ -114,7 +113,7 @@ public class FilmHandlerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         FilmHandler filmHandler = new FilmHandler(resultCollector, flaggingCollector);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
@@ -142,7 +141,7 @@ public class FilmHandlerTest {
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24");
+                        "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         FilmHandler filmHandler = new FilmHandler(resultCollector, flaggingCollector);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.xml") {
