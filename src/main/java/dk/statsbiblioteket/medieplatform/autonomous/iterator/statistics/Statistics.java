@@ -7,8 +7,8 @@ import java.util.TreeMap;
  * Models the collected statistics for this collector.
  */
 public class Statistics {
-    protected Map<String, Long> countMap = new TreeMap();
-    protected Map<String, WeightedMean> relativeCountMap = new TreeMap();
+    public final Map<String, Long> countMap = new TreeMap();
+    public final Map<String, WeightedMean> relativeCountMap = new TreeMap();
 
     /**
      * Adds a measurement to the current.

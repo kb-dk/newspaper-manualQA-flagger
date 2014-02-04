@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
 
 import java.util.Map;
+import java.util.Properties;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
@@ -31,6 +32,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsi
  */
 public abstract class StatisticCollector {
     protected String name;
+    protected Properties properties;
     protected StatisticWriter writer;
     protected StatisticCollector parent;
     private final Statistics statistics;
@@ -39,10 +41,11 @@ public abstract class StatisticCollector {
         statistics = new Statistics();
     }
 
-    protected void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer) {
+    protected void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         this.name = name;
         this.parent = parentCollector;
         this.writer = writer;
+        this.properties = properties;
         if (writeNode() && writer != null) { // Does the concrete collector participate in the statistics output.
             writer.addNode(getType(), getSimpleName(name));
         }
@@ -110,7 +113,7 @@ public abstract class StatisticCollector {
             throw new RuntimeException("Unexpected event: " + event);
         }
         if (newCollector != this) {
-            newCollector.initialize(event.getName(), this, writer);
+            newCollector.initialize(event.getName(), this, writer, properties);
         }
         return newCollector;
     }
@@ -150,7 +153,7 @@ public abstract class StatisticCollector {
     /**
      * @return The current statistics for this collector.
      */
-    protected Statistics getStatistics() {
+    public Statistics getStatistics() {
         return statistics;
     }
 

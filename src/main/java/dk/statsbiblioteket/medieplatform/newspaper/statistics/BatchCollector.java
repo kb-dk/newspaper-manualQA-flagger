@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.medieplatform.newspaper.statistics;
 
+import java.util.Properties;
+
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.SinkCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
@@ -8,8 +10,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statisti
  * Handles the collection of batch level statistics.
  */
 public class BatchCollector extends StatisticCollector {
-    public BatchCollector(String name, StatisticWriter writer) {
-        initialize(name, null, writer);
+    public BatchCollector(String name, StatisticWriter writer, Properties properties) {
+        initialize(name, null, writer, properties);
     }
 
     @Override

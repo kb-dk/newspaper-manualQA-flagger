@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
 
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
@@ -14,7 +15,7 @@ public class StatisticManagerTest extends XmlFileTest {
 
     @BeforeMethod
     public void setupMethod(Method method) {
-        collectorUT = new StatisticManager(createWriter(method.getName()));
+        collectorUT = new StatisticManager(createWriter(method.getName()), new Properties());
     }
 
     @Test

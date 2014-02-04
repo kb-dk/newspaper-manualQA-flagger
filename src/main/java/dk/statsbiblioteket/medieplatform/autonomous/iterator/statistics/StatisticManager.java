@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
 
+import java.util.Properties;
+
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
@@ -14,20 +16,21 @@ import org.slf4j.LoggerFactory;
 public class StatisticManager extends DefaultTreeEventHandler {
     private static Logger log = LoggerFactory.getLogger(StatisticManager.class);
     private final StatisticWriter writer;
+    private final Properties properties;
     private StatisticCollector collector;
 
     /**
      * @param writer Defines how the statistics should be written.
      */
-    public StatisticManager(StatisticWriter writer) {
+    public StatisticManager(StatisticWriter writer, Properties properties) {
         this.writer = writer;
-
+        this.properties = properties;
     }
 
     @Override
     public void handleNodeBegin(NodeBeginsParsingEvent event) {
         if (collector == null) {
-            collector = new BatchCollector(event.getName(), writer);
+            collector = new BatchCollector(event.getName(), writer, properties);
         } else {
             collector = collector.handleNodeBegin(event);
         }

@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
 
+import java.util.Properties;
+
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 
@@ -19,7 +21,7 @@ public class SinkCollector extends StatisticCollector {
     }
 
     @Override
-    protected void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer) {
+    protected void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         this.name = name;
         this.parent = parentCollector;
     }
