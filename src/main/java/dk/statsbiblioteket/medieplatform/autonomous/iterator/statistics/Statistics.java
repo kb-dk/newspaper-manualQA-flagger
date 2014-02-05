@@ -7,8 +7,9 @@ import java.util.TreeMap;
  * Models the collected statistics for this collector.
  */
 public class Statistics {
-    public final Map<String, Long> countMap = new TreeMap();
-    public final Map<String, WeightedMean> relativeCountMap = new TreeMap();
+    protected final Map<String, Long> countMap = new TreeMap();
+    protected final Map<String, WeightedMean> relativeCountMap = new TreeMap();
+    protected final Map<String, Statistics> substatisticsMap = new TreeMap();
 
     /**
      * Adds a measurement to the current.
@@ -58,6 +59,48 @@ public class Statistics {
         }
         for (Map.Entry<String, WeightedMean> measurement : statistics.relativeCountMap.entrySet()) {
             addRelative(measurement.getKey(), measurement.getValue());
+        }
+        for (Map.Entry<String, Statistics> measurement : statistics.substatisticsMap.entrySet()) {
+            addSubstatistic(measurement.getKey(), measurement.getValue());
+        }
+    }
+
+    /**
+     * @return A summary of the statistics for this instance. The default implementation returns null, but subclasses
+     * may implement a more informative summary.
+     */
+    public String getSummary() {
+        return null;
+    }
+
+    /**
+     * Adds one statistics object to this statistics as a sub statistics.
+     * @param statisticsToAdd The statistics to add to this collector
+     */
+    public void addSubstatistic(String name, Statistics statisticsToAdd) {
+        Statistics currentSubstatistics;
+        if (substatisticsMap.containsKey(name)) {
+            currentSubstatistics = substatisticsMap.get(name);
+        } else {
+            substatisticsMap.put(name, currentSubstatistics = new Statistics());
+        }
+        currentSubstatistics.addStatistic(statisticsToAdd);
+    }
+
+    public void writeStatistics(StatisticWriter writer) {
+        for (Map.Entry<String, Long> measurement : countMap.entrySet()) {
+            writer.addStatistic(measurement.getKey(), measurement.getValue());
+        }
+
+        for (Map.Entry<String, WeightedMean> measurement : relativeCountMap.entrySet()) {
+            writer.addStatistic(measurement.getKey(), measurement.getValue());
+        }
+
+
+        for (Map.Entry<String, Statistics> measurement : substatisticsMap.entrySet()) {
+            writer.addNode(measurement.getKey(), getSummary());
+            measurement.getValue().writeStatistics(writer);
+            writer.endNode();
         }
     }
 }

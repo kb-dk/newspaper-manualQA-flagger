@@ -17,21 +17,18 @@ import org.mockito.ArgumentCaptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class PageCollectorTest {
     private StatisticCollector parentCollector;
-    private Statistics statistics;
     private StatisticWriter writer;
     private Properties properties;
 
     @BeforeMethod
     public void setupMethod(Method method) {
         parentCollector = mock(StatisticCollector.class);
-        statistics = mock(Statistics.class);
-        when(parentCollector.getStatistics()).thenReturn(statistics);
         writer = mock(StatisticWriter.class);
         properties = new Properties();
     }
@@ -45,14 +42,13 @@ public class PageCollectorTest {
 
         pageCollectorUT.handleNodeEnd(new NodeEndParsingEvent("page1"));
         ArgumentCaptor<Statistics> statisticsCaptor = ArgumentCaptor.forClass(Statistics.class);
-        verify(statistics).addStatistic(statisticsCaptor.capture());
-        assertEquals(
-                statisticsCaptor.getValue().relativeCountMap.get(PageCollector.OCR_ACCURACY_STAT),
-                new WeightedMean(0.0, 1));
+        verify(parentCollector).addStatistics(statisticsCaptor.capture());
+        statisticsCaptor.getValue().writeStatistics(writer);
+        verify(writer).addStatistic(PageCollector.OCR_ACCURACY_STAT, new WeightedMean(0.0,1));
     }
 
     @Test
-    public void gnoreZeroAccuracyTest() throws IOException {
+    public void ignoreZeroAccuracyTest() throws IOException {
         properties.setProperty(ConfigConstants.ALTO_IGNORE_ZERO_ACCURACY, "true");
         PageCollector pageCollectorUT = new PageCollector();
         pageCollectorUT.initialize("page1", parentCollector, writer, properties);
@@ -61,8 +57,9 @@ public class PageCollectorTest {
 
         pageCollectorUT.handleNodeEnd(new NodeEndParsingEvent("page1"));
         ArgumentCaptor<Statistics> statisticsCaptor = ArgumentCaptor.forClass(Statistics.class);
-        verify(statistics).addStatistic(statisticsCaptor.capture());
-        assertNull(statisticsCaptor.getValue().relativeCountMap.get(PageCollector.OCR_ACCURACY_STAT));
+        verify(parentCollector).addStatistics(statisticsCaptor.capture());
+        statisticsCaptor.getValue().writeStatistics(writer);
+        verify(writer, times(0)).addStatistic(PageCollector.OCR_ACCURACY_STAT, new WeightedMean(0.0,1));
     }
 
     private AttributeParsingEvent createAltoEvent(String name, double accuracy) {

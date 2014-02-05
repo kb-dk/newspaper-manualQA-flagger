@@ -1,6 +1,5 @@
 package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
 
-import java.util.Map;
 import java.util.Properties;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
@@ -27,21 +26,23 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsi
  * This would allow us to define the collectors for the newspaper batch structure pr. configuration, and
  * the different tree processor functionalities with classes for the specific needs.
  * </p>
- *
- *
  */
 public abstract class StatisticCollector {
     protected String name;
     protected Properties properties;
     protected StatisticWriter writer;
     protected StatisticCollector parent;
-    private final Statistics statistics;
+    protected final Statistics statistics;
 
     public StatisticCollector() {
         statistics = new Statistics();
     }
 
-    protected void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
+    /**
+     * Injects the relevant dependencies into this collector.
+     * @return The name of these statistics.
+     */
+    protected String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         this.name = name;
         this.parent = parentCollector;
         this.writer = writer;
@@ -49,10 +50,7 @@ public abstract class StatisticCollector {
         if (writeNode() && writer != null) { // Does the concrete collector participate in the statistics output.
             writer.addNode(getType(), getSimpleName(name));
         }
-        // Should this node be included in the statistics. NA for parentless root node.
-        if (parent != null && getStatisticsName() != null) {
-            parent.getStatistics().addCount(getStatisticsName(), 1L);
-        }
+        return getStatisticsName();
     }
 
     /**
@@ -68,7 +66,7 @@ public abstract class StatisticCollector {
     protected abstract String getType();
 
     /**
-     * @return Used for element name to use in the statistics. Default implementatios is to append 'es'
+     * @return Used for element name to use in the statistics. Default implementations is to append 's'
      * to the type, but this may be overridden by subclasses. If null is returned no statistics are added
      * for this node.
      */
@@ -87,18 +85,6 @@ public abstract class StatisticCollector {
         return writer;
     }
 
-    private void writeStatistics() {
-        if (writeNode()) {
-            for (Map.Entry<String, Long> measurement : statistics.countMap.entrySet()) {
-                getWriter().addStatistic(measurement.getKey(), measurement.getValue());
-            }
-
-            for (Map.Entry<String, WeightedMean> measurement : statistics.relativeCountMap.entrySet()) {
-                getWriter().addStatistic(measurement.getKey(), measurement.getValue());
-            }
-        }
-    }
-
     /**
      * Must be implemented by the concrete subclasses defining the actual statistics collection and
      * which collector to return to handle the new node.
@@ -113,7 +99,10 @@ public abstract class StatisticCollector {
             throw new RuntimeException("Unexpected event: " + event);
         }
         if (newCollector != this) {
-            newCollector.initialize(event.getName(), this, writer, properties);
+            String newStatisticsName = newCollector.initialize(event.getName(), this, writer, properties);
+            if (newStatisticsName != null) {
+                statistics.addCount(newStatisticsName, 1L);
+            }
         }
         return newCollector;
     }
@@ -125,9 +114,12 @@ public abstract class StatisticCollector {
      */
     public StatisticCollector handleNodeEnd(NodeEndParsingEvent event) {
         if (event.getName().equals(name)) {
-            writeStatistics();
+            if (writeNode()) {
+                statistics.writeStatistics(getWriter());
+            }
             if (parent != null) { // Root collector
-                parent.getStatistics().addStatistic(statistics);
+                preAddConversion(statistics);
+                parent.addStatistics(statistics);
             }
             if (writeNode() && getWriter() != null) {
                 getWriter().endNode();
@@ -153,9 +145,17 @@ public abstract class StatisticCollector {
     /**
      * @return The current statistics for this collector.
      */
-    public Statistics getStatistics() {
-        return statistics;
+    public void addStatistics(Statistics statisticsToAdd) {
+        statistics.addStatistic(statisticsToAdd);
     }
+
+    /**
+     * May be used for concrete subclasses to implement a conversion of statistics prior to adding these to the
+     * statistics.
+     *
+     * The default implementation does not change the statistics.
+     */
+    public void preAddConversion(Statistics statistics) {}
 
     /**
      * Indicates whether a mode for this collector should be included in the out. Default is true, but may be overridden

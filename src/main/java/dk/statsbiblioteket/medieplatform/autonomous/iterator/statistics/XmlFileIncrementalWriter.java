@@ -39,8 +39,8 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
     @Override
     public void addNode(String type, String name) {
         try {
-            out.writeStartElement(type);
-            out.writeAttribute("name", name);
+            out.writeStartElement(replaceSpaces(type));
+            if (name != null) out.writeAttribute("name", name);
         } catch (XMLStreamException e) {
             throw new RuntimeException("Failed to add node: " + name, e);
         }
@@ -63,7 +63,7 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
     @Override
     public void addStatistic(String name, Number metric) {
         try {
-            out.writeStartElement(name);
+            out.writeStartElement(replaceSpaces(name));
             out.writeCharacters(metric.toString());
             out.writeEndElement();
         } catch (XMLStreamException e) {
@@ -81,5 +81,9 @@ public class XmlFileIncrementalWriter implements StatisticWriter {
             throw new RuntimeException("Failed to close xml writer.", e);
         }
         log.info("Finished writting statistics ");
+    }
+
+    private String replaceSpaces(String input) {
+        return input.replace(' ', '_');
     }
 }

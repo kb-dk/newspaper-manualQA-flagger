@@ -7,7 +7,7 @@ public interface StatisticWriter {
     /**
      * Adds a node element.
      * @param type The type of element.
-     * @param name The name attribute.
+     * @param name The name attribute. May be null, in which case no name is included.
      */
     void addNode(String type, String name);
 

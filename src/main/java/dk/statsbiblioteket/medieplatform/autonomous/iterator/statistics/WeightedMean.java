@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @see dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics#addRelative(String, WeightedMean)
  */
 public class WeightedMean extends Number {
-    public static final int OUTPUT_NUMBER_OF_DECIMALS = 2;
+    public static final int OUTPUT_NUMBER_OF_DECIMALS = 1;
     final double count;
     final double total;
 
@@ -24,13 +24,13 @@ public class WeightedMean extends Number {
      */
     public WeightedMean add(WeightedMean weightedMean2Add) {
         return new WeightedMean(
-                count + weightedMean2Add.count, total + + weightedMean2Add.total
+                count + weightedMean2Add.count, total + weightedMean2Add.total
         );
     }
 
     @Override
     public String toString() {
-        if (count > 0 && total > 0) {
+        if (total > 0) {
             BigDecimal bd = new BigDecimal(Double.toString(count/total));
             bd = bd.setScale(OUTPUT_NUMBER_OF_DECIMALS, BigDecimal.ROUND_HALF_UP);
             return bd.toString();
