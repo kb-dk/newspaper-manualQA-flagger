@@ -50,10 +50,7 @@ public class ManualQAComponentIT  {
      */
     @Test(groups = "integrationTest")
     public void testConsistentBatch() throws Exception {
-        File specificProperties = new File(genericPropertyFile.getParentFile(),
-                "newspaper-manualQA-flagger-config/config.properties");
-        logger.debug("Doing validation with generic config.properties");
-        properties.load(new FileInputStream(specificProperties));
+        loadSpecificProperties(genericPropertyFile.getParentFile() +                "/newspaper-manualQA-flagger-config/config.properties");
         validateBatch();
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
@@ -66,9 +63,7 @@ public class ManualQAComponentIT  {
      */
     @Test(groups = "integrationTest")
     public void testInconsistentBatch() throws Exception {
-        File specificProperties = new File("src/test/config/inconsistent-flagging-config.properties");
-        logger.debug("Doing validation with properties from " + specificProperties.getAbsolutePath());
-        properties.load(new FileInputStream(specificProperties));
+        loadSpecificProperties("src/test/config/inconsistent-flagging-config.properties");
         validateBatch();
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
@@ -77,6 +72,13 @@ public class ManualQAComponentIT  {
 
     public InputStream retrieveBatchStructure() {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream("assumed-valid-structure.xml");
+    }
+
+    private void loadSpecificProperties(String path) throws Exception {
+        File specificProperties = new File(path);
+        logger.debug("Doing validation with properties from " + specificProperties.getAbsolutePath());
+        properties.load(new FileInputStream(specificProperties));
+        properties.setProperty(FlaggerFactory.STATISTICS_FILE_LOCATION_PROPERTY, "target/statistics/Integration");
     }
 
     private void validateBatch()  throws Exception  {

@@ -20,7 +20,7 @@ public class FlaggerFactory implements EventHandlerFactory {
     // The maximum number of peaks/valleys allowed before flagged as an error
     private static final int CHOPPY_CHECK_MAX_IRREGULARITIES = 4;
 
-    private static String STATISTICS_FILE_LOCATION_PROPERTY = "manualqaflagger.statistics.dir";
+    public static String STATISTICS_FILE_LOCATION_PROPERTY = "manualqaflagger.statistics.dir";
 
     private final ResultCollector resultCollector;
     private final Batch batch;
