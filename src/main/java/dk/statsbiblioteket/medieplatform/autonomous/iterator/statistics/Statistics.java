@@ -78,13 +78,11 @@ public class Statistics {
      * @param statisticsToAdd The statistics to add to this collector
      */
     public void addSubstatistic(String name, Statistics statisticsToAdd) {
-        Statistics currentSubstatistics;
         if (substatisticsMap.containsKey(name)) {
-            currentSubstatistics = substatisticsMap.get(name);
+            substatisticsMap.get(name).addStatistic(statisticsToAdd);
         } else {
-            substatisticsMap.put(name, currentSubstatistics = new Statistics());
+            substatisticsMap.put(name, statisticsToAdd);
         }
-        currentSubstatistics.addStatistic(statisticsToAdd);
     }
 
     public void writeStatistics(StatisticWriter writer) {
@@ -96,11 +94,16 @@ public class Statistics {
             writer.addStatistic(measurement.getKey(), measurement.getValue());
         }
 
-
         for (Map.Entry<String, Statistics> measurement : substatisticsMap.entrySet()) {
-            writer.addNode(measurement.getKey(), getSummary());
+            writer.addNode(measurement.getKey(), measurement.getValue().getSummary());
             measurement.getValue().writeStatistics(writer);
             writer.endNode();
         }
+    }
+
+    public Statistics clone() {
+        Statistics clone = new Statistics();
+        clone.addStatistic(this);
+        return clone;
     }
 }

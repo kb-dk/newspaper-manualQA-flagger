@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
  * Uses SinkCollectors as children.
  */
 public class PageCollector extends StatisticCollector {
-    public static final String PAGES_IN_SECTIONS_STAT = "PagesInSections";
+    public static final String PAGES_IN_SECTIONS_STAT = "Pages-In-Sections";
     public static final String OCR_ACCURACY_STAT = "OCR-Accuracy";
     private boolean ignoreZeroAccuracy;
 
@@ -29,7 +29,7 @@ public class PageCollector extends StatisticCollector {
 
 
     @Override
-    protected String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
+    public String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         ignoreZeroAccuracy = Boolean.parseBoolean(properties.getProperty(ConfigConstants.ALTO_IGNORE_ZERO_ACCURACY));
         return super.initialize(name, parentCollector, writer, properties);
     }
@@ -50,7 +50,7 @@ public class PageCollector extends StatisticCollector {
     private void addAltoWordAccuracyStatistics(AttributeParsingEvent event) {
         Double accuracy = AltoWordAccuracyChecker.readAccuracy(event);
         if (!ignoreZeroAccuracy || accuracy > 0) {
-            statistics.addRelative( OCR_ACCURACY_STAT, new WeightedMean(accuracy, 1));
+            getStatistics().addRelative( OCR_ACCURACY_STAT, new WeightedMean(accuracy, 1));
         }
     }
 
@@ -58,7 +58,7 @@ public class PageCollector extends StatisticCollector {
         String section = readSection(event);
         Statistics sectionStatistics = new Statistics();
         sectionStatistics.addCount(section, 1L);
-        statistics.addSubstatistic(PAGES_IN_SECTIONS_STAT, sectionStatistics);
+        getStatistics().addSubstatistic(PAGES_IN_SECTIONS_STAT, sectionStatistics);
     }
 
     public static String readSection(AttributeParsingEvent event) throws NumberFormatException {

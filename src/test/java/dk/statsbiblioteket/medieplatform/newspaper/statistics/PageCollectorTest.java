@@ -62,9 +62,25 @@ public class PageCollectorTest {
         verify(writer, times(0)).addStatistic(PageCollector.OCR_ACCURACY_STAT, new WeightedMean(0.0,1));
     }
 
+    @Test
+    public void pagesInSectionsTest() throws IOException {
+        PageCollector pageCollectorUT = new PageCollector();
+        pageCollectorUT.initialize("page1", parentCollector, writer, properties);
+
+        pageCollectorUT.handleAttribute(createModsSectionEvent("Page1.mods.xml", "Sektion 1"));
+        pageCollectorUT.handleNodeEnd(new NodeEndParsingEvent("page1"));
+        ArgumentCaptor<Statistics> statisticsCaptor = ArgumentCaptor.forClass(Statistics.class);
+        verify(parentCollector).addStatistics(statisticsCaptor.capture());
+        statisticsCaptor.getValue().writeStatistics(writer);
+        verify(writer).addStatistic("Sektion 1", 1L);
+    }
+
     private AttributeParsingEvent createAltoEvent(String name, double accuracy) {
-        final String altoXmlStructure = "<alto xmlns=\"http://www.loc.gov/standards/alto/ns-v2#\">" +
-                "<Layout><Page ACCURACY=\"" + accuracy + "\"></Page></Layout>" +
+        final String altoXmlStructure =
+                "<alto xmlns=\"http://www.loc.gov/standards/alto/ns-v2#\">" +
+                "  <Layout>" +
+                "    <Page ACCURACY=\"" + accuracy + "\"></Page>" +
+                "  </Layout>" +
                 "</alto>";
 
         return new AttributeParsingEvent(name) {
@@ -73,6 +89,27 @@ public class PageCollectorTest {
                 return new ByteArrayInputStream(altoXmlStructure.getBytes());
             }
 
+            @Override
+            public String getChecksum() throws IOException {
+                throw new RuntimeException("not implemented");
+            }
+        };
+    }
+
+    private AttributeParsingEvent createModsSectionEvent(String name, String section) {
+        final String modsXmlStructure =
+                "<mods:mods xmlns:mods=\"http://www.loc.gov/mods/v3\">" +
+                "  <mods:part>" +
+                "    <mods:detail type=\"sectionLabel\">" +
+                "      <mods:number>" + section + "</mods:number>" +
+                "    </mods:detail>" +
+                "  </mods:part>" +
+                "</mods:mods>";
+        return new AttributeParsingEvent(name) {
+            @Override
+            public InputStream getData() throws IOException {
+                return new ByteArrayInputStream(modsXmlStructure.getBytes());
+            }
             @Override
             public String getChecksum() throws IOException {
                 throw new RuntimeException("not implemented");

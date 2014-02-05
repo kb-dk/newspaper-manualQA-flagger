@@ -32,7 +32,7 @@ public abstract class StatisticCollector {
     protected Properties properties;
     protected StatisticWriter writer;
     protected StatisticCollector parent;
-    protected final Statistics statistics;
+    private final Statistics statistics;
 
     public StatisticCollector() {
         statistics = new Statistics();
@@ -42,7 +42,7 @@ public abstract class StatisticCollector {
      * Injects the relevant dependencies into this collector.
      * @return The name of these statistics.
      */
-    protected String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
+    public String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         this.name = name;
         this.parent = parentCollector;
         this.writer = writer;
@@ -86,6 +86,13 @@ public abstract class StatisticCollector {
     }
 
     /**
+     * @return Returns the statistics object used by this collector. May be overriden by concrete subclasses.
+     */
+    protected Statistics getStatistics() {
+        return statistics;
+    }
+
+    /**
      * Must be implemented by the concrete subclasses defining the actual statistics collection and
      * which collector to return to handle the new node.
      * @param event The event defining the new node.
@@ -101,7 +108,7 @@ public abstract class StatisticCollector {
         if (newCollector != this) {
             String newStatisticsName = newCollector.initialize(event.getName(), this, writer, properties);
             if (newStatisticsName != null) {
-                statistics.addCount(newStatisticsName, 1L);
+                getStatistics().addCount(newStatisticsName, 1L);
             }
         }
         return newCollector;
@@ -115,11 +122,10 @@ public abstract class StatisticCollector {
     public StatisticCollector handleNodeEnd(NodeEndParsingEvent event) {
         if (event.getName().equals(name)) {
             if (writeNode()) {
-                statistics.writeStatistics(getWriter());
+                getStatistics().writeStatistics(getWriter());
             }
-            if (parent != null) { // Root collector
-                preAddConversion(statistics);
-                parent.addStatistics(statistics);
+            if (parent != null) {
+                parent.addStatistics(getStatistics());
             }
             if (writeNode() && getWriter() != null) {
                 getWriter().endNode();
@@ -129,7 +135,7 @@ public abstract class StatisticCollector {
     }
 
     /**
-     * May be implemented by concrete subclasses whishing to collecting attribute based statistics.
+     * May be implemented by concrete subclasses whishing to collecting attribute based getStatistics().
      */
     public void handleAttribute(AttributeParsingEvent event){}
 
@@ -146,16 +152,8 @@ public abstract class StatisticCollector {
      * @return The current statistics for this collector.
      */
     public void addStatistics(Statistics statisticsToAdd) {
-        statistics.addStatistic(statisticsToAdd);
+        getStatistics().addStatistic(statisticsToAdd);
     }
-
-    /**
-     * May be used for concrete subclasses to implement a conversion of statistics prior to adding these to the
-     * statistics.
-     *
-     * The default implementation does not change the statistics.
-     */
-    public void preAddConversion(Statistics statistics) {}
 
     /**
      * Indicates whether a mode for this collector should be included in the out. Default is true, but may be overridden
