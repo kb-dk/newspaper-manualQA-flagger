@@ -67,11 +67,6 @@ public class FlaggingCollector {
      * @param details     additional details of the problem
      */
     public void addFlag(ParsingEvent reference, String type, String component, String description, String... details) {
-        addFlagPrivate(reference, type, component, description, details);
-    }
-
-    private void addFlagPrivate(ParsingEvent reference, String type, String component, String description,
-                                String... details) {
         flagCount++;
         Manualqafile manualQAFile = objectFactory.createManualqafile();
         manualQAFile.setComponent(component);
@@ -89,9 +84,12 @@ public class FlaggingCollector {
         if (flagCount < maxFlags) {
            report.getManualqafiles().getManualqafile().add(manualQAFile);
         } else {
-            manualQAFile.setDescription("The number of issues found that require checking exceeds the maximum expected." +
-                    " The number of issues found was " + flagCount + ", but only " + maxFlags + " can be reported. The " +
-                    "cause of the last issue was '" + description + "'");
+            Details detailsBlock = objectFactory.createDetails();
+            String countMessage = "The number of issues found that require checking exceeds the maximum expected." +
+                    " The number of issues found was " + flagCount + ", but only " + maxFlags + " can be reported.";
+            manualQAFile.setDescription(countMessage);
+            detailsBlock.getContent().add(description);
+            manualQAFile.setDetails(detailsBlock);
             lastQaFile = manualQAFile;
         }
     }

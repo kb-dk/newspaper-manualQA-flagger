@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static net.sf.ezmorph.test.ArrayAssertions.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class FlaggingCollectorTest {
@@ -30,7 +31,7 @@ public class FlaggingCollectorTest {
 
         String report = collector.toReport();
         Assert.assertEquals(report, EMPTY);
-        Assert.assertFalse(collector.hasFlags());
+        assertFalse(collector.hasFlags());
 
         collector.addFlag(
                 new DataFileNodeEndsParsingEvent(
@@ -80,12 +81,13 @@ public class FlaggingCollectorTest {
     @Test
     public void testMaxFlags() {
         int maxFlags = 10;
+        int flags = 573;
         FlaggingCollector collector = new FlaggingCollector(
                        new Batch("B400022028241"), DOM.streamToDOM(
                        Thread.currentThread().getContextClassLoader().getResourceAsStream(
                                "batchStructure.xml")), "0.1-SNAPSHOT", maxFlags);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < flags; i++) {
             collector.addFlag(
                             new AttributeParsingEvent(
                                     "B400022028241-RT1/400022028241-1/1795-06-15-02/adresseavisen1759-1795-06-15-02.edition.xml") {
@@ -103,8 +105,31 @@ public class FlaggingCollectorTest {
         String report = collector.toReport();
         int qafiles = report.split("</manualqafile>").length -1;
         assertEquals(maxFlags, qafiles);
-        assertTrue(report.contains("1000"), report);
+        assertTrue(report.contains(flags + ""), report);
+        assertFalse(report.contains((flags-1) + ""), report);
     }
 
+    @Test
+    public void testDetails() {
+        FlaggingCollector collector = new FlaggingCollector(
+                       new Batch("B400022028241"), DOM.streamToDOM(
+                       Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                               "batchStructure.xml")), "0.1-SNAPSHOT", 10);
+        collector.addFlag( new AttributeParsingEvent(
+                "B400022028241-RT1/400022028241-1/1795-06-15-02/adresseavisen1759-1795-06-15-02.edition.xml") {
+            @Override
+            public InputStream getData() throws IOException {
+                return null;
+            }
+
+            @Override
+            public String getChecksum() throws IOException {
+                return null;
+            }
+        }, "metadata", "testComponent2", "this is the description2", "detail1", "detail2");
+        String report = collector.toReport();
+        assertTrue(report.contains("detail2"), report);
+        assertTrue(report.contains("detail2"), report);
+    }
 
 }
