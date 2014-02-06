@@ -16,14 +16,18 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
 
     int numberOfTooDarkImages;
     int maxNumberOfDarkImagesAllowed;
-
+    int lowestHistogramIndexNotConsideredBlack;
+    int lowestAcceptablePeakPosition;
 
     public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
-                                    int maxNumberOfDarkImagesAllowed) {
+                                    int maxNumberOfDarkImagesAllowed, int lowestHistogramIndexNotConsideredBlack,
+                                    int lowestAcceptablePeakPosition) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.batch = batch;
         this.maxNumberOfDarkImagesAllowed = maxNumberOfDarkImagesAllowed;
+        this.lowestHistogramIndexNotConsideredBlack = lowestHistogramIndexNotConsideredBlack;
+        this.lowestAcceptablePeakPosition = lowestAcceptablePeakPosition;
     }
 
 
@@ -45,7 +49,23 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
 
 
     private boolean histogramIsTooDark(long[] histogram) {
-        // TODO
+        // TODO ignore (i.e. return false) if there is a very small amount of text on the image
+
+        // Find highest value that is not considered black
+        long highestPeakValueFound = 0;
+        int highestPeakPosition = 255;
+        for (int i = lowestHistogramIndexNotConsideredBlack; i < 256; i++) {
+            if (histogram[i] > highestPeakValueFound) {
+                highestPeakValueFound = histogram[i];
+                highestPeakPosition = i;
+            }
+        }
+
+        // If it is too far to the "left" on the histogram, mark as too dark
+        if (highestPeakPosition < lowestAcceptablePeakPosition) {
+            return true;
+        }
+
         return false;
     }
 
