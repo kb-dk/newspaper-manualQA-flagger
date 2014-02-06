@@ -21,10 +21,9 @@ public class SinkCollector extends StatisticCollector {
     }
 
     @Override
-    public String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
+    public void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         this.name = name;
         this.parent = parentCollector;
-        return null;
     }
 
     @Override

@@ -27,11 +27,10 @@ public class PageCollector extends StatisticCollector {
 
     private static final XPathSelector xpath = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
 
-
     @Override
-    public String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
+    public void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         ignoreZeroAccuracy = Boolean.parseBoolean(properties.getProperty(ConfigConstants.ALTO_IGNORE_ZERO_ACCURACY));
-        return super.initialize(name, parentCollector, writer, properties);
+        super.initialize(name, parentCollector, writer, properties);
     }
 
     /**

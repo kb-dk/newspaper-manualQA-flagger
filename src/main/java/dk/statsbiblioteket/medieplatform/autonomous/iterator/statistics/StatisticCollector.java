@@ -42,7 +42,7 @@ public abstract class StatisticCollector {
      * Injects the relevant dependencies into this collector.
      * @return The name of these statistics.
      */
-    public String initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
+    public void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         this.name = name;
         this.parent = parentCollector;
         this.writer = writer;
@@ -50,7 +50,6 @@ public abstract class StatisticCollector {
         if (writeNode() && writer != null) { // Does the concrete collector participate in the statistics output.
             writer.addNode(getType(), getSimpleName(name));
         }
-        return getStatisticsName();
     }
 
     /**
@@ -66,7 +65,7 @@ public abstract class StatisticCollector {
     protected abstract String getType();
 
     /**
-     * @return Used for element name to use in the statistics. Default implementations is to append 's'
+     * @return Used for element name to use in the statistics. Default implementation is to append 's'
      * to the type, but this may be overridden by subclasses. If null is returned no statistics are added
      * for this node.
      */
@@ -86,7 +85,7 @@ public abstract class StatisticCollector {
     }
 
     /**
-     * @return Returns the statistics object used by this collector. May be overriden by concrete subclasses.
+     * @return Returns the statistics object used by this collector. May be overridden by concrete subclasses.
      */
     protected Statistics getStatistics() {
         return statistics;
@@ -106,9 +105,9 @@ public abstract class StatisticCollector {
             throw new RuntimeException("Unexpected event: " + event);
         }
         if (newCollector != this) {
-            String newStatisticsName = newCollector.initialize(event.getName(), this, writer, properties);
-            if (newStatisticsName != null) {
-                getStatistics().addCount(newStatisticsName, 1L);
+            newCollector.initialize(event.getName(), this, writer, properties);
+            if (newCollector.getStatisticsName() != null) {
+                getStatistics().addCount(newCollector.getStatisticsName(), 1L);
             }
         }
         return newCollector;
