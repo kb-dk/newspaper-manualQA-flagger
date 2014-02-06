@@ -7,27 +7,35 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.util.xml.DOM;
+import dk.statsbiblioteket.util.xml.XPathSelector;
+import org.w3c.dom.Document;
+
+import java.io.IOException;
 
 
 public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
     private Batch batch;
+    private static final XPathSelector xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
 
-    int numberOfTooDarkImages;
-    int maxNumberOfDarkImagesAllowed;
-    int lowestHistogramIndexNotConsideredBlack;
-    int lowestAcceptablePeakPosition;
+    private int numberOfTooDarkImages;
+    private int maxNumberOfDarkImagesAllowed;
+    private int lowestHistogramIndexNotConsideredBlack;
+    private int lowestAcceptablePeakPosition;
+    private int minNumberOfTextLines;
 
     public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
                                     int maxNumberOfDarkImagesAllowed, int lowestHistogramIndexNotConsideredBlack,
-                                    int lowestAcceptablePeakPosition) {
+                                    int lowestAcceptablePeakPosition, int minNumberOfTextLines) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.batch = batch;
         this.maxNumberOfDarkImagesAllowed = maxNumberOfDarkImagesAllowed;
         this.lowestHistogramIndexNotConsideredBlack = lowestHistogramIndexNotConsideredBlack;
         this.lowestAcceptablePeakPosition = lowestAcceptablePeakPosition;
+        this.minNumberOfTextLines = minNumberOfTextLines;
     }
 
 
@@ -38,7 +46,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
                 // For each histogram
                 long[] histogram = new Histogram(event.getData()).values();
 
-                if (histogramIsTooDark(histogram)) {
+                if (histogramIsTooDark(histogram, event)) {
                     numberOfTooDarkImages++;
                 }
             }
@@ -48,8 +56,12 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     }
 
 
-    private boolean histogramIsTooDark(long[] histogram) {
-        // TODO ignore (i.e. return false) if there is a very small amount of text on the image
+    private boolean histogramIsTooDark(long[] histogram, AttributeParsingEvent event) {
+        // Ignore if there is a very small amount of text on the image, for that often means much of the page is covered by
+        // pictures, and then the page often is dark - and "legally" so
+        if (getNumberOfTextLines(event) < minNumberOfTextLines) {
+            return false;
+        }
 
         // Find highest value that is not considered black
         long highestPeakValueFound = 0;
@@ -67,6 +79,23 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
         }
 
         return false;
+    }
+
+
+    public static int getNumberOfTextLines(AttributeParsingEvent event) throws NumberFormatException {
+        Document doc;
+        try {
+            doc = DOM.streamToDOM(event.getData(), true);
+            if (doc == null) {
+                throw new RuntimeException("Could not parse xml");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //final String accuracyXPath="alto:alto/alto:Layout/alto:Page/@ACCURACY";
+        final String numberOfTextLinesXPath="count(alto:alto/alto:Layout/alto:Page/alto:PrintSpace/alto:TextBlock/alto:TextLine)";
+        String numberOfTextLinesString = xpath.selectString(doc, numberOfTextLinesXPath);
+        return Integer.parseInt(numberOfTextLinesString);
     }
 
 
