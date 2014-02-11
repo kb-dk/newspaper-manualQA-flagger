@@ -1,6 +1,6 @@
 package dk.statsbiblioteket.medieplatform.newspaper.statistics;
 
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.Statistics;
 
 /**
  * Overides the addSubstatistic operation so PageCollector.PAGES_IN_SECTIONS_STAT are converted into

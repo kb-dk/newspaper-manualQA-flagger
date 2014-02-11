@@ -13,6 +13,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Event
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.filesystem.transforming.TransformingIteratorForFileSystems;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.medieplatform.newspaper.statistics.StatisticGenerator;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +79,7 @@ public class ManualQAComponentIT  {
         File specificProperties = new File(path);
         logger.debug("Doing validation with properties from " + specificProperties.getAbsolutePath());
         properties.load(new FileInputStream(specificProperties));
-        properties.setProperty(FlaggerFactory.STATISTICS_FILE_LOCATION_PROPERTY, "target/statistics/Integration");
+        properties.setProperty(StatisticGenerator.STATISTICS_FILE_LOCATION_PROPERTY, "target/statistics/Integration");
     }
 
     private void validateBatch()  throws Exception  {
@@ -98,11 +99,9 @@ public class ManualQAComponentIT  {
 
         flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1", 100);
 
-        EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, batchXmlManifest, flaggingCollector, properties);
+        EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, flaggingCollector, properties);
 
         runner.runEvents(eventHandlerFactory.createEventHandlers(), resultCollector);
-
-
     }
 
     /**

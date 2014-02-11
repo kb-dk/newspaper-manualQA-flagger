@@ -9,17 +9,15 @@ import java.util.Properties;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.WeightedMean;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer.StatisticWriter;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.Statistics;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.WeightedMean;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.ConfigConstants;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class PageCollectorTest {
     private StatisticCollector parentCollector;
@@ -29,6 +27,7 @@ public class PageCollectorTest {
     @BeforeMethod
     public void setupMethod(Method method) {
         parentCollector = mock(StatisticCollector.class);
+        when(parentCollector.getStatistics()).thenReturn(mock(Statistics.class));
         writer = mock(StatisticWriter.class);
         properties = new Properties();
     }

@@ -1,8 +1,5 @@
 package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
 
-import java.util.Properties;
-
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 
 /**
@@ -10,30 +7,20 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsi
  * depth in tree. May inserted at nodes in a tree where no statistics are needed.
  */
 public class SinkCollector extends StatisticCollector {
+
+    public SinkCollector() {
+        doNotCount();
+        doNotWrite();
+    }
+
     @Override
     protected StatisticCollector createChild(String eventName) {
         return this;
     }
 
     @Override
-    public String getType() {
-        return null;
-    }
-
-    @Override
-    public void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
-        this.name = name;
-        this.parent = parentCollector;
-    }
-
-    @Override
-    public StatisticCollector handleNodeBegin(NodeBeginsParsingEvent event) {
-        return super.handleNodeBegin(event);
-    }
-
-    @Override
     public StatisticCollector handleNodeEnd(NodeEndParsingEvent event) {
-        if (event.getName().equals(name)) {
+        if (event.getName().equals(getName())) {
             return parent;
         } else {
             return this;

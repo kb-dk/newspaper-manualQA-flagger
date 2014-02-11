@@ -1,11 +1,11 @@
-package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
+package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model;
 
 import java.math.BigDecimal;
 
 /**
  * Defines a weighted count.
  *
- * @see dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics#addRelative(String, WeightedMean)
+ * @see Statistics#addRelative(String, WeightedMean)
  */
 public class WeightedMean extends Number {
     public static final int OUTPUT_NUMBER_OF_DECIMALS = 1;

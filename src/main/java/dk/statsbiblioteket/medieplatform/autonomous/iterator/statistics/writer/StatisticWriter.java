@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
+package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer;
 
 /**
  * Defines the statistics write operations which can be performed.

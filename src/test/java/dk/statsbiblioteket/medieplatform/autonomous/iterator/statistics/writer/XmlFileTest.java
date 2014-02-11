@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
+package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,7 +40,6 @@ public class XmlFileTest {
                 sb.append(sCurrentLine);
             }
         }
-
         return sb.toString();
     }
 

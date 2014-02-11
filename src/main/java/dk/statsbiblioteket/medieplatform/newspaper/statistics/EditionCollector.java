@@ -14,9 +14,4 @@ public class EditionCollector extends StatisticCollector {
                 return new PageCollector();
             }
     }
-
-    @Override
-    public String getType() {
-        return "Edition";
-    }
 }

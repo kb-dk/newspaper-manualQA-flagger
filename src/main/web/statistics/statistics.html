@@ -9,20 +9,113 @@
 
   <!-- Styles -->
   <link rel="stylesheet" type="text/css" href="xmltree/xmltree.css">
-  <script src='jquery-2.0.3.min.js'></script>
-  <script type="text/javascript" src="xmltree/xmltree.js"></script>
-
+  <link rel="stylesheet" type="text/css" href="jquery/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  <style type="text/css">
+    .dp-highlight .ui-state-default {
+      background: #484;
+      color: #FFF;
+    }
+  </style>
 </head>
+
 <body>
-<h1>Batch Statistics</h1>
-<div id='tree'></div>
+
+<div id="container">
+  <div><h1>Batch Statistics</h1></div>
+  <div id='tree' style="float:left;width:400px;"></div>
+  <div style="float:right;margin-right:10px;">
+    <div id="calendar-container"></div>
+    <div id="fuzzydates"><h3>Delvise datoer</h3></div>
+  </div>
+</div>
+
+<script src="jquery/jquery-2.0.3.min.js"></script>
+<script src="jquery/ui/1.10.4/jquery-ui.js"></script>
+<script src="jquery/ui/1.10.4/i18n/datepicker-da.js"></script>
+<script src="xmltree/xmltree.js"></script>
 
 <script>
   var batchid = location.search.split('batchid=')[1]
-  var filepath = "data/" + batchid + '-statistics.xml'
+  var filepath = "data/" + batchid + '/count-statistics.xml'
   $(function() { new XMLTree({
     fpath: filepath, container: '#tree', startExpanded: false, openAtPath: 'Batch' , attrs: 'hidden'
   }); });
+</script>
+
+<script>
+  var batchid = location.search.split('batchid=')[1]
+  var datefilepath = "data/" + batchid + '/date-statistics.xml'
+
+  $(document).ready(function() {
+    var films;
+    var partialDates = [];
+    var startdate;
+    var lastdate;
+    $.ajax({
+      type: "GET",
+      url: datefilepath,
+      dataType: "xml",
+      success: function(xml) {
+        films = []
+        fuzzyDates = []
+        $(xml).find('Film').each(function() {
+          var filmname = $(this).attr('name');
+          films[filmname] = []
+          $(this).find('Edition-dates').each(function() {
+            $(this).children().each(function() {
+              date = $(this).prop("tagName").replace('E','');
+              if (date.match(/-/g).length === 2) {
+                films[filmname].push(date);
+                if (date < startdate || startdate == undefined) startdate = date;
+                if (date > lastdate || lastdate == undefined) lastdate = date;
+              } else {
+                partialDates.push(date)
+              }
+            });
+          });
+        });
+        minDate = new Date (startdate);
+        maxDate = new Date (lastdate);
+        initCalendar(films, minDate,  maxDate);
+        initPartialDates({dates: partialDates});
+      }
+    });
+
+  });
+
+  function initCalendar(films, minDate,  maxDate) {
+    $("#calendar-container").datepicker({
+      numberOfMonths: [3,2],
+      changeMonth: true,
+      changeYear: true,
+      setDate: minDate,
+      minDate: minDate,
+      maxDate: maxDate,
+      dateFormat: 'yy-mm-dd', onSelect: function() {
+        alert($(this).datepicker('getDate'))
+      },
+      beforeShowDay: function(date) {
+        var r = [true, "", ''];
+        if (films  == undefined) {} else {
+          var search = $.datepicker.formatDate('yy-mm-dd', date);
+          for (var film in films) {
+            if ($.inArray(search, films[film]) > -1) {
+              r[1] = "dp-highlight";
+              r[2] = film;
+              break;
+            }
+          }
+        }
+        return r;
+      }
+    });
+  }
+
+  function initPartialDates(parameters) {
+    var editiondates = parameters.dates;
+    console.log(editiondates.toString())
+    $("#fuzzydates").append(editiondates.toString());
+  }
 </script>
 
 </body>

@@ -9,21 +9,12 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statisti
  * Uses SinkCollectors as children.
  */
 public class BrikCollector extends StatisticCollector {
+    public BrikCollector() {
+        doNotWrite();
+    }
+
     @Override
     protected StatisticCollector createChild(String eventName) {
         return new SinkCollector();
-    }
-
-    /**
-     * Suppress creation of brik nodes in the output
-     */
-    @Override
-    protected boolean writeNode() {
-        return false;
-    }
-
-    @Override
-    public String getType() {
-        return "Brik";
     }
 }

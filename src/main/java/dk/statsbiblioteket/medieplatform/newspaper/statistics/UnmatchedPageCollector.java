@@ -13,17 +13,4 @@ public class UnmatchedPageCollector extends StatisticCollector {
     public StatisticCollector createChild(String event) {
         return new SinkCollector();
     }
-
-    /**
-     * Suppress creation of unmatched page nodes in the output.
-     */
-    @Override
-    protected boolean writeNode() {
-        return false;
-    }
-
-    @Override
-    public String getType() {
-        return "UnmatchedPage";
-    }
 }

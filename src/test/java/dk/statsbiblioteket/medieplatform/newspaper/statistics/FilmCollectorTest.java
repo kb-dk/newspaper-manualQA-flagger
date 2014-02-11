@@ -6,8 +6,8 @@ import java.util.Properties;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer.StatisticWriter;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.Statistics;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -21,6 +21,7 @@ public class FilmCollectorTest {
         @BeforeMethod
         public void setupMethod(Method method) {
             parentCollector = mock(StatisticCollector.class);
+            when(parentCollector.getStatistics()).thenReturn(mock(Statistics.class));
             writer = mock(StatisticWriter.class);
             properties = new Properties();
         }
@@ -34,7 +35,7 @@ public class FilmCollectorTest {
         addPagesInSectionStat(filmCollectorUT, "Sektion 1");
         addPagesInSectionStat(filmCollectorUT, "Sektion 2");
         filmCollectorUT.handleNodeEnd(new NodeEndParsingEvent("Film1"));
-        verify(writer).addNode(filmCollectorUT.getType(), filmCollectorUT.getName());
+        verify(writer).addNode("Film", filmCollectorUT.getName());
         verify(writer).addNode(FilmCollector.SECTIONS_STAT, "2");
         verify(writer).addStatistic("Sektion 1", 2L);
         verify(writer).addStatistic("Sektion 2", 1L);

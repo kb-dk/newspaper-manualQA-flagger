@@ -8,10 +8,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticManager;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.XmlFileIncrementalWriter;
-import org.w3c.dom.Document;
+import dk.statsbiblioteket.medieplatform.newspaper.statistics.StatisticGenerator;
 
 public class FlaggerFactory implements EventHandlerFactory {
     // How much a value is allowed to deviate from the average of its two neighbours (in pct, >0) before
@@ -20,20 +18,16 @@ public class FlaggerFactory implements EventHandlerFactory {
     // The maximum number of peaks/valleys allowed before flagged as an error
     private static final int CHOPPY_CHECK_MAX_IRREGULARITIES = 4;
 
-    public static String STATISTICS_FILE_LOCATION_PROPERTY = "manualqaflagger.statistics.dir";
-
     private final ResultCollector resultCollector;
     private final Batch batch;
-    private final Document batchXmlStructure;
     private FlaggingCollector flaggingCollector;
     private Properties properties;
 
-    public FlaggerFactory(ResultCollector resultCollector, Batch batch, Document batchXmlStructure,
+    public FlaggerFactory(ResultCollector resultCollector, Batch batch,
                           FlaggingCollector flaggingCollector, Properties properties) {
 
         this.resultCollector = resultCollector;
         this.batch = batch;
-        this.batchXmlStructure = batchXmlStructure;
         this.flaggingCollector = flaggingCollector;
         this.properties = properties;
     }
@@ -41,11 +35,7 @@ public class FlaggerFactory implements EventHandlerFactory {
     @Override
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
-        treeEventHandlers.add(new StatisticManager(new XmlFileIncrementalWriter(
-                properties.getProperty(STATISTICS_FILE_LOCATION_PROPERTY, "target/statistics/Integration")
-                         + "/" + batch.getFullID() + "-statistics.xml"),
-                properties
-        ));
+        treeEventHandlers.add(new StatisticGenerator(batch, properties));
         treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector, 0, 10));
         treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
                 CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES));

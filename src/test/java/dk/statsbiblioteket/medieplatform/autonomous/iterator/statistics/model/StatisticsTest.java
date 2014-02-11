@@ -1,5 +1,6 @@
-package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
+package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model;
 
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.Statistics;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;

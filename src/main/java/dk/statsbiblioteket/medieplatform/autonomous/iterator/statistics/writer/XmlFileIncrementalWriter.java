@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
+package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer;
 
 import java.io.File;
 import java.io.FileOutputStream;

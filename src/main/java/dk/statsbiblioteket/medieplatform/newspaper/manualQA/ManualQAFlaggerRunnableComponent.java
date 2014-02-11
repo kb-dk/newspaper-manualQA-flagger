@@ -1,5 +1,11 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
+import javax.xml.bind.JAXBException;
+
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
 import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
@@ -19,12 +25,6 @@ import dk.statsbiblioteket.util.xml.DOM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Properties;
 
 public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent {
 
@@ -64,7 +64,7 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
         FlaggingCollector flaggingCollector = new FlaggingCollector(
                 batch, batchXmlStructure, getComponentVersion(), maxFlags);
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(
-                resultCollector, batch, batchXmlStructure, flaggingCollector, properties);
+                resultCollector, batch, flaggingCollector, properties);
         List<TreeEventHandler> eventHandlers = eventHandlerFactory.createEventHandlers();
         EventRunner eventRunner = new EventRunner(createIterator(batch));
         eventRunner.runEvents(eventHandlers, resultCollector);

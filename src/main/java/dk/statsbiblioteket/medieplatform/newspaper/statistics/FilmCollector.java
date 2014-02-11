@@ -1,19 +1,18 @@
 package dk.statsbiblioteket.medieplatform.newspaper.statistics;
 
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.SinkCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.Statistics;
 
 /**
  * Handles the collection of film level statistics.
  */
 public class FilmCollector extends StatisticCollector {
     public static final String SECTIONS_STAT = "Sections";
-    private final FilmStatistics statistics;
-
-    public FilmCollector() {
-        statistics = new FilmStatistics();
-    }
+    public static final String EDITION_DATE_STAT = "Edition-dates";
+    private final FilmStatistics statistics = new FilmStatistics();
+    private final Statistics editionDates = new Statistics();
 
     @Override
     protected StatisticCollector createChild(String eventName) {
@@ -22,12 +21,9 @@ public class FilmCollector extends StatisticCollector {
         } else if (eventName.equals("FILM-ISO-target")) {
             return new SinkCollector();
         } else {
+            editionDates.addCount("E" + getSimpleName(eventName).substring(0, eventName.lastIndexOf('-')), 1L);
             return new EditionCollector();
         }
-    }
-    @Override
-    public String getType() {
-        return "Film";
     }
 
     /**
@@ -36,7 +32,13 @@ public class FilmCollector extends StatisticCollector {
      * @see dk.statsbiblioteket.medieplatform.newspaper.statistics.FilmStatistics
      */
     @Override
-    protected Statistics getStatistics() {
+    public Statistics getStatistics() {
         return statistics;
+    }
+
+    @Override
+    public StatisticCollector handleNodeEnd(NodeEndParsingEvent event) {
+        getStatistics().addSubstatistic(EDITION_DATE_STAT, editionDates);
+        return super.handleNodeEnd(event);
     }
 }

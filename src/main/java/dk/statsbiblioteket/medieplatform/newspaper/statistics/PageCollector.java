@@ -6,9 +6,9 @@ import java.util.Properties;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.SinkCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.StatisticWriter;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statistics;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.WeightedMean;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.Statistics;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model.WeightedMean;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer.StatisticWriter;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.AltoWordAccuracyChecker;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.ConfigConstants;
 import dk.statsbiblioteket.util.xml.DOM;
@@ -27,9 +27,13 @@ public class PageCollector extends StatisticCollector {
 
     private static final XPathSelector xpath = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
 
+    /**
+     * Suppress output.
+     */
     @Override
     public void initialize(String name, StatisticCollector parentCollector, StatisticWriter writer, Properties properties) {
         ignoreZeroAccuracy = Boolean.parseBoolean(properties.getProperty(ConfigConstants.ALTO_IGNORE_ZERO_ACCURACY));
+        doNotWrite();
         super.initialize(name, parentCollector, writer, properties);
     }
 
@@ -75,21 +79,8 @@ public class PageCollector extends StatisticCollector {
         return section;
     }
 
-    /**
-     * Suppress creation of page nodes in the output
-     */
-    @Override
-    protected boolean writeNode() {
-        return false;
-    }
-
     @Override
     protected StatisticCollector createChild(String eventName) {
         return new SinkCollector();
-    }
-
-    @Override
-    public String getType() {
-        return "Page";
     }
 }

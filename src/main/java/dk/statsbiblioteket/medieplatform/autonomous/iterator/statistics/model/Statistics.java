@@ -1,7 +1,9 @@
-package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics;
+package dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.model;
 
 import java.util.Map;
 import java.util.TreeMap;
+
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer.StatisticWriter;
 
 /**
  * Models the collected statistics for this collector.
@@ -99,11 +101,5 @@ public class Statistics {
             measurement.getValue().writeStatistics(writer);
             writer.endNode();
         }
-    }
-
-    public Statistics clone() {
-        Statistics clone = new Statistics();
-        clone.addStatistic(this);
-        return clone;
     }
 }

@@ -8,30 +8,13 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.Statisti
  * Uses SinkCollectors as children.
  */
 public class UnmatchedCollector extends StatisticCollector {
+    /** No output */
+    public UnmatchedCollector() {
+        doNotWrite();
+    }
 
     @Override
     public StatisticCollector createChild(String event) {
         return new UnmatchedPageCollector();
-    }
-
-    @Override
-    public String getType() {
-        return "Unmatched";
-    }
-
-    /**
-     * Suppress creation of unmatches nodes in the output
-     */
-    @Override
-    protected boolean writeNode() {
-        return false;
-    }
-
-    /**
-     * Returns null, no need to count UNMATCHED node, hopefully only one will appear.
-     */
-    @Override
-    public String getStatisticsName() {
-        return null;
     }
 }
