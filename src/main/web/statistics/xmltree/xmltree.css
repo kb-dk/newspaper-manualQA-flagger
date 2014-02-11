@@ -17,3 +17,4 @@
 .xmltree .plusMin:hover { border-color: #fa8; background: #fff7da; }
 .xmltree .noKids .plusMin { display: none; }
 .xmltree.subTreeRequestsOnAllNodes .plusMin, .xmltree .subTreeNode .plusMin { display: block; }
+.highlight { background-color: #484 }

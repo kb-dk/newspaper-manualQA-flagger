@@ -21,9 +21,12 @@
 <body>
 
 <div id="container">
-  <div><h1>Batch Statistics</h1></div>
-  <div id='tree' style="float:left;width:400px;"></div>
+  <div id='xmltree' style="float:left;width:400px;">
+    <div><h1>Batch statistik</h1></div>
+    <b>Filter</b>
+    <input type="text" id="search_input" tabindex="-1" ></div>
   <div style="float:right;margin-right:10px;">
+    <div><h1>Udgave kalender</h1></div>
     <div id="calendar-container"></div>
     <div id="fuzzydates"><h3>Delvise datoer</h3></div>
   </div>
@@ -33,13 +36,41 @@
 <script src="jquery/ui/1.10.4/jquery-ui.js"></script>
 <script src="jquery/ui/1.10.4/i18n/datepicker-da.js"></script>
 <script src="xmltree/xmltree.js"></script>
+<script src="jquery/jquey.highlight.js"></script>
+<script src="calendarview.js"></script>
 
 <script>
   var batchid = location.search.split('batchid=')[1]
   var filepath = "data/" + batchid + '/count-statistics.xml'
   $(function() { new XMLTree({
-    fpath: filepath, container: '#tree', startExpanded: false, openAtPath: 'Batch' , attrs: 'hidden'
+    fpath: filepath, container: '#xmltree', startExpanded: false, openAtPath: 'Batch' , attrs: 'hidden'
   }); });
+
+  $(document).ready(function() {
+    jQuery.expr[':'].Contains = function(a,i,m){
+      return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+    };
+
+    var container = $('body');
+
+    $('#search_input').focus().keyup(function(e){
+      var filter = $(this).val();
+      filterTree(filter);
+    });
+
+    $('#search_input').focus().keydown(function(e){
+      $('#xmltree').unhighlight();
+    });
+  });
+
+  function filterTree(filter) {
+    if (filter) {
+      $('#xmltree').find("li:not(:Contains(" + filter + "))").parent().hide();
+      $('#xmltree').find("li:Contains(" + filter + ")").parent().show();
+      $("#xmltree").find("li:Contains(" + filter + ")").children().show();
+      $('#xmltree').highlight(filter);
+    }
+  }
 </script>
 
 <script>
@@ -92,7 +123,8 @@
       minDate: minDate,
       maxDate: maxDate,
       dateFormat: 'yy-mm-dd', onSelect: function() {
-        alert($(this).datepicker('getDate'))
+        date = $(this).datepicker('getDate');
+        filterTree($.datepicker.formatDate('yy-mm-dd', date));
       },
       beforeShowDay: function(date) {
         var r = [true, "", ''];
@@ -113,7 +145,6 @@
 
   function initPartialDates(parameters) {
     var editiondates = parameters.dates;
-    console.log(editiondates.toString())
     $("#fuzzydates").append(editiondates.toString());
   }
 </script>
