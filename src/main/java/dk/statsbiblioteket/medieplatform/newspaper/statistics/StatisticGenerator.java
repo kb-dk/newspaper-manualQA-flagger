@@ -2,8 +2,6 @@ package dk.statsbiblioteket.medieplatform.newspaper.statistics;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Properties;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -14,8 +12,6 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.EventProcessor;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer.StatisticWriter;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.statistics.writer.XmlFileIncrementalWriter;
-import net.sf.json.xml.XMLSerializer;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +31,6 @@ public class StatisticGenerator extends EventProcessor {
     public static String FULL_STATISTICS_XML_FILE_NAME = "full-statistics.xml";
     public static String COUNT_STATISTICS_XML_FILE_NAME = "count-statistics.xml";
     public static String DATE_STATISTICS_XML_FILE_NAME = "date-statistics.xml";
-    public static String DATE_STATISTICS_JSON_FILE_NAME = "date-statistics.json";
 
     private final StatisticWriter writer;
     private final String statisticsDir;
@@ -61,7 +56,6 @@ public class StatisticGenerator extends EventProcessor {
         try {
             postprocess("generateCountStatistics.xsl", statisticsDir + COUNT_STATISTICS_XML_FILE_NAME);
             postprocess("generateDateStatistics.xsl", statisticsDir + DATE_STATISTICS_XML_FILE_NAME);
-            convertToJson(statisticsDir + DATE_STATISTICS_XML_FILE_NAME, statisticsDir + DATE_STATISTICS_JSON_FILE_NAME);
         } catch (Exception e) {
             log.error("Failed to postprocess statistics", e);
         }
@@ -80,13 +74,5 @@ public class StatisticGenerator extends EventProcessor {
         xmlTransformer.transform(
                 new StreamSource(new FileInputStream(statisticsFile)), new StreamResult(new FileOutputStream(outputfil))
         );
-    }
-
-    private void convertToJson(String inputFile, String outputfile) throws IOException {
-        String xml = IOUtils.toString(new FileInputStream(inputFile));
-        XMLSerializer xmlSerializer = new XMLSerializer();
-        FileWriter writer = new FileWriter(outputfile);
-        xmlSerializer.read(xml).write(writer);
-        writer.flush();
     }
 }
