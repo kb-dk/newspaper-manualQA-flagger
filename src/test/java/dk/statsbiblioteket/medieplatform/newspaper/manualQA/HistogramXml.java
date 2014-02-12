@@ -18,4 +18,9 @@ public class HistogramXml {
 //                "histogramExampleBad.xml"));
     }
 
+    public static String getSampleBadDarknessHistogram() throws IOException {
+        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                "histogramExampleBadDarkness.xml"));
+    }
+
 }
