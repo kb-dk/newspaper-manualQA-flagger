@@ -14,15 +14,6 @@ set xlabel "x-value"
 # Set the style of data plots to "show points and draw lines between them"
 set style data linespoints
 
-# Interpret x axis as time data. Allows more flexible time series manipulations
-#set xdata time
-
-# For time data like 201312
-#set timefmt "${timefmt}"
-
-# Format for showing on x axis
-#set format x "${timefmtshown}"
-
 # Place legend top left instead of top right
 set key left top
 
