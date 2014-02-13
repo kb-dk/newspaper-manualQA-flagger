@@ -11,6 +11,8 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import static org.testng.Assert.*;
+
 
 public class EndSpikeHistogramCheckerTest {
     @Test
@@ -24,7 +26,7 @@ public class EndSpikeHistogramCheckerTest {
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
         histogramHandler.handleAttribute(event);
-        Assert.assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     @Test
@@ -37,7 +39,7 @@ public class EndSpikeHistogramCheckerTest {
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
         histogramHandler.handleAttribute(event);
-        Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     @Test
@@ -50,7 +52,7 @@ public class EndSpikeHistogramCheckerTest {
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
         histogramHandler.handleAttribute(event);
-        Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     @Test
@@ -63,7 +65,7 @@ public class EndSpikeHistogramCheckerTest {
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
         histogramHandler.handleAttribute(event);
-        Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+        assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
     private AttributeParsingEvent createAttributeEvent(String name, final String contents) {
