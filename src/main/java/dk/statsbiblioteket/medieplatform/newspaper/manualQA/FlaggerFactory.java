@@ -9,7 +9,6 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
-import dk.statsbiblioteket.medieplatform.newspaper.statistics.StatisticGenerator;
 
 public class FlaggerFactory implements EventHandlerFactory {
     // How much a value is allowed to deviate from the average of its two neighbours (in pct, >0) before
@@ -35,7 +34,7 @@ public class FlaggerFactory implements EventHandlerFactory {
     @Override
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
-        treeEventHandlers.add(new StatisticGenerator(batch, properties));
+        //treeEventHandlers.add(new StatisticGenerator(batch, properties));
         treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector, 0, 10));
         treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
                 CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES));
