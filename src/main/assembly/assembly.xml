@@ -30,12 +30,5 @@
             <fileMode>664</fileMode>
             <directoryMode>775</directoryMode>
         </fileSet>
-      <fileSet>
-        <filtered>true</filtered>
-        <directory>src/main/web</directory>
-        <outputDirectory>web</outputDirectory>
-        <fileMode>664</fileMode>
-        <directoryMode>775</directoryMode>
-      </fileSet>
     </fileSets>
 </assembly>

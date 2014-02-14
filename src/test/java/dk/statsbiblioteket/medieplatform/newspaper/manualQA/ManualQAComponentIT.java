@@ -13,7 +13,6 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Event
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.filesystem.transforming.TransformingIteratorForFileSystems;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
-import dk.statsbiblioteket.medieplatform.newspaper.statistics.StatisticGenerator;
 import dk.statsbiblioteket.util.xml.DOM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,8 @@ public class ManualQAComponentIT  {
      */
     @Test(groups = "integrationTest")
     public void testConsistentBatch() throws Exception {
-        loadSpecificProperties(genericPropertyFile.getParentFile() +                "/newspaper-manualQA-flagger-config/config.properties");
+        loadSpecificProperties(genericPropertyFile.getParentFile() +
+                "/newspaper-manualQA-flagger-config/config.properties");
         validateBatch();
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
@@ -79,8 +79,7 @@ public class ManualQAComponentIT  {
         File specificProperties = new File(path);
         logger.debug("Doing validation with properties from " + specificProperties.getAbsolutePath());
         properties.load(new FileInputStream(specificProperties));
-        properties.setProperty(StatisticGenerator.STATISTICS_FILE_LOCATION_PROPERTY, "target/statistics/Integration");
-    }
+        }
 
     private void validateBatch()  throws Exception  {
         TreeIterator iterator = getIterator();
