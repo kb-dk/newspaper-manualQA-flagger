@@ -59,8 +59,8 @@ public class Histogram {
     public Histogram(InputStream xml) throws JAXBException {
         this();
         JAXBElement<HistogramType> histogramJaxbXml = (JAXBElement<HistogramType>) unmarshaller.unmarshal(xml);
-        HistogramType histrogramXml = histogramJaxbXml.getValue();
-        List<ColorType> colorList = histrogramXml.getColors().getColor();
+        HistogramType histogramXml = histogramJaxbXml.getValue();
+        List<ColorType> colorList = histogramXml.getColors().getColor();
 
         values = new long[256];
         for (ColorType colorType : colorList) {
