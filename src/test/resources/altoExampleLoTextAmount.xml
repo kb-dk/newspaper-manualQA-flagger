@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/standards/alto alto-v2.0.xsd">
+    <Description>
+        <MeasurementUnit>inch1200</MeasurementUnit>
+        <sourceImageInformation>
+            <fileName>B400022028241-RT1\400022028241-1\1795-06-13-01\adresseavisen1759-1795-06-13-01-0006.jp2</fileName>
+        </sourceImageInformation>
+        <OCRProcessing ID="OCR1">
+            <ocrProcessingStep>
+                <processingDateTime>2013-07-16T10:43:34</processingDateTime>
+                <processingAgency>Ninestars</processingAgency>
+                <processingStepDescription>Scanning;Import;Recognition</processingStepDescription>
+                <processingStepSettings>
+                    version:ABBYY Recognition Server 3.0
+                    language:Danish
+                    dictionaryFlag.Danish
+                    dictionaryOn:1
+                    page-reoriented:UP
+                    text-orientation:TO_Normal
+                    ABBYY Recognition Server.option.analyze-zones:false
+                    ABBYY Recognition Server.option.ocr-auto-pictures:false
+                    ABBYY Recognition Server.option.detect-negative-images:false
+                    Predicted Word Accuracy:80.95
+                    ABBYY Recognition Server OCR Engine Predicted Accuracy:80.95
+                    ABBYY Recognition Server OCR Engine Character Error Ratio:0.190533
+                    ABBYY Recognition Server OCR Engine Character Count:4265
+                    ABBYY Recognition Server OCR Engine Word Count:766
+                    Node Count:766
+                    width:2326
+                    height:2852
+                    xdpi:300
+                    ydpi:300
+                </processingStepSettings>
+                <processingSoftware>
+                    <softwareCreator>ABBYY</softwareCreator>
+                    <softwareName>ABBYY Recognition Server</softwareName>
+                    <softwareVersion>3.0</softwareVersion>
+                </processingSoftware>
+            </ocrProcessingStep>
+            <postProcessingStep>
+                <processingDateTime>2013-07-16T10:43:34</processingDateTime>
+                <processingAgency>Ninestars</processingAgency>
+                <processingStepDescription>Verification;Export</processingStepDescription>
+                <processingStepSettings>Recognition Server Properties;Load Settings;Save Settings;OCR languages;Processing Station Properties</processingStepSettings>
+                <processingSoftware>
+                    <softwareCreator>Ninestars</softwareCreator>
+                    <softwareName>NSExport</softwareName>
+                    <softwareVersion>1.0</softwareVersion>
+                    <applicationDescription>NSExport is a powerful yet easy document capture system that allows converting paper to electronic documents.</applicationDescription>
+                </processingSoftware>
+            </postProcessingStep>
+        </OCRProcessing>
+    </Description>
+    <Styles>
+        <TextStyle ID="TS21" FONTSIZE="21"/>
+        <TextStyle ID="TS43" FONTSIZE="43"/>
+        <TextStyle ID="TS13" FONTSIZE="13"/>
+        <TextStyle ID="TS12.5" FONTSIZE="12.5"/>
+        <TextStyle ID="TS9.5" FONTSIZE="9.5"/>
+        <TextStyle ID="TS10" FONTSIZE="10"/>
+        <TextStyle ID="TS8" FONTSIZE="8"/>
+        <ParagraphStyle ID="PAR1" ALIGN="Left"/>
+        <ParagraphStyle ID="PAR2" ALIGN="Left"/>
+        <ParagraphStyle ID="PAR3" ALIGN="Center"/>
+        <ParagraphStyle ID="PAR4" ALIGN="Right"/>
+    </Styles>
+    <Layout>
+        <Page ID="PAGE1" HEIGHT="8577" WIDTH="6936" PHYSICAL_IMG_NR="1" QUALITY="OK" POSITION="Single" PROCESSING="OCR1"  ACCURACY="15.0" PC="0.809467">
+            <PrintSpace ID="SPACE" HEIGHT="8340" WIDTH="7704" HPOS="236" VPOS="880">
+                <TextBlock ID="BLOCK1" STYLEREFS="PAR1" HEIGHT="1724" WIDTH="7644" HPOS="296" VPOS="880" language="dan">
+                    <TextLine ID="LINE1" STYLEREFS="TS21" HEIGHT="336" WIDTH="1280" HPOS="584" VPOS="1000">
+                        <String ID="S1" CONTENT="Ao." WC="0.926" CC="8 8 9" HEIGHT="296" WIDTH="480" HPOS="584" VPOS="1000"/>
+                        <SP ID="SP1" WIDTH="96" HPOS="1068" VPOS="1072"/>
+                        <String ID="S2" CONTENT="1795" WC="0.861" CC="7 8 8 8" HEIGHT="336" WIDTH="696" HPOS="1168" VPOS="1072"/>
+                    </TextLine>
+                    <TextLine ID="LINE2" STYLEREFS="TS21" HEIGHT="264" WIDTH="1792" HPOS="3192" VPOS="976">
+                        <String ID="S3" CONTENT="z?«" WC="0.778" CC="8 7 6" HEIGHT="232" WIDTH="424" HPOS="3192" VPOS="1016"/>
+                        <SP ID="SP2" WIDTH="136" HPOS="3620" VPOS="976"/>
+                        <String ID="S4" CONTENT="AargaM&apos;" WC="0.509" CC="7 8 9 9 8 6 8" HEIGHT="264" WIDTH="1224" HPOS="3760" VPOS="976"/>
+                    </TextLine>
+                    <TextLine ID="LINE3" STYLEREFS="TS21" HEIGHT="304" WIDTH="1224" HPOS="6296" VPOS="960">
+                        <String ID="S5" CONTENT="Ro." WC="0.852" CC="7 8 8" HEIGHT="296" WIDTH="544" HPOS="6296" VPOS="960"/>
+                        <SP ID="SP3" WIDTH="96" HPOS="6844" VPOS="1032"/>
+                        <String ID="S6" CONTENT="14?." WC="0.834" CC="8 8 6 8" HEIGHT="304" WIDTH="576" HPOS="6944" VPOS="1032"/>
+                    </TextLine>
+                    <TextLine ID="LINE4" STYLEREFS="TS21" HEIGHT="280" WIDTH="2564" HPOS="692" VPOS="1456">
+                        <String ID="S7" CONTENT="Kiobenhavns" WC="0.899" CC="8 8 8 8 8 8 8 8 9 8 8" HEIGHT="276" WIDTH="1396" HPOS="692" VPOS="1480"/>
+                        <SP ID="SP4" WIDTH="200" HPOS="2092" VPOS="1464"/>
+                        <String ID="S8" CONTENT="Kongelig" WC="0.889" CC="8 8 8 8 8 8 8 8" HEIGHT="280" WIDTH="960" HPOS="2296" VPOS="1464"/>
+                    </TextLine>
+                    <TextLine ID="LINE5" STYLEREFS="TS43" HEIGHT="544" WIDTH="3136" HPOS="304" VPOS="1776">
+                        <String ID="S9" CONTENT="Adresse-Tvntvtrs" WC="0.875" CC="9 8 8 8 8 8 8 8 5 8 9 8 7 8 8 8" HEIGHT="544" WIDTH="3136" HPOS="304" VPOS="1776"/>
+                    </TextLine>
+                    <TextLine ID="LINE6" STYLEREFS="TS13" HEIGHT="200" WIDTH="2060" HPOS="688" VPOS="2388">
+                        <String ID="S10" CONTENT="Udgives" WC="0.905" CC="8 8 8 9 8 8 8" HEIGHT="196" WIDTH="580" HPOS="688" VPOS="2392"/>
+                        <SP ID="SP5" WIDTH="96" HPOS="1272" VPOS="2416"/>
+                        <String ID="S11" CONTENT="ugentlig" WC="0.903" CC="8 8 8 8 8 8 8 9" HEIGHT="200" WIDTH="576" HPOS="1372" VPOS="2432"/>
+                        <SP ID="SP6" WIDTH="96" HPOS="1952" VPOS="2424"/>
+                        <String ID="S12" CONTENT="4" WC="1" CC="9" HEIGHT="200" WIDTH="200" HPOS="2052" VPOS="2440"/>
+                        <SP ID="SP7" WIDTH="100" HPOS="2152" VPOS="2420"/>
+                        <String ID="S13" CONTENT="gange." WC="0.908" CC="8 8 8 9 8 8" HEIGHT="200" WIDTH="492" HPOS="2256" VPOS="2420"/>
+                    </TextLine>
+                    <TextLine ID="LINE7" STYLEREFS="TS21" HEIGHT="280" WIDTH="2184" HPOS="5256" VPOS="1424">
+                        <String ID="S14" CONTENT="alene" WC="0.889" CC="8 8 8 8 8" HEIGHT="232" WIDTH="568" HPOS="5256" VPOS="1496"/>
+                        <SP ID="SP8" WIDTH="184" HPOS="5828" VPOS="1480"/>
+                        <String ID="S15" CONTENT="privilegerede" WC="0.880" CC="9 9 8 9 8 6 8 8 8 8 5 8 9" HEIGHT="280" WIDTH="1424" HPOS="6016" VPOS="1480"/>
+                    </TextLine>
+                    <TextLine ID="LINE8" STYLEREFS="TS43" HEIGHT="544" WIDTH="3408" HPOS="4448" VPOS="1776">
+                        <String ID="S16" CONTENT="Efterretninger." WC="0.859" CC="8 8 8 8 8 8 7 8 6 8 7 8 7 8 9" HEIGHT="544" WIDTH="3408" HPOS="4448" VPOS="1792"/>
+                    </TextLine>
+                    <TextLine ID="LINE9" STYLEREFS="TS12.5" HEIGHT="204" WIDTH="2176" HPOS="5204" VPOS="2364">
+                        <String ID="S17" CONTENT="Lsverdagen" WC="0.900" CC="8 7 9 8 9 8 8 8 7 9" HEIGHT="188" WIDTH="876" HPOS="5204" VPOS="2380"/>
+                        <SP ID="SP9" WIDTH="112" HPOS="6084" VPOS="2384"/>
+                        <String ID="S18" CONTENT="den" WC="0.889" CC="8 8 8" HEIGHT="188" WIDTH="260" HPOS="6200" VPOS="2384"/>
+                        <SP ID="SP10" WIDTH="124" HPOS="6464" VPOS="2408"/>
+                        <String ID="S19" CONTENT="iz" WC="0.889" CC="8 8" HEIGHT="188" WIDTH="172" HPOS="6592" VPOS="2420"/>
+                        <SP ID="SP11" WIDTH="112" HPOS="6768" VPOS="2364"/>
+                        <String ID="S20" CONTENT="Juni!." WC="0.889" CC="7 9 7 9 8 8" HEIGHT="204" WIDTH="496" HPOS="6884" VPOS="2364"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>
