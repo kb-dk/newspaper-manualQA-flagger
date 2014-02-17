@@ -23,4 +23,13 @@ public class HistogramXml {
                 "histogramExampleBadDarkness.xml"));
     }
 
+    public static String getSampleAltoHiText() throws IOException {
+        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                "altoExampleHiTextAmount.xml"));
+    }
+
+    public static String getSampleAltoLoText() throws IOException {
+        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                "altoExampleLoTextAmount.xml"));
+    }
 }
