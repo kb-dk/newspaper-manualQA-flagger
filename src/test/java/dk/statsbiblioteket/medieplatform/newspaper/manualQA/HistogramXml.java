@@ -7,29 +7,28 @@ import java.io.IOException;
 public class HistogramXml {
 
     public static String getSampleGoodHistogram() throws IOException {
-        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "histogramExample.xml"));
+        return getXml("histogramExample.xml");
     }
 
     public static String getSampleBadHistogram() throws IOException {
         // The "BadBadHistogram.xml" is an actual histogram from 9* with possible post-processing artifacts
-        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "BadBadHistogram.xml"));
-//                "histogramExampleBad.xml"));
+        return getXml("BadBadHistogram.xml");
+//                "histogramExampleBad.xml"
     }
 
     public static String getSampleBadDarknessHistogram() throws IOException {
-        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "histogramExampleBadDarkness.xml"));
+        return getXml("histogramExampleBadDarkness.xml");
     }
 
     public static String getSampleAltoHiText() throws IOException {
-        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "altoExampleHiTextAmount.xml"));
+        return getXml("altoExampleHiTextAmount.xml");
     }
 
     public static String getSampleAltoLoText() throws IOException {
-        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "altoExampleLoTextAmount.xml"));
+        return getXml("altoExampleLoTextAmount.xml");
+    }
+
+    private static String getXml(String file) throws IOException {
+        return Strings.flush(Thread.currentThread().getContextClassLoader().getResourceAsStream(file));
     }
 }
