@@ -27,7 +27,6 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private int lowestHistogramIndexNotConsideredBlack;
     private int lowestAcceptablePeakPosition;
     private int minNumberOfTextLines;
-    private String currentAvisID;
 
     public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
                                     int maxNumberOfDarkImagesAllowed, int lowestHistogramIndexNotConsideredBlack,
@@ -47,8 +46,6 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
         try {
             if (event.getName().endsWith(".edition.xml")) {
                 // We have entered a new edition, all page nodes will now follow, before entering the next edition
-                // Take aside current avisID
-                currentAvisID = event.getName().replace(".edition.xml", "");          // TODO possibly remove this
 
                 // We now expect histogram and alto attributes coming up soon, and both a histogram and its corresponding alto
                 // will appear before the next "pair" of these appears
