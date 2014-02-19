@@ -5,7 +5,6 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEventType;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.Assert;
@@ -22,7 +21,6 @@ public class DarknessHistogramCheckerTest {
         String batchID = "40000";
         Batch batch = new Batch(batchID);
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, null, "0.1-SNAPSHOT", 100);
-        AttributeParsingEvent event;
 
         int maxNumberOfDarkImagesAllowed = 2;
         int lowestHistogramIndexNotConsideredBlack = 3;
@@ -32,45 +30,30 @@ public class DarknessHistogramCheckerTest {
                 maxNumberOfDarkImagesAllowed, lowestHistogramIndexNotConsideredBlack, lowestAcceptablePeakPosition,
                 minNumberOfTextLines);
 
-        NodeBeginsParsingEvent beginEvent = createNodeBeginsParsingEvent("/" + batchID + "-99");
-        histogramHandler.handleNodeBegin(beginEvent);
+        histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.edition.xml", "");
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.edition.xml", ""));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
-                HistogramXml.getSampleGoodHistogram());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml", HistogramXml.getSampleGoodHistogram()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.alto.xml",
-                HistogramXml.getSampleAltoHiText());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.jp2.alto.xml", HistogramXml.getSampleAltoHiText()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0080.jp2.histogram.xml",
-                HistogramXml.getSampleBadDarknessHistogram());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0080.jp2.histogram.xml", HistogramXml.getSampleBadDarknessHistogram()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0080.jp2.alto.xml",
-                HistogramXml.getSampleAltoHiText());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0080.jp2.alto.xml", HistogramXml.getSampleAltoHiText()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0081.jp2.histogram.xml",
-                HistogramXml.getSampleBadDarknessHistogram());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0081.jp2.histogram.xml", HistogramXml.getSampleBadDarknessHistogram()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0081.jp2.alto.xml",
-                HistogramXml.getSampleAltoHiText());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0081.jp2.alto.xml", HistogramXml.getSampleAltoHiText()));
 
-        NodeEndParsingEvent endEvent = createNodeEndParsingEvent("/" + batchID + "-99");
-        histogramHandler.handleNodeEnd(endEvent);
+        histogramHandler.handleNodeEnd(createNodeEndParsingEvent("/" + batchID + "-99"));
 
         Assert.assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
@@ -81,7 +64,6 @@ public class DarknessHistogramCheckerTest {
         String batchID = "40000";
         Batch batch = new Batch(batchID);
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, null, "0.1-SNAPSHOT", 100);
-        AttributeParsingEvent event;
 
         int maxNumberOfDarkImagesAllowed = 1;
         int lowestHistogramIndexNotConsideredBlack = 3;
@@ -91,35 +73,24 @@ public class DarknessHistogramCheckerTest {
                 maxNumberOfDarkImagesAllowed, lowestHistogramIndexNotConsideredBlack, lowestAcceptablePeakPosition,
                 minNumberOfTextLines);
 
-        NodeBeginsParsingEvent beginEvent = createNodeBeginsParsingEvent("/" + batchID + "-99");
-        histogramHandler.handleNodeBegin(beginEvent);
+        histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.edition.xml", "");
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.edition.xml", ""));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
-                HistogramXml.getSampleBadDarknessHistogram());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml", HistogramXml.getSampleBadDarknessHistogram()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.alto.xml",
-                HistogramXml.getSampleAltoHiText());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.jp2.alto.xml", HistogramXml.getSampleAltoHiText()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0080.jp2.histogram.xml",
-                HistogramXml.getSampleBadDarknessHistogram());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0080.jp2.histogram.xml", HistogramXml.getSampleBadDarknessHistogram()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0080.jp2.alto.xml",
-                HistogramXml.getSampleAltoHiText());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0080.jp2.alto.xml", HistogramXml.getSampleAltoHiText()));
 
-        NodeEndParsingEvent endEvent = createNodeEndParsingEvent("/" + batchID + "-99");
-        histogramHandler.handleNodeEnd(endEvent);
+        histogramHandler.handleNodeEnd(createNodeEndParsingEvent("/" + batchID + "-99"));
 
         Assert.assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
@@ -131,7 +102,6 @@ public class DarknessHistogramCheckerTest {
         String batchID = "40000";
         Batch batch = new Batch(batchID);
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, null, "0.1-SNAPSHOT", 100);
-        AttributeParsingEvent event;
 
         int maxNumberOfDarkImagesAllowed = 1;
         int lowestHistogramIndexNotConsideredBlack = 3;
@@ -144,35 +114,24 @@ public class DarknessHistogramCheckerTest {
         // This test should succeed even though there are "too many" dark images - because there are low amounts of text on the
         // pages (according to alto) and so they're disregarded as picture-heavy pages
 
-        NodeBeginsParsingEvent beginEvent = createNodeBeginsParsingEvent("/" + batchID + "-99");
-        histogramHandler.handleNodeBegin(beginEvent);
+        histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.edition.xml", "");
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.edition.xml", ""));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
-                HistogramXml.getSampleBadDarknessHistogram());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml", HistogramXml.getSampleBadDarknessHistogram()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.alto.xml",
-                HistogramXml.getSampleAltoLoText());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0079.jp2.alto.xml", HistogramXml.getSampleAltoLoText()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0080.jp2.histogram.xml",
-                HistogramXml.getSampleBadDarknessHistogram());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0080.jp2.histogram.xml", HistogramXml.getSampleBadDarknessHistogram()));
 
-        event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0080.jp2.alto.xml",
-                HistogramXml.getSampleAltoLoText());
-        histogramHandler.handleAttribute(event);
+        histogramHandler.handleAttribute(createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/"
+                + "adresseavisen1759-1795-12-20-01-0080.jp2.alto.xml", HistogramXml.getSampleAltoLoText()));
 
-        NodeEndParsingEvent endEvent = createNodeEndParsingEvent("/" + batchID + "-99");
-        histogramHandler.handleNodeEnd(endEvent);
+        histogramHandler.handleNodeEnd(createNodeEndParsingEvent("/" + batchID + "-99"));
 
         Assert.assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
@@ -183,15 +142,12 @@ public class DarknessHistogramCheckerTest {
             @Override
             public InputStream getData() throws IOException {
                 return new ByteArrayInputStream(contents.getBytes());
-
             }
 
             @Override
             public String getChecksum() throws IOException {
                 return null;
             }
-
-
         };
     }
 
