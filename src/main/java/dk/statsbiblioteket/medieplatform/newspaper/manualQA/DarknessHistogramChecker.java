@@ -70,7 +70,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
 
     private void checkHistogramDataIfReady() {
         if (histogram != null && numberOfTextLinesFromAlto >= 0) {
-            if (histogramIsTooDark(histogram, numberOfTextLinesFromAlto)) {
+            if (histogramIsTooDark()) {
                 numberOfTooDarkImages++;
             }
             // We have consumed the data, so clear them
@@ -110,7 +110,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     }
 
 
-    private boolean histogramIsTooDark(long[] histogram, int numberOfTextLinesFromAlto) {
+    private boolean histogramIsTooDark() {
         // Ignore if there is a very small amount of text on the image, for that often means much of the page is covered by
         // pictures, and then the page often is dark - and "legally" so
         if (numberOfTextLinesFromAlto < minNumberOfTextLines) {
