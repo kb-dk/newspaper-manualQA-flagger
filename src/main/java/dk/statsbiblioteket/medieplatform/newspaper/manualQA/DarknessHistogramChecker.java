@@ -54,13 +54,11 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
             }
 
             if (event.getName().endsWith(".histogram.xml")) {
-                // Histogram encountered
                 histogram = new Histogram(event.getData()).values();
                 checkHistogramDataIfReady();
             }
 
             if (event.getName().endsWith(".alto.xml")) {
-                // Alto encountered
                 numberOfTextLinesFromAlto = getNumberOfTextLines(event);
                 checkHistogramDataIfReady();
             }
@@ -148,7 +146,6 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //final String accuracyXPath="alto:alto/alto:Layout/alto:Page/@ACCURACY";
         final String numberOfTextLinesXPath="count(alto:alto/alto:Layout/alto:Page/alto:PrintSpace/alto:TextBlock/alto:TextLine)";
         String numberOfTextLinesString = xpath.selectString(doc, numberOfTextLinesXPath);
         return Integer.parseInt(numberOfTextLinesString);
