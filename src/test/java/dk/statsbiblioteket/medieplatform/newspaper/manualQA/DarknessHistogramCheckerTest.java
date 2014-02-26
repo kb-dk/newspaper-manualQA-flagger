@@ -41,6 +41,9 @@ public class DarknessHistogramCheckerTest {
     }
 
 
+    /**
+     * Test that darkness checker produces no flags when presented with only an allowed amount of too dark images.
+     */
     @Test
     public void testHandleAttributeGood() throws Exception {
         TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
@@ -74,6 +77,10 @@ public class DarknessHistogramCheckerTest {
         Assert.assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
 
+
+    /**
+     * Test that darkness checker produces flags there are more "too dark" images than allowed.
+     */
     @Test
     public void testHandleAttributeBad() throws Exception {
         maxNumberOfDarkImagesAllowed = 1;
@@ -104,6 +111,11 @@ public class DarknessHistogramCheckerTest {
     }
 
 
+    /**
+     * Test that darkness checker produces no flags in the situation where, though there are "too many" dark images, there are
+     * also low amounts of text on the pages (according to alto) and therefore the dark images are disregarded as picture-heavy
+     * pages.
+     */
     @Test
     public void testHandleAttributeGoodBecauseOfAlto() throws Exception {
         maxNumberOfDarkImagesAllowed = 1;
@@ -111,9 +123,6 @@ public class DarknessHistogramCheckerTest {
         TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
                 maxNumberOfDarkImagesAllowed, lowestHistogramIndexNotConsideredBlack, lowestAcceptablePeakPosition,
                 minNumberOfTextLines);
-
-        // This test should succeed even though there are "too many" dark images - because there are low amounts of text on the
-        // pages (according to alto) and so they're disregarded as picture-heavy pages
 
         histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
 
