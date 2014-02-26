@@ -41,6 +41,13 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     }
 
 
+    /**
+     * Handles attributes edition, histogram, and alto. On a histogram or alto, picks up the needed data for the histogram or alto
+     * file. When both have been collected, the checking will be done. On an edition, data are cleared in preparation for the next
+     * pick ups and check.
+     *
+     * @param event The attribute event that will be handled
+     */
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
         try {
