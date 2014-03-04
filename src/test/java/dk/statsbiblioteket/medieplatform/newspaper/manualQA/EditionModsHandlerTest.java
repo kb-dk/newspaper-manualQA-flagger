@@ -30,7 +30,7 @@ public class EditionModsHandlerTest {
                         Thread.currentThread().getContextClassLoader().getResourceAsStream(
                                 "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
-        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch);
+        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, 3);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
             @Override
             public InputStream getData() throws IOException {
@@ -57,7 +57,7 @@ public class EditionModsHandlerTest {
                         Thread.currentThread().getContextClassLoader().getResourceAsStream(
                                 "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
-        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch);
+        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, 3);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
             @Override
             public InputStream getData() throws IOException {
@@ -84,7 +84,7 @@ public class EditionModsHandlerTest {
                             Thread.currentThread().getContextClassLoader().getResourceAsStream(
                                     "batchStructure.xml")), "42.24", 100);
             ResultCollector resultCollector = new ResultCollector("foo", "bar");
-            EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch);
+            EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, 3);
             AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
                 @Override
                 public InputStream getData() throws IOException {
