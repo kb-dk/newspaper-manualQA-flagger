@@ -15,26 +15,24 @@ import java.io.IOException;
  * Performs the necessary checks for any worrying issues in the editon-mods file.
  */
 public class EditionModsHandler extends DefaultTreeEventHandler {
-
     private ResultCollector resultCollector;
     private FlaggingCollector flaggingCollector;
     private Batch batch;
-
-    /**
-     * The maximum number of editions of a newspaper per day before we raise a flag.
-     */
-    private int maxEditionsPerDay = 3;
+    private int maxEditionsPerDay;
 
     /**
      * Constructor for this class.
      * @param resultCollector the result collector.
      * @param flaggingCollector the flagging collector.
      * @param batch  the batch being analysed.
+     * @param maxEditionsPerDay The maximum number of editions of a newspaper per day before we raise a flag.
      */
-    public EditionModsHandler(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch) {
+    public EditionModsHandler(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
+                              int maxEditionsPerDay) {
         this.resultCollector = resultCollector;
         this.batch = batch;
         this.flaggingCollector = flaggingCollector;
+        this.maxEditionsPerDay = maxEditionsPerDay;
     }
 
     @Override
