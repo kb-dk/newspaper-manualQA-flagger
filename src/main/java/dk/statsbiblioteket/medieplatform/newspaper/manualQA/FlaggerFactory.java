@@ -26,6 +26,12 @@ public class FlaggerFactory implements EventHandlerFactory {
     // The maximum number of editions of a newspaper per day before we raise a flag
     private static final int EDITION_MODS_MAX_EDITIONS_PER_DAY = 3;
 
+    // DarknessHistogramChecker:
+    private static final int DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED = 300;
+    private static final int DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK = 3;
+    private static final int DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION = 128;
+    // Min number of text lines on page before we consider this a text (non image-only) page, and therefore check for darkness
+    private static final int DARKNESS_MIN_NUM_OF_TEXT_LINES = 50;
 
     // EndSpikeHistogramChecker:
     private static final double END_SPIKE_THRESHOLD = 0.1;
@@ -43,7 +49,6 @@ public class FlaggerFactory implements EventHandlerFactory {
 
     public FlaggerFactory(ResultCollector resultCollector, Batch batch,
                           FlaggingCollector flaggingCollector, Properties properties) {
-
         this.resultCollector = resultCollector;
         this.batch = batch;
         this.flaggingCollector = flaggingCollector;
@@ -62,7 +67,9 @@ public class FlaggerFactory implements EventHandlerFactory {
         treeEventHandlers.add(new FilmHandler(resultCollector, flaggingCollector));
         treeEventHandlers.add(new MixHandler(resultCollector, properties, flaggingCollector));
         treeEventHandlers.add(new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties));
-        treeEventHandlers.add(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch, 300, 3, 128, 50));
+        treeEventHandlers.add(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
+                DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK,
+                DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION, DARKNESS_MIN_NUM_OF_TEXT_LINES));
         treeEventHandlers.add(new EndSpikeHistogramChecker(resultCollector, flaggingCollector, END_SPIKE_THRESHOLD,
                 END_SPIKE_MIN_COLOR_CONSIDERED_BLACK, END_SPIKE_MAX_COLOR_CONSIDERED_BLACK, END_SPIKE_MIN_COLOR_CONSIDERED_WHITE,
                 END_SPIKE_MAX_COLOR_CONSIDERED_WHITE, END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK,
