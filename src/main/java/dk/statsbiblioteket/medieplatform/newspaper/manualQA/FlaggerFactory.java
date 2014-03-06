@@ -58,22 +58,22 @@ public class FlaggerFactory implements EventHandlerFactory {
     @Override
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
-        treeEventHandlers.add(new MissingColorsHistogramChecker(resultCollector, flaggingCollector,
-                MISSING_COLORS_NUMBER_OF_MISSING_ALLOWED, MISSING_COLORS_MAX_VAL_TO_DEEM_A_COLOR_MISSING));
-        treeEventHandlers.add(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector, CHOPPY_CHECK_THRESHOLD,
-                CHOPPY_CHECK_MAX_IRREGULARITIES));
-        treeEventHandlers.add(new EditionModsHandler(resultCollector, flaggingCollector, batch,
-                EDITION_MODS_MAX_EDITIONS_PER_DAY));
-        treeEventHandlers.add(new FilmHandler(resultCollector, flaggingCollector));
-        treeEventHandlers.add(new MixHandler(resultCollector, properties, flaggingCollector));
-        treeEventHandlers.add(new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties));
-        treeEventHandlers.add(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
+        treeEventHandlers.add(new UnmatchedExcluder(new MissingColorsHistogramChecker(resultCollector, flaggingCollector,
+                MISSING_COLORS_NUMBER_OF_MISSING_ALLOWED, MISSING_COLORS_MAX_VAL_TO_DEEM_A_COLOR_MISSING)));
+        treeEventHandlers.add(new UnmatchedExcluder(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
+                CHOPPY_CHECK_THRESHOLD, CHOPPY_CHECK_MAX_IRREGULARITIES)));
+        treeEventHandlers.add(new UnmatchedExcluder(new EditionModsHandler(resultCollector, flaggingCollector, batch,
+                EDITION_MODS_MAX_EDITIONS_PER_DAY)));
+        treeEventHandlers.add(new UnmatchedExcluder(new FilmHandler(resultCollector, flaggingCollector)));
+        treeEventHandlers.add(new UnmatchedExcluder(new MixHandler(resultCollector, properties, flaggingCollector)));
+        treeEventHandlers.add(new UnmatchedExcluder(new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties)));
+        treeEventHandlers.add(new UnmatchedExcluder(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
                 DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK,
-                DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION, DARKNESS_MIN_NUM_OF_TEXT_LINES));
-        treeEventHandlers.add(new EndSpikeHistogramChecker(resultCollector, flaggingCollector, END_SPIKE_THRESHOLD,
-                END_SPIKE_MIN_COLOR_CONSIDERED_BLACK, END_SPIKE_MAX_COLOR_CONSIDERED_BLACK, END_SPIKE_MIN_COLOR_CONSIDERED_WHITE,
-                END_SPIKE_MAX_COLOR_CONSIDERED_WHITE, END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK,
-                END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE));
+                DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION, DARKNESS_MIN_NUM_OF_TEXT_LINES)));
+        treeEventHandlers.add(new UnmatchedExcluder(new EndSpikeHistogramChecker(resultCollector, flaggingCollector,
+                END_SPIKE_THRESHOLD, END_SPIKE_MIN_COLOR_CONSIDERED_BLACK, END_SPIKE_MAX_COLOR_CONSIDERED_BLACK,
+                END_SPIKE_MIN_COLOR_CONSIDERED_WHITE, END_SPIKE_MAX_COLOR_CONSIDERED_WHITE,
+                END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK, END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE)));
         return treeEventHandlers;
     }
 }
