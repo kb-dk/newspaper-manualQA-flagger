@@ -8,13 +8,8 @@ import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCol
 import java.util.Arrays;
 
 /**
- * Hakker i kurven
- * Vi så en del kurver der ikke manglede farver, men havde vilde variationer mellem to farver.
- * En test er at rulle et
- * window af bredde 3 hen over kurven. For hver punkt skal det gælde at (x0+x2)/2 ~= x1.
- * Undervejs tæller vi så op hvor
- * meget off den ligning er, og hvis den slutteligt er over en hvis størrelse,
- * kan vi flagge billedet.
+ * Checks for "chops" in the curve. We have seen several curves that did not have missing colours, but did have great variation
+ * in adjacent colours on the histogram curve.
  */
 public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
 
