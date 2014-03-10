@@ -96,7 +96,7 @@
     <dependency>
       <groupId>dk.statsbiblioteket.newspaper</groupId>
       <artifactId>autonomous-component</artifactId>
-      <version>1.4.5</version>
+      <version>1.5</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -117,6 +117,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
       <version>1.7.5</version>
+    </dependency>
+    <dependency>
+      <groupId>dk.statsbiblioteket.sbutil</groupId>
+      <artifactId>sbutil-common</artifactId>
+      <version>0.5.17</version>
     </dependency>
 
     <dependency>

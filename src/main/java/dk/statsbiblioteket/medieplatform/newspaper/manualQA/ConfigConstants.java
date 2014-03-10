@@ -23,4 +23,6 @@ public class ConfigConstants {
     public static final String MAX_IMAGE_HEIGHT = "flag.mix.maximageheight";
 
     public static final String MAX_FLAGS = "flag.maxtotalflags";
+    
+    public static final String MANUAL_QA_INPUTFILES_DIR = "manualqa.input.files.dir";
 }

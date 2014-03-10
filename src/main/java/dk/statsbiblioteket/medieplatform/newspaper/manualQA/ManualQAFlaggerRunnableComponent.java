@@ -1,9 +1,11 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+
 import javax.xml.bind.JAXBException;
 
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
@@ -21,7 +23,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Event
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.util.Files;
 import dk.statsbiblioteket.util.xml.DOM;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -30,7 +34,8 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
 
     private Logger log = LoggerFactory.getLogger(getClass());
     private Properties properties;
-
+    private final static String OUTPUT_FILE_SUFFIX = ".manualqainput.xml";
+    
     protected ManualQAFlaggerRunnableComponent(Properties properties) {
         super(properties);
         this.properties = properties;
@@ -73,15 +78,20 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
 
     }
 
-    private void saveFlaggingCollector(FlaggingCollector flaggingCollector) throws
-                                                                            IOException,
-                                                                            BackendInvalidCredsException,
-                                                                            BackendMethodFailedException,
-                                                                            BackendInvalidResourceException {
+    private void saveFlaggingCollector(FlaggingCollector flaggingCollector) throws Exception {
+        String report = flaggingCollector.toReport();
+        String fullID = flaggingCollector.getBatch().getFullID();
+        
+        saveOutputToRepository(fullID, report);
+        saveOutputOnFilesystem(fullID, report);
+    }
+    
+    private void saveOutputToRepository(String fullBatchID, String report) 
+            throws IOException, BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
         EnhancedFedora fedora = createFedoraClient();
         String pid;
 
-        String path = "path:" + flaggingCollector.getBatch().getFullID();
+        String path = "path:" + fullBatchID;
         List<String> hits = fedora.findObjectFromDCIdentifier(path);
         if (hits.isEmpty()) {
             throw new BackendInvalidResourceException("Failed to look up doms object for DC identifier '" + path + "'");
@@ -93,7 +103,22 @@ public class ManualQAFlaggerRunnableComponent extends AbstractRunnableComponent 
         }
 
         fedora.modifyDatastreamByValue(
-                pid, "MANUAL_QA_FLAGS", flaggingCollector.toReport(), null, "added data for MANUAL QA");
+                pid, "MANUAL_QA_FLAGS", report, null, "added data for MANUAL QA");
+    }
+    
+    /**
+     * Saves the report to the file system, if a destination directory is specified in the configuration 
+     */
+    private void saveOutputOnFilesystem(String fullBatchID, String report) throws IOException {
+        String outputDir = getProperties().getProperty(
+                dk.statsbiblioteket.medieplatform.newspaper.manualQA.ConfigConstants.MANUAL_QA_INPUTFILES_DIR);
+        if(outputDir != null) {
+            String filename = fullBatchID + OUTPUT_FILE_SUFFIX;
+            File outputfile = new File(outputDir, filename);
+            Files.saveString(report, outputfile);
+        } else {
+            log.warn("No directory for writing manual QA output was set in the configuration");
+        }
     }
 
     /**
