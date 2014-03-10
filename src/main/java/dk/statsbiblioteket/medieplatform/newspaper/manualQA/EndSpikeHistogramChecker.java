@@ -88,6 +88,13 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
 
     }
 
+    /**
+     * Calculate the percentage of the total amount of pixels in the given histogram that lie in the given range.
+     * @param minColor The lowest (leftmost) position in the wanted range of the histogram.
+     * @param maxColor The highest (rightmost) position in the wanted range of the histogram.
+     * @param histogram The histogram wherein the given range lies
+     * @return The percentage of the total amount of pixels in the given histogram that lie in the given range.
+     */
     private double percentColorsInRange(int minColor, int maxColor, Histogram histogram) {
         double totalColorCount = 0;
         double intervalColorCount = 0;
