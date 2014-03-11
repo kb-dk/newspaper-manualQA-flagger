@@ -10,6 +10,7 @@ import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Performs the necessary checks for any worrying issues in the editon-mods file.
@@ -25,14 +26,14 @@ public class EditionModsHandler extends DefaultTreeEventHandler {
      * @param resultCollector the result collector.
      * @param flaggingCollector the flagging collector.
      * @param batch  the batch being analysed.
-     * @param maxEditionsPerDay The maximum number of editions of a newspaper per day before we raise a flag.
      */
     public EditionModsHandler(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
-                              int maxEditionsPerDay) {
+                              Properties properties) {
         this.resultCollector = resultCollector;
         this.batch = batch;
         this.flaggingCollector = flaggingCollector;
-        this.maxEditionsPerDay = maxEditionsPerDay;
+        this.maxEditionsPerDay = Integer.parseInt(properties.getProperty(
+                ConfigConstants.EDITION_MODS_MAX_EDITIONS_PER_DAY));
     }
 
     @Override
@@ -50,25 +51,25 @@ public class EditionModsHandler extends DefaultTreeEventHandler {
     private void doValidate(AttributeParsingEvent event) {
         XPathSelector xpath = DOM.createXPathSelector("mods", "http://www.loc.gov/mods/v3");
         Document doc;
-               try {
-                   doc = DOM.streamToDOM(event.getData(), true);
-                   if (doc == null) {
-                       resultCollector.addFailure(
-                               event.getName(), "exception", getClass().getSimpleName(),
-                               "Could not parse xml");
-                       return;
-                   }
-               } catch (IOException e) {
-                   throw new RuntimeException(e);
-               }
+        try {
+            doc = DOM.streamToDOM(event.getData(), true);
+            if (doc == null) {
+                resultCollector.addFailure(
+                        event.getName(), "exception", getClass().getSimpleName(),
+                        "Could not parse xml");
+                return;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         final String xpathForEditionNumberXPath =
                 "/mods:mods/mods:relatedItem[@type='host']/mods:part/mods:detail[@type='edition']/mods:number";
         String xpathForEditionNumber = xpath.selectString(doc, xpathForEditionNumberXPath);
         try {
             int editionNumber = Integer.parseInt(xpathForEditionNumber);
             if (editionNumber > maxEditionsPerDay) {
-              flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2D-9: Edition number is larger than the maximum " +
-                      "expected value (" + maxEditionsPerDay + "): " + editionNumber);
+                flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2D-9: Edition number is larger than the maximum " +
+                        "expected value (" + maxEditionsPerDay + "): " + editionNumber);
             }
         } catch (NumberFormatException nfe) {
             addFailure(event, "2D-9: Unable to parse '" + xpathForEditionNumber + "' as a number");
@@ -76,8 +77,8 @@ public class EditionModsHandler extends DefaultTreeEventHandler {
     }
 
     private void addFailure(AttributeParsingEvent event, String description) {
-         resultCollector.addFailure(
-                 event.getName(), "metadata", getClass().getSimpleName(), description);
-     }
+        resultCollector.addFailure(
+                event.getName(), "metadata", getClass().getSimpleName(), description);
+    }
 
 }
