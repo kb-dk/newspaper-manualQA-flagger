@@ -118,7 +118,8 @@ public class ManualQAFlaggerRunnableComponent extends SBOIBasedAbstractRunnableC
             File outputfile = new File(outputDir, filename);
             Files.saveString(report, outputfile);
         } else {
-            log.warn("No directory for writing manual QA output was set in the configuration");
+            log.warn("No directory for writing manual QA output was set in the configuration, was this intentional? "
+                    + "QA flags for batch '" + fullBatchID + "' not written to disk");
         }
     }
 
