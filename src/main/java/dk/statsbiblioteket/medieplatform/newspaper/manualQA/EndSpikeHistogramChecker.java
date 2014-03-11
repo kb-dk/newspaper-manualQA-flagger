@@ -6,6 +6,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Defau
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.Pair;
 
+import java.util.Properties;
+
 /**
  * At the time of implementing this, all histograms we have seen had a very big spike for a color number 0, 1, or 2. It seems
  * this cannot be avoided. This is not a spike in the normal curve-wise sense. It is a single color that juts up as a pin in the
@@ -24,19 +26,22 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private double maxPercentAllowedNearBlack;
     private double maxPercentAllowedNearWhite;
 
-    public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, double threshold,
-                                    int minColorConsideredBlack, int maxColorConsideredBlack, int minColorConsideredWhite,
-                                    int maxColorConsideredWhite, double maxPercentAllowedNearBlack,
-                                    double maxPercentAllowedNearWhite) {
+    public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Properties properties) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
-        this.threshold = threshold;
-        this.minColorConsideredBlack = minColorConsideredBlack;
-        this.maxColorConsideredBlack = maxColorConsideredBlack;
-        this.minColorConsideredWhite = minColorConsideredWhite;
-        this.maxColorConsideredWhite = maxColorConsideredWhite;
-        this.maxPercentAllowedNearBlack = maxPercentAllowedNearBlack;
-        this.maxPercentAllowedNearWhite = maxPercentAllowedNearWhite;
+        this.threshold = Double.parseDouble(properties.getProperty(ConfigConstants.END_SPIKE_THRESHOLD));
+        this.minColorConsideredBlack = Integer.parseInt(properties.getProperty(
+                ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_BLACK));
+        this.maxColorConsideredBlack = Integer.parseInt(properties.getProperty(
+                ConfigConstants.END_SPIKE_MAX_COLOR_CONSIDERED_BLACK));
+        this.minColorConsideredWhite = Integer.parseInt(properties.getProperty(
+                ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_WHITE));
+        this.maxColorConsideredWhite = Integer.parseInt(properties.getProperty(
+                ConfigConstants.END_SPIKE_MAX_COLOR_CONSIDERED_WHITE));
+        this.maxPercentAllowedNearBlack = Double.parseDouble(properties.getProperty(
+                ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK));
+        this.maxPercentAllowedNearWhite = Double.parseDouble(properties.getProperty(
+                ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE));
     }
 
     @Override
