@@ -12,6 +12,7 @@ import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
+import java.util.Properties;
 
 
 public class DarknessHistogramChecker extends DefaultTreeEventHandler {
@@ -29,15 +30,18 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private int minNumberOfTextLines;
 
     public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
-                                    int maxNumberOfDarkImagesAllowed, int lowestHistogramIndexNotConsideredBlack,
-                                    int lowestAcceptablePeakPosition, int minNumberOfTextLines) {
+                                    Properties properties) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.batch = batch;
-        this.maxNumberOfDarkImagesAllowed = maxNumberOfDarkImagesAllowed;
-        this.lowestHistogramIndexNotConsideredBlack = lowestHistogramIndexNotConsideredBlack;
-        this.lowestAcceptablePeakPosition = lowestAcceptablePeakPosition;
-        this.minNumberOfTextLines = minNumberOfTextLines;
+        this.maxNumberOfDarkImagesAllowed = Integer.parseInt(properties.getProperty(
+                                ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED));
+        this.lowestHistogramIndexNotConsideredBlack = Integer.parseInt(properties.getProperty(
+                                ConfigConstants.DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK));
+        this.lowestAcceptablePeakPosition = Integer.parseInt(properties.getProperty(
+                                ConfigConstants.DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION));
+        this.minNumberOfTextLines = Integer.parseInt(properties.getProperty(
+                                ConfigConstants.DARKNESS_MIN_NUM_OF_TEXT_LINES));
     }
 
 
