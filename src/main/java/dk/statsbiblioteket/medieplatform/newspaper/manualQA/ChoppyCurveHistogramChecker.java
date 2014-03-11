@@ -6,6 +6,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Defau
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 
 import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * Checks for "chops" in the curve. We have seen several curves that did not have missing colours, but did have great variation
@@ -23,16 +24,14 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
      * Create the Checker
      * @param resultCollector the result collector for real errors
      * @param flaggingCollector the flagging collector for raised flags
-     * @param threshold how much a value is allowed to deviate from the average of its two
-     *                  neighbours (in pct, >0) before it is considered an irregularity
-     * @param maxIrregularities the maximum number of peaks/valleys allowed before flagged as an error
      */
     public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
-                                       double threshold, int maxIrregularities) {
+                                       Properties properties) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
-        this.threshold = threshold;
-        this.maxIrregularities = maxIrregularities;
+        this.threshold = Double.parseDouble(properties.getProperty(ConfigConstants.CHOPPY_CHECK_THRESHOLD));
+        this.maxIrregularities = Integer.parseInt(properties.getProperty(
+                        ConfigConstants.CHOPPY_CHECK_MAX_IRREGULARITIES));
     }
 
 
