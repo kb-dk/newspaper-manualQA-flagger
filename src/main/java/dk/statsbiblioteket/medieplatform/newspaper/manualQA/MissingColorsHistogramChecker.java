@@ -8,6 +8,7 @@ import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCol
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Hvis vi finder den lyseste og den mørkeste farve på billedet, har vi et krav om at ingen
@@ -27,17 +28,16 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
      * Create the Checker
      * @param resultCollector the result collector for real errors
      * @param flaggingCollector the flagging collector for raised flags
-     * @param numberOfMissingColorsAllowed the number of missing colors allowed
-     * @param maxValueToDeemAColorMissing when a color has this value or below, it is considered missing
      */
     public MissingColorsHistogramChecker(ResultCollector resultCollector,
                                          FlaggingCollector flaggingCollector,
-                                         int numberOfMissingColorsAllowed,
-                                         int maxValueToDeemAColorMissing) {
+                                         Properties properties) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
-        this.numberOfMissingColorsAllowed = numberOfMissingColorsAllowed;
-        this.maxValueToDeemAColorMissing = maxValueToDeemAColorMissing;
+        this.numberOfMissingColorsAllowed = Integer.parseInt(properties.getProperty(
+                ConfigConstants.NUMBER_OF_MISSING_COLORS_ALLOWED));
+        this.maxValueToDeemAColorMissing = Integer.parseInt(properties.getProperty(
+                ConfigConstants.MAX_VAL_TO_DEEM_A_COLOR_MISSING));
     }
 
     @Override
