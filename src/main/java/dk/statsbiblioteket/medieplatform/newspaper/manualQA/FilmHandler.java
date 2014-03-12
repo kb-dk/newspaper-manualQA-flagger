@@ -15,6 +15,19 @@ import java.io.IOException;
  */
 public class FilmHandler extends DefaultTreeEventHandler {
 
+    /**
+     * The maximum resolution (pixels/inch) expected for scans.
+     */
+    public static final int MAXIMUM_RESOLUTION = 400;
+
+    /**
+     * These two variables express the range of reduction ratios for which
+     * we raise a manual flag. Values lower than these are fine. Values
+     * higher are errors and will be picked up by newspaper-batch-metadata-checker.
+     */
+    public static final double MAXIMUM_EXPECTED_REDUCTION_RATIO = 19.1;
+    public static final double MAXIMUM_ALLOWED_REDUCTION_RATIO = 25;
+
     private XPathSelector filmXPathSelector;
     private ResultCollector resultCollector;
     private FlaggingCollector flaggingCollector;
@@ -69,9 +82,9 @@ public class FilmHandler extends DefaultTreeEventHandler {
         String originalNewspaperResolutionString = filmXPathSelector.selectString(doc, "/avis:reelMetadata/avis:captureResolutionOriginal");
         try {
             int resolution = Integer.parseInt(originalNewspaperResolutionString);
-            if (resolution > 400) {
+            if (resolution > MAXIMUM_RESOLUTION) {
                 flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2E-7: captureOriginalResolution is expected " +
-                        "to be no more than 400 pixels/inch, not '" + resolution + "'");
+                        "to be no more than " + MAXIMUM_RESOLUTION +" pixels/inch, not '" + resolution + "'");
             }
         } catch (NumberFormatException e) {
             resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(), "2E-7: originalNewspaperResolution should be" +
@@ -84,9 +97,9 @@ public class FilmHandler extends DefaultTreeEventHandler {
         reductionRatioString = reductionRatioString.replace("x", "");
         try {
             Double reductionRatio = Double.parseDouble(reductionRatioString);
-            if (reductionRatio >= 19.1 && reductionRatio <= 25) {
+            if (reductionRatio >= MAXIMUM_EXPECTED_REDUCTION_RATIO && reductionRatio <= MAXIMUM_ALLOWED_REDUCTION_RATIO) {
                 flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2E-6: reductionRatio expected to" +
-                        " be 19 or less. Actual value is " + reductionRatio );
+                        " be less than " + MAXIMUM_EXPECTED_REDUCTION_RATIO + ". Actual value is " + reductionRatio );
             }
         } catch (NumberFormatException e) {
             resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(), "2E-6: reductionRatio should be" +
