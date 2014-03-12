@@ -6,11 +6,13 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers.EditionModsMocker;
 import dk.statsbiblioteket.util.xml.DOM;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -18,6 +20,13 @@ import static org.testng.Assert.assertTrue;
 /**
  */
 public class EditionModsHandlerTest {
+    Properties properties;
+
+    @BeforeMethod
+    public void setUp() {
+        properties = new Properties();
+        properties.setProperty(ConfigConstants.EDITION_MODS_MAX_EDITIONS_PER_DAY, "3");
+    }
 
     /**
      * Test the case where the no flag is raised because the edition nu,ber is <= 3.
@@ -30,7 +39,7 @@ public class EditionModsHandlerTest {
                         Thread.currentThread().getContextClassLoader().getResourceAsStream(
                                 "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
-        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, 3);
+        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, properties);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
             @Override
             public InputStream getData() throws IOException {
@@ -57,7 +66,7 @@ public class EditionModsHandlerTest {
                         Thread.currentThread().getContextClassLoader().getResourceAsStream(
                                 "batchStructure.xml")), "42.24", 100);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
-        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, 3);
+        EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, properties);
         AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
             @Override
             public InputStream getData() throws IOException {
@@ -84,7 +93,7 @@ public class EditionModsHandlerTest {
                             Thread.currentThread().getContextClassLoader().getResourceAsStream(
                                     "batchStructure.xml")), "42.24", 100);
             ResultCollector resultCollector = new ResultCollector("foo", "bar");
-            EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, 3);
+            EditionModsHandler editionModsHandler = new EditionModsHandler(resultCollector, flaggingCollector, batch, properties);
             AttributeParsingEvent attributeParsingEvent = new AttributeParsingEvent("B400022028241-RT1/400022028241-1/1795-06-15-01/adresseavisen1759-1795-06-15-01.edition.xml") {
                 @Override
                 public InputStream getData() throws IOException {
