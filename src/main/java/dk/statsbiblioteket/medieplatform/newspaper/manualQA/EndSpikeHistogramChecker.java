@@ -17,7 +17,7 @@ import java.util.Properties;
 public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector flaggingCollector;
     private ResultCollector resultCollector;
-    private double threshold;
+    private double endSpikeThreshold;
 
     private int minColorConsideredBlack;
     private int maxColorConsideredBlack;
@@ -29,7 +29,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Properties properties) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
-        this.threshold = Double.parseDouble(properties.getProperty(ConfigConstants.END_SPIKE_THRESHOLD));
+        this.endSpikeThreshold = Double.parseDouble(properties.getProperty(ConfigConstants.END_SPIKE_THRESHOLD));
         this.minColorConsideredBlack = Integer.parseInt(properties.getProperty(
                 ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_BLACK));
         this.maxColorConsideredBlack = Integer.parseInt(properties.getProperty(
@@ -53,7 +53,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                 Spike spike = spikeAndTotal.getLeft();
                 Long total = spikeAndTotal.getRight();
                 double amount = (spike.getValue() + 0.0) / total;
-                if (amount > threshold) {
+                if (amount > endSpikeThreshold) {
                     flaggingCollector.addFlag(
                             event,
                             "jp2file",
