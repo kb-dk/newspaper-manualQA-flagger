@@ -5,20 +5,32 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 public class ChoppyCurveHistogramCheckerTest {
+    Properties properties;
+
+    @BeforeMethod
+    public void setUp() {
+        properties = new Properties();
+        properties.setProperty(ConfigConstants.CHOPPY_CHECK_THRESHOLD, "0.1");
+        properties.setProperty(ConfigConstants.CHOPPY_CHECK_MAX_IRREGULARITIES, "4");
+    }
+
+
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
 
         ChoppyCurveHistogramChecker histogramHandler = new ChoppyCurveHistogramChecker(
-                resultCollector, flaggingCollector, 0.1, 4);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
@@ -36,7 +48,7 @@ public class ChoppyCurveHistogramCheckerTest {
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
 
         ChoppyCurveHistogramChecker histogramHandler = new ChoppyCurveHistogramChecker(
-                resultCollector, flaggingCollector, 0.1, 4);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
