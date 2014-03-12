@@ -6,22 +6,39 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
+
 import static org.testng.Assert.*;
 
 
 public class EndSpikeHistogramCheckerTest {
+    Properties properties;
+
+    @BeforeMethod
+    public void setUp() {
+        properties = new Properties();
+        properties.setProperty(ConfigConstants.END_SPIKE_THRESHOLD, "0.1");
+        properties.setProperty(ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_BLACK, "0");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_COLOR_CONSIDERED_BLACK, "2");
+        properties.setProperty(ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_WHITE, "255");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_COLOR_CONSIDERED_WHITE, "255");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK, "2");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE, "0.5");
+    }
+
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
-                resultCollector, flaggingCollector, 0.1, 0, 2, 255, 255, 2, 0.5);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
@@ -31,10 +48,14 @@ public class EndSpikeHistogramCheckerTest {
 
     @Test
     public void testHandleAttributeBadSpike() throws Exception {
+        properties.setProperty(ConfigConstants.END_SPIKE_THRESHOLD, "0.05");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK, "100");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE, "100");
+
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
-                resultCollector, flaggingCollector, 0.05, 0, 2, 255, 255, 100, 100);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
@@ -44,10 +65,14 @@ public class EndSpikeHistogramCheckerTest {
 
     @Test
     public void testHandleAttributeBadLowLightBlowout() throws Exception {
+        properties.setProperty(ConfigConstants.END_SPIKE_THRESHOLD, "1");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK, "2");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE, "100");
+
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
-                resultCollector, flaggingCollector, 1, 0, 2, 255, 255, 2, 100);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
@@ -57,10 +82,14 @@ public class EndSpikeHistogramCheckerTest {
 
     @Test
     public void testHandleAttributeBadHighLightBlowout() throws Exception {
+        properties.setProperty(ConfigConstants.END_SPIKE_THRESHOLD, "1");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK, "100");
+        properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE, "0.5");
+
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
-                resultCollector, flaggingCollector, 1, 0, 2, 255, 255, 100, 0.5);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
