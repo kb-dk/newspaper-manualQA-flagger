@@ -6,20 +6,31 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 public class MissingColorsHistogramCheckerTest {
+    Properties properties;
+
+    @BeforeMethod
+    public void setUp() {
+        properties = new Properties();
+        properties.setProperty(ConfigConstants.NUMBER_OF_MISSING_COLORS_ALLOWED, "0");
+        properties.setProperty(ConfigConstants.MAX_VAL_TO_DEEM_A_COLOR_MISSING, "10");
+    }
+
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new MissingColorsHistogramChecker(
-                resultCollector, flaggingCollector, 0, 10);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
@@ -33,7 +44,7 @@ public class MissingColorsHistogramCheckerTest {
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new MissingColorsHistogramChecker(
-                resultCollector, flaggingCollector, 0, 10);
+                resultCollector, flaggingCollector, properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
