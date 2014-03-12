@@ -14,18 +14,26 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 public class DarknessHistogramCheckerTest {
     private FlaggingCollector flaggingCollector;
     private ResultCollector resultCollector;
-    private int maxNumberOfDarkImagesAllowed;
-    private int lowestHistogramIndexNotConsideredBlack;
-    private int lowestAcceptablePeakPosition;
-    private int minNumberOfTextLines;
     private String batchID;
     private Batch batch;
     private static final String ATTRIBUTE_EVENT_NAME_PREFIX = "B400022028252-RT1/400022028252-08/1795-12-20-01/"
             + "adresseavisen1759-1795-12-20-01";
+
+    Properties properties;
+
+    @BeforeMethod
+    public void setUp() {
+        properties = new Properties();
+        properties.setProperty(ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, "2");
+        properties.setProperty(ConfigConstants.DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK, "3");
+        properties.setProperty(ConfigConstants.DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION, "128");
+        properties.setProperty(ConfigConstants.DARKNESS_MIN_NUM_OF_TEXT_LINES, "10");
+    }
 
 
     @BeforeMethod
@@ -34,10 +42,6 @@ public class DarknessHistogramCheckerTest {
         batch = new Batch(batchID);
         flaggingCollector = new FlaggingCollector(batch, null, "0.1-SNAPSHOT", 100);
         resultCollector = new ResultCollector("blah", "blah");
-        maxNumberOfDarkImagesAllowed = 2;
-        lowestHistogramIndexNotConsideredBlack = 3;
-        lowestAcceptablePeakPosition = 128;
-        minNumberOfTextLines = 10;
     }
 
 
@@ -47,8 +51,7 @@ public class DarknessHistogramCheckerTest {
     @Test
     public void testHandleAttributeGood() throws Exception {
         TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
-                maxNumberOfDarkImagesAllowed, lowestHistogramIndexNotConsideredBlack, lowestAcceptablePeakPosition,
-                minNumberOfTextLines);
+                properties);
 
         histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
 
@@ -83,11 +86,10 @@ public class DarknessHistogramCheckerTest {
      */
     @Test
     public void testHandleAttributeBad() throws Exception {
-        maxNumberOfDarkImagesAllowed = 1;
+        properties.setProperty(ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, "1");
 
         TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
-                maxNumberOfDarkImagesAllowed, lowestHistogramIndexNotConsideredBlack, lowestAcceptablePeakPosition,
-                minNumberOfTextLines);
+                properties);
 
         histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
 
@@ -118,11 +120,10 @@ public class DarknessHistogramCheckerTest {
      */
     @Test
     public void testHandleAttributeGoodBecauseOfAlto() throws Exception {
-        maxNumberOfDarkImagesAllowed = 1;
+        properties.setProperty(ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, "1");
 
         TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
-                maxNumberOfDarkImagesAllowed, lowestHistogramIndexNotConsideredBlack, lowestAcceptablePeakPosition,
-                minNumberOfTextLines);
+                properties);
 
         histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
 
