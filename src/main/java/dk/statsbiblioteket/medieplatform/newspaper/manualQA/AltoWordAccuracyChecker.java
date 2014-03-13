@@ -111,9 +111,13 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
             //this happens if we are at the end of any node other than a film or edition node.
             return;
         }
-        String lastElement = eventName.substring(eventName.lastIndexOf("/"));
+        // Strip '/' from end if any
+        if (eventName.lastIndexOf("/") == eventName.length() - 1) {
+            eventName = eventName.substring(0, eventName.length() - 2);
+        }
+        String lastElement = eventName.substring(eventName.lastIndexOf("/") + 1);
         String type;
-        if (lastElement.matches(".*-.*-.*-.*")) {
+        if (lastElement.matches("^[0-9]{4}-.*$")) {
             type = "Edition";
         } else {
             type = "Film";
