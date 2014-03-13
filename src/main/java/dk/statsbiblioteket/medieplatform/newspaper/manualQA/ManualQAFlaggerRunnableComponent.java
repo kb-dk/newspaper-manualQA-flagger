@@ -15,11 +15,10 @@ import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
 import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
-import dk.statsbiblioteket.medieplatform.autonomous.AbstractRunnableComponent;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.SBOIBasedAbstractRunnableComponent;
+import dk.statsbiblioteket.medieplatform.autonomous.TreeProcessorAbstractRunnableComponent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
@@ -31,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-public class ManualQAFlaggerRunnableComponent extends SBOIBasedAbstractRunnableComponent {
+public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunnableComponent {
 
     private Logger log = LoggerFactory.getLogger(getClass());
     private Properties properties;
