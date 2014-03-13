@@ -72,16 +72,18 @@ public class AltoWordAccuracyCheckerTest {
         ResultCollector resultCollector = new ResultCollector("foobar", "1.0");
         Batch batch = new Batch();
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, DOM.streamToDOM(
-                Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                        "batchStructure.xml")), "42.24", 100);
-        AltoWordAccuracyChecker altoWordAccuracyChecker =
-                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
+                Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "42.24", 100);
+        AltoWordAccuracyChecker altoWordAccuracyChecker
+                = new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
+
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/film1/2001-01-02-03/1.alto.xml", "50.0");
         AttributeParsingEvent e2 = generateAttributeEvent("foo/bar/film1/2001-01-02-03/2.alto.xml", "40.0");
         NodeEndParsingEvent e3 = new NodeEndParsingEvent("foo/bar/film1/2001-01-02-03");
+
         altoWordAccuracyChecker.handleAttribute(e1);
         altoWordAccuracyChecker.handleAttribute(e2);
         altoWordAccuracyChecker.handleNodeEnd(e3);
+
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
         assertTrue(flaggingCollector.toReport().contains("Edition"), flaggingCollector.toReport());
     }
@@ -97,7 +99,7 @@ public class AltoWordAccuracyCheckerTest {
                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/12345272-07/edition1/1.alto.xml", "65.0");
         AttributeParsingEvent e2 = generateAttributeEvent("foo/bar/12345272-07/edition1/2.alto.xml", "65.0");
-          AttributeParsingEvent e3 = generateAttributeEvent("foo/bar/12345272-07/edition2/1.alto.xml", "40.0");
+        AttributeParsingEvent e3 = generateAttributeEvent("foo/bar/12345272-07/edition2/1.alto.xml", "40.0");
         AttributeParsingEvent e4 = generateAttributeEvent("foo/bar/12345272-07/edition2/2.alto.xml", "40.0");
         NodeEndParsingEvent e5 = new NodeEndParsingEvent("foo/bar/12345272-07");
         altoWordAccuracyChecker.handleAttribute(e1);
@@ -114,7 +116,7 @@ public class AltoWordAccuracyCheckerTest {
      * accuracy=0 is ignored in the calculation.
      * @throws Exception
      */
-     @Test
+    @Test
     public void testHandleFilmEndWithoutFlag() throws Exception {
         ResultCollector resultCollector = new ResultCollector("foobar", "1.0");
         Batch batch = new Batch();
@@ -125,10 +127,10 @@ public class AltoWordAccuracyCheckerTest {
                 new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties);
         AttributeParsingEvent e1 = generateAttributeEvent("foo/bar/film1/edition1/1.alto.xml", "65.0");
         AttributeParsingEvent e2 = generateAttributeEvent("foo/bar/film1/edition1/2.alto.xml", "65.0");
-          AttributeParsingEvent e3 = generateAttributeEvent("foo/bar/film1/edition2/1.alto.xml", "58.0");
+        AttributeParsingEvent e3 = generateAttributeEvent("foo/bar/film1/edition2/1.alto.xml", "58.0");
         AttributeParsingEvent e4 = generateAttributeEvent("foo/bar/film1/edition2/2.alto.xml", "58.0");
-         AttributeParsingEvent e5 = generateAttributeEvent("foo/bar/film1/edition2/3.alto.xml", "0.0");
-         NodeEndParsingEvent e6 = new NodeEndParsingEvent("foo/bar/film1");
+        AttributeParsingEvent e5 = generateAttributeEvent("foo/bar/film1/edition2/3.alto.xml", "0.0");
+        NodeEndParsingEvent e6 = new NodeEndParsingEvent("foo/bar/film1");
         altoWordAccuracyChecker.handleAttribute(e1);
         altoWordAccuracyChecker.handleAttribute(e2);
         altoWordAccuracyChecker.handleAttribute(e3);
