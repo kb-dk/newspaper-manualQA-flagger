@@ -17,6 +17,9 @@ import java.util.Properties;
 public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector flaggingCollector;
     private ResultCollector resultCollector;
+
+    // Max percentage of the total number of pixels in the histogram that are allowed to be in a spike at the beginning or end of
+    // the histogram
     private double endSpikeThreshold;
 
     private int minColorConsideredBlack;
