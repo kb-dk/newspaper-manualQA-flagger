@@ -1,11 +1,5 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.util.Properties;
-
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.TreeIterator;
@@ -19,6 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.Properties;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -50,8 +50,7 @@ public class ManualQAComponentIT  {
      */
     @Test(groups = "integrationTest")
     public void testConsistentBatch() throws Exception {
-        loadSpecificProperties(genericPropertyFile.getParentFile() +
-                "/newspaper-manualQA-flagger-config/config.properties");
+        loadSpecificProperties("src/test/config/consistent-flagging-config.properties");
         validateBatch();
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
