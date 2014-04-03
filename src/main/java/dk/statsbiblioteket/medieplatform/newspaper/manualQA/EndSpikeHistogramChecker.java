@@ -25,7 +25,13 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private int maxColorConsideredBlack;
     private int minColorConsideredWhite;
     private int maxColorConsideredWhite;
+
+    // Max percentage of the total number of pixels in the histogram that are allowed to be in a spike in the area considered
+    // black
     private double maxPercentAllowedNearBlack;
+
+    // Max percentage of the total number of pixels in the histogram that are allowed to be in a spike in the area considered
+    // white
     private double maxPercentAllowedNearWhite;
 
     public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Properties properties) {
