@@ -1,18 +1,11 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Properties;
-
-import javax.xml.bind.JAXBException;
-
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
 import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
+import dk.statsbiblioteket.doms.central.connectors.fedora.ChecksumType;
 import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
@@ -25,10 +18,16 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeE
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.Files;
 import dk.statsbiblioteket.util.xml.DOM;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
 
 public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunnableComponent {
 
@@ -103,7 +102,8 @@ public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunna
         }
 
         fedora.modifyDatastreamByValue(
-                pid, "MANUAL_QA_FLAGS", report, null, "added data for MANUAL QA");
+                pid, "MANUAL_QA_FLAGS",
+                ChecksumType.MD5,null, report.getBytes(), null, "text/xml","added data for MANUAL QA",null);
     }
     
     /**
