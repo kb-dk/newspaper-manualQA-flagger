@@ -6,6 +6,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsi
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 
+/**
+ * The role of this class is to ensure that files in the UNMATCHED folder are not subjected to manual-QA-flagging
+ */
 public class UnmatchedExcluder extends DefaultTreeEventHandler {
     private TreeEventHandler delegate;
 
