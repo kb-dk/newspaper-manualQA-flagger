@@ -11,11 +11,9 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Hvis vi finder den lyseste og den mørkeste farve på billedet, har vi et krav om at ingen
- * farver mellem de to må være
- * 0 eller meget lave. Det er ikke muligt for et analogt system at producere dette, så det
- * er et klart tegn på
- * efterbehandling.
+ * If we find the lightest and darkest colours on an image, there should be no colours between these that are zero (or close to
+ * zero). The reason is that an analog system cannot produce such (close to) zero colours within an otherwise "coloured range".
+ * So this would be a sign of post-processing, and that is what this checker checks for.
  */
 public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector
