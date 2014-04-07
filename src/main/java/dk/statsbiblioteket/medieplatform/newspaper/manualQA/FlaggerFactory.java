@@ -27,6 +27,13 @@ public class FlaggerFactory implements EventHandlerFactory {
     @Override
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
+        final AltoCache altoCache = new AltoCache();
+        boolean mixHandlerOn = Boolean.parseBoolean(properties.getProperty(ConfigConstants.MIX_HANDLER_ON));
+        boolean altoWordAccuracyCheckerOn = Boolean.parseBoolean(properties.getProperty(
+                ConfigConstants.ALTO_WORD_ACCURACY_CHECKER_ON));
+        boolean darknessHistogramCheckerOn = Boolean.parseBoolean(properties.getProperty(
+                ConfigConstants.DARKNESS_HISTOGRAM_CHECKER_ON));
+
         treeEventHandlers.add(new UnmatchedExcluder(new MissingColorsHistogramChecker(resultCollector, flaggingCollector,
                 properties)));
         treeEventHandlers.add(new UnmatchedExcluder(new ChoppyCurveHistogramChecker(resultCollector, flaggingCollector,
@@ -35,16 +42,22 @@ public class FlaggerFactory implements EventHandlerFactory {
         )));
         treeEventHandlers.add(new UnmatchedExcluder(new FilmHandler(resultCollector, flaggingCollector)));
 
-        treeEventHandlers.add(new UnmatchedExcluder(new MixHandler(resultCollector, properties, flaggingCollector)));
-        final AltoCache altoCache = new AltoCache();
+        if (mixHandlerOn) {
+            treeEventHandlers.add(new UnmatchedExcluder(new MixHandler(resultCollector, properties, flaggingCollector)));
+        }
 
-        treeEventHandlers.add(new UnmatchedExcluder(new AltoWordAccuracyChecker(resultCollector, flaggingCollector,
-                altoCache,properties)));
+        if (altoWordAccuracyCheckerOn) {
+            treeEventHandlers.add(new UnmatchedExcluder(new AltoWordAccuracyChecker(resultCollector, flaggingCollector,
+                    altoCache, properties)));
+        }
 
-        treeEventHandlers.add(new UnmatchedExcluder(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,altoCache,
+        if (darknessHistogramCheckerOn) {
+            treeEventHandlers.add(new UnmatchedExcluder(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
+                    altoCache, properties)));
+        }
+
+        treeEventHandlers.add(new UnmatchedExcluder(new EndSpikeHistogramChecker(resultCollector, flaggingCollector,
                 properties)));
-
-        treeEventHandlers.add(new UnmatchedExcluder(new EndSpikeHistogramChecker(resultCollector, flaggingCollector, properties)));
         return treeEventHandlers;
     }
 }
