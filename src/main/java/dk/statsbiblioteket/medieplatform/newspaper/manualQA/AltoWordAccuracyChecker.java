@@ -10,12 +10,8 @@ import dk.statsbiblioteket.util.xml.XPathSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -27,6 +23,7 @@ import java.util.Properties;
 public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
 
     static Logger log = LoggerFactory.getLogger(AltoWordAccuracyChecker.class);
+    private AltoCache altoCache;
 
     ResultCollector resultCollector;
     FlaggingCollector flaggingCollector;
@@ -41,9 +38,10 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
     Map<String, RunningAverage> averages;
     private static final XPathSelector xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
 
-    public AltoWordAccuracyChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Properties properties) {
+    public AltoWordAccuracyChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, AltoCache altoCache, Properties properties) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
+        this.altoCache = altoCache;
         averages = new HashMap<String, RunningAverage>();
         minimumAcceptable = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_AVERAGE_ACCURACY));
         minimumAcceptablePerfile = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_PERFILE_ACCURACY));
@@ -135,50 +133,20 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
         averages.remove(event.getName());
     }
 
-    public static Double readAccuracy(AttributeParsingEvent event) throws NumberFormatException {
+    public  Double readAccuracy(AttributeParsingEvent event) throws NumberFormatException {
         Document doc;
         try {
-            doc = streamToDOM(event.getData(), false);
+            doc = altoCache.getAlto(event);
             if (doc == null) {
                 throw new RuntimeException("Could not parse xml");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        final String accuracyXPath="/alto/Layout/Page/@ACCURACY";
+        final String accuracyXPath="/alto:alto/alto:Layout/alto:Page/@ACCURACY";
         String accuracyString = xpath.selectString(doc, accuracyXPath);
         return Double.parseDouble(accuracyString);
     }
 
-    /**
-     * Parses a XML document from a stream to a DOM or return
-     * {@code null} on error.
-     *
-     * @param xmlStream      a stream containing an XML document.
-     * @param namespaceAware if {@code true} the constructed DOM will reflect
-     *                       the namespaces declared in the XML document
-     *
-     * @return The document in a DOM or {@code null} in case of errors
-     */
-    public static Document streamToDOM(InputStream xmlStream, boolean namespaceAware) {
-        try {
-            DocumentBuilderFactory dbFact = DocumentBuilderFactory.newInstance();
-            dbFact.setNamespaceAware(namespaceAware);
-            dbFact.setValidating(false);
-            dbFact.setFeature("http://xml.org/sax/features/namespaces", false);
-            dbFact.setFeature("http://xml.org/sax/features/validation", false);
-            dbFact.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-            dbFact.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            return dbFact.newDocumentBuilder().parse(xmlStream);
-        } catch (IOException e) {
-            log.warn("I/O error when parsing stream :" + e.getMessage(), e);
-        } catch (SAXException e) {
-            log.warn("Parse error when parsing stream :" + e.getMessage(), e);
-        } catch (ParserConfigurationException e) {
-            log.warn(
-                    "Parser configuration error when parsing XML stream: " + e.getMessage(), e);
-        }
-        return null;
-    }
 
 }

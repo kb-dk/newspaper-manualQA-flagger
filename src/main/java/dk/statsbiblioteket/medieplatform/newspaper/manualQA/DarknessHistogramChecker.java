@@ -9,6 +9,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Defau
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
     private Batch batch;
+    private final AltoCache altoCache;
     private static final XPathSelector xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
     private long[] histogram;
     private int numberOfTextLinesFromAlto;
@@ -33,10 +36,11 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private int minNumberOfTextLines;
 
     public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
-                                    Properties properties) {
+                                    AltoCache altoCache, Properties properties) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.batch = batch;
+        this.altoCache = altoCache;
         this.maxNumberOfDarkImagesAllowed = Integer.parseInt(properties.getProperty(
                                 ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED));
         this.lowestHistogramIndexNotConsideredBlack = Integer.parseInt(properties.getProperty(
@@ -150,10 +154,33 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     }
 
 
-    public static int getNumberOfTextLines(AttributeParsingEvent event) throws NumberFormatException {
-        int count = 0;
+    public  int getNumberOfTextLines(AttributeParsingEvent event) throws NumberFormatException {
+        Document doc;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(event.getData()));
+            doc = altoCache.getAlto(event);
+            if (doc == null) {
+                throw new RuntimeException("Could not parse xml");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+/*
+        final String numberOfTextLinesXPath
+                = "count(alto:alto/alto:Layout/alto:Page/alto:PrintSpace/alto:TextBlock/alto:TextLine)";
+        String numberOfTextLinesString = xpath.selectString(doc, numberOfTextLinesXPath);
+        return Integer.parseInt(numberOfTextLinesString);
+*/
+
+        final String numberOfTextLinesXPath
+                = "alto:alto/alto:Layout/alto:Page/alto:PrintSpace/alto:TextBlock/alto:TextLine";
+        NodeList nodeList = xpath.selectNodeList(doc, numberOfTextLinesXPath);
+        return nodeList.getLength();
+    }
+
+
+    public static int getNumberOfTextLines2(AttributeParsingEvent event) throws NumberFormatException {
+        int count = 0;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(event.getData()))) {
             String line;
             Pattern pattern = Pattern.compile(Pattern.quote("<TextLine "));
             while ((line = reader.readLine()) != null){
