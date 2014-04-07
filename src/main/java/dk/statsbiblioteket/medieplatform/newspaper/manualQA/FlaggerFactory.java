@@ -1,14 +1,14 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 public class FlaggerFactory implements EventHandlerFactory {
     private final ResultCollector resultCollector;
@@ -34,12 +34,14 @@ public class FlaggerFactory implements EventHandlerFactory {
         treeEventHandlers.add(new UnmatchedExcluder(new EditionModsHandler(resultCollector, flaggingCollector, batch, properties
         )));
         treeEventHandlers.add(new UnmatchedExcluder(new FilmHandler(resultCollector, flaggingCollector)));
+
         treeEventHandlers.add(new UnmatchedExcluder(new MixHandler(resultCollector, properties, flaggingCollector)));
-        final AltoCache altoCache = new AltoCache();
-        treeEventHandlers.add(new UnmatchedExcluder(new AltoWordAccuracyChecker(resultCollector, flaggingCollector,
-                altoCache,properties)));
-        treeEventHandlers.add(new UnmatchedExcluder(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,altoCache,
+
+        treeEventHandlers.add(new UnmatchedExcluder(new AltoWordAccuracyChecker(resultCollector, flaggingCollector, properties)));
+
+        treeEventHandlers.add(new UnmatchedExcluder(new DarknessHistogramChecker(resultCollector, flaggingCollector, batch,
                 properties)));
+
         treeEventHandlers.add(new UnmatchedExcluder(new EndSpikeHistogramChecker(resultCollector, flaggingCollector, properties)));
         return treeEventHandlers;
     }
