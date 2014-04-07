@@ -9,10 +9,13 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Defau
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
-import org.w3c.dom.Document;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class DarknessHistogramChecker extends DefaultTreeEventHandler {
@@ -148,18 +151,21 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
 
 
     public static int getNumberOfTextLines(AttributeParsingEvent event) throws NumberFormatException {
-        Document doc;
+        int count = 0;
         try {
-            doc = DOM.streamToDOM(event.getData(), true);
-            if (doc == null) {
-                throw new RuntimeException("Could not parse xml");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(event.getData()));
+            String line;
+            Pattern pattern = Pattern.compile(Pattern.quote("<TextLine "));
+            while ((line = reader.readLine()) != null){
+                Matcher matcher = pattern.matcher(line);
+                while (matcher.find()) {
+                    count++;
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        final String numberOfTextLinesXPath="count(alto:alto/alto:Layout/alto:Page/alto:PrintSpace/alto:TextBlock/alto:TextLine)";
-        String numberOfTextLinesString = xpath.selectString(doc, numberOfTextLinesXPath);
-        return Integer.parseInt(numberOfTextLinesString);
+        return count;
     }
 
 
