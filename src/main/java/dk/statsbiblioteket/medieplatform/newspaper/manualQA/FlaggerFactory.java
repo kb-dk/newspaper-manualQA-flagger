@@ -28,9 +28,9 @@ public class FlaggerFactory implements EventHandlerFactory {
     public List<TreeEventHandler> createEventHandlers() {
         ArrayList<TreeEventHandler> treeEventHandlers = new ArrayList<>();
         final AltoCache altoCache = new AltoCache();
-        boolean mixHandlerOn = Boolean.parseBoolean(properties.getProperty(ConfigConstants.MIX_HANDLER_ON));
-        boolean altoWordAccuracyCheckerOn = Boolean.parseBoolean(properties.getProperty(
-                ConfigConstants.ALTO_WORD_ACCURACY_CHECKER_ON));
+        // Booleans below are deliberately set to false only if specifically set like that in the config file
+        boolean mixHandlerOn = properties.getProperty(ConfigConstants.MIX_HANDLER_ON != "false";
+        boolean altoWordAccuracyCheckerOn = properties.getProperty(ConfigConstants.ALTO_WORD_ACCURACY_CHECKER_ON) != "false";
         boolean darknessHistogramCheckerOn = Boolean.parseBoolean(properties.getProperty(
                 ConfigConstants.DARKNESS_HISTOGRAM_CHECKER_ON));
 
