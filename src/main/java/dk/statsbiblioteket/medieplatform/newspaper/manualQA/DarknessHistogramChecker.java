@@ -20,6 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * This checker flags films in which there are too many dark images.
+ */
 public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
@@ -42,13 +45,13 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
         this.batch = batch;
         this.altoCache = altoCache;
         this.maxNumberOfDarkImagesAllowed = Integer.parseInt(properties.getProperty(
-                                ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED));
+                ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED));
         this.lowestHistogramIndexNotConsideredBlack = Integer.parseInt(properties.getProperty(
-                                ConfigConstants.DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK));
+                ConfigConstants.DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK));
         this.lowestAcceptablePeakPosition = Integer.parseInt(properties.getProperty(
-                                ConfigConstants.DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION));
+                ConfigConstants.DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION));
         this.minNumberOfTextLines = Integer.parseInt(properties.getProperty(
-                                ConfigConstants.DARKNESS_MIN_NUM_OF_TEXT_LINES));
+                ConfigConstants.DARKNESS_MIN_NUM_OF_TEXT_LINES));
     }
 
 
