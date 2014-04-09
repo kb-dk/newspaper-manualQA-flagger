@@ -13,6 +13,8 @@ import java.util.Properties;
  * this cannot be avoided. This is not a spike in the normal curve-wise sense. It is a single color that juts up as a pin in the
  * graph. The same could be the case at the other end. If this spike is too high, say 2% of the total number of pixels, the image
  * should be flagged.
+ *
+ * This checker only flags films (not individual images) for which the average histogram of the whole film satisfies the above.
  */
 public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector flaggingCollector;
