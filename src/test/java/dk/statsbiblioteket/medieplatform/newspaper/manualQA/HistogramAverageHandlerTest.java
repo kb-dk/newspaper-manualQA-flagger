@@ -18,7 +18,7 @@ public class HistogramAverageHandlerTest {
         Batch batch = new Batch("40000");
         FlaggingCollector flaggingCollector = new FlaggingCollector(batch, null, "0.1-SNAPSHOT", 100);
         HistogramAverageHandler histogramHandler = new HistogramAverageHandler(
-                resultCollector, flaggingCollector, batch);
+                resultCollector, new HistogramCache(),batch);
         AttributeParsingEvent event = createAttributeEvent("B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml","<histogram xmlns=\"http://www.statsbiblioteket.dk/avisdigitalisering/histogram/1/0/\">\n" +
                                                            "    <colorScheme>\n" +
                                                            "        <colorSpace>\n" +

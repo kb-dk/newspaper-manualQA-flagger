@@ -4,6 +4,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,9 +18,14 @@ import java.util.Properties;
  * So this would be a sign of post-processing, and that is what this checker checks for.
  */
 public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
+
+
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector
             flaggingCollector;
     private ResultCollector resultCollector;
+    private final HistogramCache histogramCache;
     private final int numberOfMissingColorsAllowed;
     private final int maxValueToDeemAColorMissing;
 
@@ -28,10 +35,11 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
      * @param flaggingCollector the flagging collector for raised flags
      */
     public MissingColorsHistogramChecker(ResultCollector resultCollector,
-                                         FlaggingCollector flaggingCollector,
+                                         FlaggingCollector flaggingCollector, HistogramCache histogramCache,
                                          Properties properties) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
+        this.histogramCache = histogramCache;
         this.numberOfMissingColorsAllowed = Integer.parseInt(properties.getProperty(
                 ConfigConstants.NUMBER_OF_MISSING_COLORS_ALLOWED));
         this.maxValueToDeemAColorMissing = Integer.parseInt(properties.getProperty(
@@ -44,9 +52,9 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
      */
     public void handleAttribute(AttributeParsingEvent event) {
         try {
-            if (event.getName().endsWith(".histogram.xml")) {
-                Histogram histogram = new Histogram(event.getData());
-                List<Integer> missingColorList = findMissingColors(histogram);
+            if (event.getName().endsWith(".jp2.histogram.xml")) {
+                Histogram histogram = histogramCache.getHistogram(event);
+                List<Integer> missingColorList = findMissingColors(event.getName(),histogram);
 
                 if (missingColorList.size() > numberOfMissingColorsAllowed) {
                     flaggingCollector.addFlag(
@@ -68,7 +76,7 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
         return getClass().getSimpleName();
     }
 
-    private List<Integer> findMissingColors(Histogram histogram) {
+    private List<Integer> findMissingColors(String name, Histogram histogram) {
         long[] values = histogram.values();
         List<Integer> result = new ArrayList<>();
         int darkestColor = 0;
@@ -76,8 +84,9 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
         int i;
 
         // Find darkest color
-        for (i = 0; i < values.length; i++) {
-            if (values[i] > 0) {
+        //TODO start from some other value, see endspike
+        for (i = 3; i < values.length; i++) {
+            if (values[i] > maxValueToDeemAColorMissing) {
                 break;
             }
         }
@@ -89,7 +98,7 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
 
         // Find brightest color
         for (i = values.length - 1; i > -1; i--) {
-            if (values[i] > 0) {
+            if (values[i] > maxValueToDeemAColorMissing) {
                 break;
             }
         }
@@ -106,11 +115,17 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
         }
 
         // Find missing colors between darkest and brightest
+        long minColor = Long.MAX_VALUE;
         for (i = darkestColor + 1; i < brightestColor; i++) {
+            if (values[i] < minColor){
+                minColor = values[i];
+            }
             if (values[i] <= maxValueToDeemAColorMissing) {
                 result.add(i);
             }
         }
+
+        log.debug("{} min color is {}",name, minColor);
 
         return result;
     }

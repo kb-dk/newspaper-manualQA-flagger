@@ -5,6 +5,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
@@ -17,8 +19,11 @@ import java.util.Properties;
  * This checker only flags films (not individual images) for which the average histogram of the whole film satisfies the above.
  */
 public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
+    private static Logger log = LoggerFactory.getLogger(EndSpikeHistogramChecker.class);
+
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector flaggingCollector;
     private ResultCollector resultCollector;
+    private final HistogramCache histogramCache;
 
     // Max percentage of the total number of pixels in the histogram that are allowed to be in a spike anywhere in the histogram
     private double endSpikeThreshold;
@@ -36,9 +41,10 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     // white
     private double maxPercentAllowedNearWhite;
 
-    public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Properties properties) {
+    public EndSpikeHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, HistogramCache histogramCache, Properties properties) {
         this.flaggingCollector = flaggingCollector;
         this.resultCollector = resultCollector;
+        this.histogramCache = histogramCache;
         this.endSpikeThreshold = Double.parseDouble(properties.getProperty(ConfigConstants.END_SPIKE_THRESHOLD));
         this.minColorConsideredBlack = Integer.parseInt(properties.getProperty(
                 ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_BLACK));
@@ -58,11 +64,13 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     public void handleAttribute(AttributeParsingEvent event) {
         try {
             if (event.getName().endsWith(".film.histogram.xml")) {
-                Histogram histogram = new Histogram(event.getData());
+                System.out.println(event.getName());
+                Histogram histogram = histogramCache.getHistogram(event);
                 Pair<Spike, Long> spikeAndTotal = findHighestSpike(histogram);
                 Spike spike = spikeAndTotal.getLeft();
                 Long total = spikeAndTotal.getRight();
                 double amount = (spike.getValue() + 0.0) / total;
+                log.debug("endSpikeAmount: {}", amount);
                 if (amount > endSpikeThreshold) {
                     flaggingCollector.addFlag(
                             event,
@@ -78,7 +86,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                         + (minColorConsideredBlack == maxColorConsideredBlack ? "" : "-" + maxColorConsideredBlack);
                 String highColorForPrint = minColorConsideredWhite
                         + (minColorConsideredWhite == maxColorConsideredWhite ? "" : "-" + maxColorConsideredWhite);
-
+                log.debug("lowLightPercent: {}", lowLightPercent);
                 if (lowLightPercent > maxPercentAllowedNearBlack) {
                     flaggingCollector.addFlag(
                             event,
@@ -87,7 +95,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                             "Found possible low-light blowout: more than " + maxPercentAllowedNearBlack
                                     + "% pixels of color " + lowColorForPrint + ", found " + lowLightPercent + "%");
                 }
-
+                log.debug("highLightPercent: {}", highLightPercent);
                 if (highLightPercent > maxPercentAllowedNearWhite) {
                     flaggingCollector.addFlag(
                             event,

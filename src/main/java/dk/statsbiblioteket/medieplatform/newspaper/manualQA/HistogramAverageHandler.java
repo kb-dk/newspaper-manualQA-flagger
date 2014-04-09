@@ -6,33 +6,33 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.InjectingTreeEventHandler;
-import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 public class HistogramAverageHandler extends InjectingTreeEventHandler {
 
+    private HistogramCache cache;
     private final ResultCollector resultCollector;
-    private final FlaggingCollector flaggingCollector;
-    private Batch batch;
+    private final Pattern regex;
     private AverageHistogram filmAverageHistogram = new AverageHistogram();
     private AverageHistogram batchAverageHistogram = new AverageHistogram();
 
 
-    public HistogramAverageHandler(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch) {
+    public HistogramAverageHandler(ResultCollector resultCollector, HistogramCache cache, Batch batch) {
         this.resultCollector = resultCollector;
-        this.flaggingCollector = flaggingCollector;
-        this.batch = batch;
+        this.cache = cache;
+        regex = Pattern.compile(".*/" + batch.getBatchID() + "-" + "[0-9]{2}$");
     }
 
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
         try {
-            if (event.getName().endsWith(".histogram.xml")) {
-                long[] histogram = new Histogram(event.getData()).values();
+            if (event.getName().endsWith("jp2.histogram.xml")) {
+                long[] histogram = cache.getHistogram(event).values();
                 filmAverageHistogram.addHistogram(histogram);
                 batchAverageHistogram.addHistogram(histogram);
             }
@@ -44,23 +44,25 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
 
     @Override
     public void handleNodeBegin(NodeBeginsParsingEvent event) {
+        final String name = event.getName();
         try {
-            if (event.getName().matches("/" + batch.getBatchID() + "-" + "[0-9]{2}$")) {
+            if (regex.matcher(name).matches()) {
                 // We have now entered a film
                 filmAverageHistogram.resetAverageHistogram();
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            resultCollector.addFailure(name, "exception", getComponent(), e.getMessage());
         }
     }
 
 
     @Override
     public void handleNodeEnd(NodeEndParsingEvent event) {
+        final String name = event.getName();
         try {
-            if (event.getName().matches("/" + batch.getBatchID() + "-" + "[0-9]{2}$")) {
+            if (regex.matcher(name).matches()) {
                 // We have now left a film
-                pushInjectedEvent(new AttributeParsingEvent(event.getName()+".film.histogram.xml") {
+                pushInjectedEvent(new AttributeParsingEvent(name +".film.histogram.xml") {
                     @Override
                     public InputStream getData() throws IOException {
                         try {
@@ -78,9 +80,12 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
                     }
                 });
 
+            } else {
+                //System.out.println(name);
             }
+
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            resultCollector.addFailure(name, "exception", getComponent(), e.getMessage());
         }
     }
 

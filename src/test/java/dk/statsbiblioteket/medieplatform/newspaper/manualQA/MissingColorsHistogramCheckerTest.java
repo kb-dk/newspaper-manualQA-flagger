@@ -30,7 +30,7 @@ public class MissingColorsHistogramCheckerTest {
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new MissingColorsHistogramChecker(
-                resultCollector, flaggingCollector, properties);
+                resultCollector, flaggingCollector, new HistogramCache(),properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
@@ -44,7 +44,7 @@ public class MissingColorsHistogramCheckerTest {
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new MissingColorsHistogramChecker(
-                resultCollector, flaggingCollector, properties);
+                resultCollector, flaggingCollector,new HistogramCache(), properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleBadHistogram());

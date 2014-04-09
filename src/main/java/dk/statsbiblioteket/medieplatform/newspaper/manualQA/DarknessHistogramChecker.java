@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
+    private final HistogramCache histogramCache;
     private Batch batch;
     private final AltoCache altoCache;
     private static final XPathSelector xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
@@ -38,10 +39,11 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
     private int lowestAcceptablePeakPosition;
     private int minNumberOfTextLines;
 
-    public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, Batch batch,
+    public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, HistogramCache histogramCache,Batch batch,
                                     AltoCache altoCache, Properties properties) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
+        this.histogramCache = histogramCache;
         this.batch = batch;
         this.altoCache = altoCache;
         this.maxNumberOfDarkImagesAllowed = Integer.parseInt(properties.getProperty(
@@ -75,7 +77,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
             }
 
             if (event.getName().endsWith(".histogram.xml")) {
-                histogram = new Histogram(event.getData()).values();
+                histogram = histogramCache.getHistogram(event).values();
                 checkHistogramDataIfReady();
             }
 

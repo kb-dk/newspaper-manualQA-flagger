@@ -46,12 +46,28 @@ public class ManualQAComponentIT  {
     /**
      * Test that a reasonable batch can be run against the flagger component without generating any
      * errors or flags when the batch and configuration agree on the setup..
+     *
      * @throws Exception
      */
-    @Test(groups = "integrationTest")
+    @Test(groups = "integrationTest", enabled = true)
+    public void testBatch() throws Exception {
+        loadSpecificProperties("src/test/config/config.properties");
+        ManualQAFlaggerRunnableComponent runnable = new ManualQAFlaggerRunnableComponent(properties);
+        runnable.doWorkOnBatch(new Batch("400026952148", 4),resultCollector);
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+        assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
+    }
+
+
+    /**
+     * Test that a reasonable batch can be run against the flagger component without generating any
+     * errors or flags when the batch and configuration agree on the setup..
+     * @throws Exception
+     */
+    @Test(groups = "integrationTest", enabled = false)
     public void testConsistentBatch() throws Exception {
         loadSpecificProperties("src/test/config/consistent-flagging-config.properties");
-        validateBatch();
+        validateBatch(new Batch(TEST_BATCH_ID, 1));
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
@@ -61,10 +77,10 @@ public class ManualQAComponentIT  {
      * generate a lot of flags.
      * @throws Exception
      */
-    @Test(groups = "integrationTest")
+    @Test(groups = "integrationTest", enabled = false)
     public void testInconsistentBatch() throws Exception {
         loadSpecificProperties("src/test/config/inconsistent-flagging-config.properties");
-        validateBatch();
+        validateBatch(new Batch(TEST_BATCH_ID, 1));
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
         logger.debug(flaggingCollector.toReport());
@@ -80,14 +96,10 @@ public class ManualQAComponentIT  {
         properties.load(new FileInputStream(specificProperties));
         }
 
-    private void validateBatch()  throws Exception  {
+    private void validateBatch(Batch batch)  throws Exception  {
         TreeIterator iterator = getIterator();
         EventRunner runner = new EventRunner(iterator);
         resultCollector = new ResultCollector(getClass().getSimpleName(), "v0.1");
-        Batch batch = new Batch();
-
-        batch.setBatchID(TEST_BATCH_ID);
-        batch.setRoundTripNumber(1);
         InputStream batchXmlStructureStream = retrieveBatchStructure();
 
         if (batchXmlStructureStream == null) {

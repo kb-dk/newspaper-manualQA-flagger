@@ -65,8 +65,13 @@ public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunna
             log.error(message);
             throw new RuntimeException(message, e);
         }
+        //TO make the test work....
+        String version = getComponentVersion();
+        if (version == null){
+            version = "0.1";
+        }
         FlaggingCollector flaggingCollector = new FlaggingCollector(
-                batch, batchXmlStructure, getComponentVersion(), maxFlags);
+                batch, batchXmlStructure, version, maxFlags);
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(
                 resultCollector, batch, flaggingCollector, properties);
         List<TreeEventHandler> eventHandlers = eventHandlerFactory.createEventHandlers();
@@ -139,6 +144,8 @@ public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunna
             throw new IOException(e);
         }
     }
+
+
 
 
 }

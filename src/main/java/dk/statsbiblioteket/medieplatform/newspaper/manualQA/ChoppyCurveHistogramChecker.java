@@ -16,6 +16,7 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
 
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
+    private final HistogramCache histogramCache;
     private final double threshold;
     private final int maxIrregularities;
     private boolean[] errorPositions = new boolean[256];
@@ -25,10 +26,11 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
      * @param resultCollector the result collector for real errors
      * @param flaggingCollector the flagging collector for raised flags
      */
-    public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector,
+    public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, HistogramCache histogramCache,
                                        Properties properties) {
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
+        this.histogramCache = histogramCache;
         this.threshold = Double.parseDouble(properties.getProperty(ConfigConstants.CHOPPY_CHECK_THRESHOLD));
         this.maxIrregularities = Integer.parseInt(properties.getProperty(
                         ConfigConstants.CHOPPY_CHECK_MAX_IRREGULARITIES));
@@ -38,8 +40,8 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
         try {
-            if (event.getName().endsWith(".histogram.xml")) {
-                Histogram histogram = new Histogram(event.getData());
+            if (event.getName().endsWith(".jp2.histogram.xml")) {
+                Histogram histogram = histogramCache.getHistogram(event);
                 int irregularities = countIrregularities(histogram);
 
                 if (irregularities > maxIrregularities) {

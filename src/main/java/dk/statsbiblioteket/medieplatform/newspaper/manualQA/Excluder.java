@@ -9,16 +9,18 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeE
 /**
  * The role of this class is to ensure that files in the UNMATCHED folder are not subjected to manual-QA-flagging
  */
-public class UnmatchedExcluder extends DefaultTreeEventHandler {
+public class Excluder extends DefaultTreeEventHandler {
+    private String contains;
     private TreeEventHandler delegate;
 
-    public UnmatchedExcluder(TreeEventHandler delegate) {
+    public Excluder(String contains, TreeEventHandler delegate) {
+        this.contains = contains;
         this.delegate = delegate;
     }
 
     @Override
     public void handleNodeBegin(NodeBeginsParsingEvent event) {
-        if (event.getName().contains("UNMATCHED")) {
+        if (event.getName().contains(contains)) {
             return;
         }
         delegate.handleNodeBegin(event);
@@ -26,7 +28,7 @@ public class UnmatchedExcluder extends DefaultTreeEventHandler {
 
     @Override
     public void handleNodeEnd(NodeEndParsingEvent event) {
-        if (event.getName().contains("UNMATCHED")) {
+        if (event.getName().contains(contains)) {
             return;
         }
         delegate.handleNodeEnd(event);
@@ -34,7 +36,7 @@ public class UnmatchedExcluder extends DefaultTreeEventHandler {
 
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
-        if (event.getName().contains("UNMATCHED")) {
+        if (event.getName().contains(contains)) {
             return;
         }
         delegate.handleAttribute(event);
