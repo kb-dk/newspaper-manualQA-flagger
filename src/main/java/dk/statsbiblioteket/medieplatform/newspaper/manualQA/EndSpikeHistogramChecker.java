@@ -64,13 +64,12 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
     public void handleAttribute(AttributeParsingEvent event) {
         try {
             if (event.getName().endsWith(".film.histogram.xml")) {
-                System.out.println(event.getName());
                 Histogram histogram = histogramCache.getHistogram(event);
                 Pair<Spike, Long> spikeAndTotal = findHighestSpike(histogram);
                 Spike spike = spikeAndTotal.getLeft();
                 Long total = spikeAndTotal.getRight();
                 double amount = (spike.getValue() + 0.0) / total;
-                log.debug("endSpikeAmount: {}", amount);
+                log.debug("{}, endSpikeAmount: {}",event.getName(), amount);
                 if (amount > endSpikeThreshold) {
                     flaggingCollector.addFlag(
                             event,
@@ -86,7 +85,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                         + (minColorConsideredBlack == maxColorConsideredBlack ? "" : "-" + maxColorConsideredBlack);
                 String highColorForPrint = minColorConsideredWhite
                         + (minColorConsideredWhite == maxColorConsideredWhite ? "" : "-" + maxColorConsideredWhite);
-                log.debug("lowLightPercent: {}", lowLightPercent);
+                log.debug("{}, lowLightPercent: {}", event.getName(), lowLightPercent);
                 if (lowLightPercent > maxPercentAllowedNearBlack) {
                     flaggingCollector.addFlag(
                             event,
@@ -95,7 +94,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                             "Found possible low-light blowout: more than " + maxPercentAllowedNearBlack
                                     + "% pixels of color " + lowColorForPrint + ", found " + lowLightPercent + "%");
                 }
-                log.debug("highLightPercent: {}", highLightPercent);
+                log.debug("{}, highLightPercent: {}", event.getName(), highLightPercent);
                 if (highLightPercent > maxPercentAllowedNearWhite) {
                     flaggingCollector.addFlag(
                             event,

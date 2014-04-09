@@ -49,7 +49,7 @@ public class ManualQAComponentIT  {
      *
      * @throws Exception
      */
-    @Test(groups = "integrationTest", enabled = true)
+    @Test(groups = "integrationTest", enabled = false)
     public void testBatch() throws Exception {
         loadSpecificProperties("src/test/config/config.properties");
         ManualQAFlaggerRunnableComponent runnable = new ManualQAFlaggerRunnableComponent(properties);
@@ -64,7 +64,7 @@ public class ManualQAComponentIT  {
      * errors or flags when the batch and configuration agree on the setup..
      * @throws Exception
      */
-    @Test(groups = "integrationTest", enabled = false)
+    @Test(groups = "integrationTest", enabled = true)
     public void testConsistentBatch() throws Exception {
         loadSpecificProperties("src/test/config/consistent-flagging-config.properties");
         validateBatch(new Batch(TEST_BATCH_ID, 1));
@@ -77,7 +77,7 @@ public class ManualQAComponentIT  {
      * generate a lot of flags.
      * @throws Exception
      */
-    @Test(groups = "integrationTest", enabled = false)
+    @Test(groups = "integrationTest", enabled = true)
     public void testInconsistentBatch() throws Exception {
         loadSpecificProperties("src/test/config/inconsistent-flagging-config.properties");
         validateBatch(new Batch(TEST_BATCH_ID, 1));
