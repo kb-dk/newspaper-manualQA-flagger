@@ -1,26 +1,50 @@
-<configuration scan="true">
+<configuration>
 
-  <property name="LOGFILE" value="${user.home}/logs/manualQA-flagger.log" />
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-      <file>${LOGFILE}</file>
-          <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <!-- daily rollover -->
-      <fileNamePattern>${LOGFILE}.%d{yyyy-MM-dd}</fileNamePattern>
 
-      <!-- keep 30 days' worth of history -->
-      <maxHistory>30</maxHistory>
-          </rollingPolicy>
+    <property name="LOGFILE" value="${user.home}/logs/manualQA-flagger.log"/>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGFILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOGFILE}.%d{yyyy-MM-dd}</fileNamePattern>
 
-    <append>true</append>
-    <encoder>
-          <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
-    </encoder>
-      </appender>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
 
-  <root level="INFO">
-        <appender-ref ref="FILE" />
-  </root>
-  <logger name="org.apache.zookeeper.ZooKeeper" level="WARN" />
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+    </root>
+    <logger name="org.apache.zookeeper.ZooKeeper" level="WARN"/>
+
+
+    <!--These are guides to enable debug output for each of the checkers. This will probably have to be enabled when we
+    need to change a setting, to see the data-->
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.AltoWordAccuracyChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.AverageHistogram" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.ChoppyCurveHistogramChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.DarknessHistogramChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.EditionModsHandler" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.EndSpikeHistogramChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.FilmHandler" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.HistogramAverageHandler" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.MissingColorsHistogramChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.MixHandler" level="DEBUG"/>
+
 
 </configuration>
-

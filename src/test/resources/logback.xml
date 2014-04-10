@@ -1,26 +1,35 @@
 <configuration scan="true">
 
-  <property name="LOGFILE" value="${user.home}/logs/manualQA-flagger.log" />
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-      <file>${LOGFILE}</file>
-          <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <!-- daily rollover -->
-      <fileNamePattern>${LOGFILE}.%d{yyyy-MM-dd}</fileNamePattern>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <target>System.err</target>
+    </appender>
 
-      <!-- keep 30 days' worth of history -->
-      <maxHistory>30</maxHistory>
-          </rollingPolicy>
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+    </root><!--
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.AltoWordAccuracyChecker" level="DEBUG"/>
 
-    <append>true</append>
-    <encoder>
-          <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
-    </encoder>
-      </appender>
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.AverageHistogram" level="DEBUG"/>
 
-  <root level="DEBUG">
-        <appender-ref ref="FILE" />
-  </root>
-  <logger name="org.apache.zookeeper.ZooKeeper" level="WARN" />
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.ChoppyCurveHistogramChecker" level="DEBUG"/>
 
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.DarknessHistogramChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.EditionModsHandler" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.EndSpikeHistogramChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.FilmHandler" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.HistogramAverageHandler" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.MissingColorsHistogramChecker" level="DEBUG"/>
+
+    <logger name="dk.statsbiblioteket.medieplatform.newspaper.manualQA.MixHandler" level="DEBUG"/>
+
+-->
 </configuration>
 
