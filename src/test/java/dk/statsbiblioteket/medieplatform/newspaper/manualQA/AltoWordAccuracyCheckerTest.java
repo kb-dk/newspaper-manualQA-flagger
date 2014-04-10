@@ -4,6 +4,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.AltoCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.mockers.AltoMocker;
 import dk.statsbiblioteket.util.xml.DOM;

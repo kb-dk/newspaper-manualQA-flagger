@@ -4,6 +4,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

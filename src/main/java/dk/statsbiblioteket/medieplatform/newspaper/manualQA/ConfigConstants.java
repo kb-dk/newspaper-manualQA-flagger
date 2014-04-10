@@ -1,34 +1,38 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
-/**
- * Created by csr on 15/01/14.
- */
+
 public class ConfigConstants {
 
     private ConfigConstants(){}
 
-    public static final String NUMBER_OF_MISSING_COLORS_ALLOWED = "flag.numberofmissingcolorsallowed";
-    public static final String MAX_VAL_TO_DEEM_A_COLOR_MISSING = "flag.maxvaluetodeemacolormissing";
+    public static final String FLAG_IGNORE_COLORS_BELOW = "flag.ignoreColorsBelow";
+    public static final String MAX_VAL_TO_DEEM_A_COLOR_MISSING = "flag.maxValueToDeemAColorMissing";
 
-    public static final String CHOPPY_CHECK_THRESHOLD = "flag.choppycheckthreshold";
-    public static final String CHOPPY_CHECK_MAX_IRREGULARITIES = "flag.maxvaluetodeemacolormissing";
 
-    public static final String EDITION_MODS_MAX_EDITIONS_PER_DAY = "flag.maxeditionsperday";
+    public static final String NUMBER_OF_MISSING_COLORS_ALLOWED = "flag.missingcolors.numberOfMissingColorsAllowed";
 
-    public static final String DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED = "flag.darknessmaxnumofdarkimagesallowed";
-    public static final String DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK
-            = "flag.darknesslowesthistogramindexnotconsideredblack";
-    public static final String DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION = "flag.darknesslowestacceptablepeakposition";
-    public static final String DARKNESS_MIN_NUM_OF_TEXT_LINES = "flag.darknessminnumoftextlines";
-    public static final String DARKNESS_HISTOGRAM_CHECKER_ON = "flag.darknesshistogramcheckeron";
 
-    public static final String END_SPIKE_THRESHOLD = "flag.endspikethreshold";
-    public static final String END_SPIKE_MIN_COLOR_CONSIDERED_BLACK = "flag.endspikemincolorconsideredblack";
-    public static final String END_SPIKE_MAX_COLOR_CONSIDERED_BLACK = "flag.endspikemaxcolorconsideredblack";
-    public static final String END_SPIKE_MIN_COLOR_CONSIDERED_WHITE = "flag.endspikemincolorconsideredwhite";
-    public static final String END_SPIKE_MAX_COLOR_CONSIDERED_WHITE = "flag.endspikemaxcolorconsideredwhite";
-    public static final String END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK = "flag.endspikemaxpercentallowednearblack";
-    public static final String END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE = "flag.endspikemaxpercentallowednearwhite";
+    public static final String CHOPPY_CHECK_MAX_IRREGULARITIES = "flag.choppyCurve.checkMaxIrregularities";
+    public static final String CHOPPY_CHECK_THRESHOLD = "flag.choppyCurve.checkthreshold";
+
+    public static final String EDITION_MODS_MAX_EDITIONS_PER_DAY = "flag.editions.maxeditionsperday";
+
+    public static final String DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED = "flag.darkness.MaxNumOfDarkImagesAllowed";
+    public static final String DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION = "flag.darkness.lowestAcceptablePeakPosition";
+    public static final String DARKNESS_MIN_NUM_OF_TEXT_LINES = "flag.darkness.minNumOfTextLines";
+    public static final String DARKNESS_HISTOGRAM_CHECKER_ON = "flag.darkness.histogramCheckerOn";
+
+
+
+    public static final String END_SPIKE_THRESHOLD = "flag.endspike.threshold";
+    public static final String END_SPIKE_MIN_COLOR_CONSIDERED_BLACK = "flag.endspike.minColorConsideredBlack";
+    public static final String END_SPIKE_MIN_COLOR_CONSIDERED_WHITE = "flag.endspike.minColorConsideredWhite";
+    public static final String END_SPIKE_MAX_COLOR_CONSIDERED_WHITE = "flag.endspike.maxColorConsideredWhite";
+    public static final String END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK = "flag.endspike.maxPercentAllowedNearBlack";
+    public static final String END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE = "flag.endspike.maxPercentAllowedNearWhite";
+
+
+
 
     public static final String SCANNER_MANUFACTURERS = "flag.mix.scannermanufacturers";
     public static final String SCANNER_MODELS = "flag.mix.scannermodels";

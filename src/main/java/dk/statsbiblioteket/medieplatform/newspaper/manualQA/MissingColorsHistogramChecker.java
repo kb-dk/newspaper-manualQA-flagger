@@ -3,7 +3,9 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.utils.HistogramUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ import java.util.Properties;
  */
 public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
 
+    private final int startingColor;
     private Logger log = LoggerFactory.getLogger(getClass());
 
 
@@ -44,6 +47,7 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
                 ConfigConstants.NUMBER_OF_MISSING_COLORS_ALLOWED));
         this.maxValueToDeemAColorMissing = Integer.parseInt(properties.getProperty(
                 ConfigConstants.MAX_VAL_TO_DEEM_A_COLOR_MISSING));
+        this.startingColor = Integer.parseInt(properties.getProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW, "0"));
     }
 
     @Override
@@ -79,34 +83,10 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
     private List<Integer> findMissingColors(String name, Histogram histogram) {
         long[] values = histogram.values();
         List<Integer> result = new ArrayList<>();
-        int darkestColor = 0;
-        int brightestColor = 255;
-        int i;
 
-        // Find darkest color
-        //TODO start from some other value, see endspike
-        for (i = 3; i < values.length; i++) {
-            if (values[i] > maxValueToDeemAColorMissing) {
-                break;
-            }
-        }
-        if (i < values.length) {
-            darkestColor = i;
-        } else {
-            darkestColor = -1;
-        }
+        int darkestColor = HistogramUtils.findDarkestColor(values,  startingColor, maxValueToDeemAColorMissing);
+        int brightestColor = HistogramUtils.findBrightestColor(values, maxValueToDeemAColorMissing);
 
-        // Find brightest color
-        for (i = values.length - 1; i > -1; i--) {
-            if (values[i] > maxValueToDeemAColorMissing) {
-                break;
-            }
-        }
-        if (i > -1) {
-            brightestColor = i;
-        } else {
-            brightestColor = values.length;
-        }
 
         // Only one color, so there's no interval to check, maybe we should check for
         // that special case somewhere else
@@ -116,11 +96,11 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
 
         // Find missing colors between darkest and brightest
         long minColor = Long.MAX_VALUE;
-        for (i = darkestColor + 1; i < brightestColor; i++) {
+        for (int i = darkestColor + 1; i < brightestColor; i++) {
             if (values[i] < minColor){
                 minColor = values[i];
             }
-            if (values[i] <= maxValueToDeemAColorMissing) {
+            if (values[i] <= 0) {
                 result.add(i);
             }
         }

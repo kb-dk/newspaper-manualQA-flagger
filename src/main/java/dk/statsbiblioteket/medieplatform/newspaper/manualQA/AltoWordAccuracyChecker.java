@@ -4,6 +4,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.AltoCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
@@ -39,10 +40,11 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
     private static final XPathSelector xpath = DOM.createXPathSelector("alto", "http://www.loc.gov/standards/alto/ns-v2#");
 
     public AltoWordAccuracyChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, AltoCache altoCache, Properties properties) {
+        log.debug("Enabling the {}",this.getClass().getName());
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.altoCache = altoCache;
-        averages = new HashMap<String, RunningAverage>();
+        averages = new HashMap<>();
         minimumAcceptable = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_AVERAGE_ACCURACY));
         minimumAcceptablePerfile = Double.parseDouble(properties.getProperty(ConfigConstants.MINIMUM_ALTO_PERFILE_ACCURACY));
         ignoreZero = Boolean.parseBoolean(properties.getProperty(ConfigConstants.ALTO_IGNORE_ZERO_ACCURACY));
@@ -69,12 +71,13 @@ public class AltoWordAccuracyChecker extends DefaultTreeEventHandler {
 
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
-        if (!event.getName().endsWith("alto.xml")) {
+        if (!event.getName().endsWith(".alto.xml")) {
             return;
         }
         Double accuracy = null;
         try {
             accuracy = readAccuracy(event);
+            log.debug("{}, found alto accuracy {}",event.getName(),accuracy);
         } catch (NumberFormatException e) {
             flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "No ACCURACY attribute found in alto:Page" +
                     " element in this file.");

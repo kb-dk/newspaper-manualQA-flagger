@@ -6,6 +6,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.InjectingTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;

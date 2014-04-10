@@ -3,6 +3,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.Pair;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
         this.minColorConsideredBlack = Integer.parseInt(properties.getProperty(
                 ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_BLACK));
         this.maxColorConsideredBlack = Integer.parseInt(properties.getProperty(
-                ConfigConstants.END_SPIKE_MAX_COLOR_CONSIDERED_BLACK));
+                        ConfigConstants.FLAG_IGNORE_COLORS_BELOW));
         this.minColorConsideredWhite = Integer.parseInt(properties.getProperty(
                 ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_WHITE));
         this.maxColorConsideredWhite = Integer.parseInt(properties.getProperty(

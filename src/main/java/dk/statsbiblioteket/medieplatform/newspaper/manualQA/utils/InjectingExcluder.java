@@ -1,19 +1,18 @@
-package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
+package dk.statsbiblioteket.medieplatform.newspaper.manualQA.utils;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.InjectingTreeEventHandler;
 
-/**
- * The role of this class is to ensure that files in the UNMATCHED folder are not subjected to manual-QA-flagging
- */
-public class Excluder extends DefaultTreeEventHandler {
+import java.util.NoSuchElementException;
+
+public class InjectingExcluder extends InjectingTreeEventHandler {
     private String contains;
-    private TreeEventHandler delegate;
+    private InjectingTreeEventHandler delegate;
 
-    public Excluder(String contains, TreeEventHandler delegate) {
+    public InjectingExcluder(String contains, InjectingTreeEventHandler delegate) {
         this.contains = contains;
         this.delegate = delegate;
     }
@@ -45,5 +44,15 @@ public class Excluder extends DefaultTreeEventHandler {
     @Override
     public void handleFinish() {
         delegate.handleFinish();
+    }
+
+    @Override
+    public ParsingEvent popInjectedEvent() throws NoSuchElementException {
+        return delegate.popInjectedEvent();
+    }
+
+    @Override
+    public void pushInjectedEvent(ParsingEvent parsingEvent) {
+        delegate.pushInjectedEvent(parsingEvent);
     }
 }

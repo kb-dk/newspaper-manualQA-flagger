@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
+package dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;

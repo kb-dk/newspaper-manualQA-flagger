@@ -6,6 +6,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.AltoCache;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -30,7 +32,7 @@ public class DarknessHistogramCheckerTest {
     public void setUp() {
         properties = new Properties();
         properties.setProperty(ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, "2");
-        properties.setProperty(ConfigConstants.DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK, "3");
+        properties.setProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW, "3");
         properties.setProperty(ConfigConstants.DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION, "128");
         properties.setProperty(ConfigConstants.DARKNESS_MIN_NUM_OF_TEXT_LINES, "10");
     }

@@ -4,6 +4,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,7 +26,7 @@ public class EndSpikeHistogramCheckerTest {
         properties = new Properties();
         properties.setProperty(ConfigConstants.END_SPIKE_THRESHOLD, "0.1");
         properties.setProperty(ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_BLACK, "0");
-        properties.setProperty(ConfigConstants.END_SPIKE_MAX_COLOR_CONSIDERED_BLACK, "2");
+        properties.setProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW, "2");
         properties.setProperty(ConfigConstants.END_SPIKE_MIN_COLOR_CONSIDERED_WHITE, "255");
         properties.setProperty(ConfigConstants.END_SPIKE_MAX_COLOR_CONSIDERED_WHITE, "255");
         properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_BLACK, "2");

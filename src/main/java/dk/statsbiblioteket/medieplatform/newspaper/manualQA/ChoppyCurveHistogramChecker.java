@@ -3,7 +3,11 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.utils.HistogramUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -14,12 +18,17 @@ import java.util.Properties;
  */
 public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
 
+    static Logger log = LoggerFactory.getLogger(ChoppyCurveHistogramChecker.class);
+
+
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
     private final HistogramCache histogramCache;
     private final double threshold;
     private final int maxIrregularities;
+    private final int startingColor;
     private boolean[] errorPositions = new boolean[256];
+    private long maxValueToDeemAColorMissing;
 
     /**
      * Create the Checker
@@ -28,12 +37,17 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
      */
     public ChoppyCurveHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, HistogramCache histogramCache,
                                        Properties properties) {
+        log.debug("Enabling the {}",getClass().getName());
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.histogramCache = histogramCache;
         this.threshold = Double.parseDouble(properties.getProperty(ConfigConstants.CHOPPY_CHECK_THRESHOLD));
         this.maxIrregularities = Integer.parseInt(properties.getProperty(
                         ConfigConstants.CHOPPY_CHECK_MAX_IRREGULARITIES));
+        this.startingColor = Integer.parseInt(properties.getProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW,"0"));
+        this.maxValueToDeemAColorMissing = Integer.parseInt(
+                properties.getProperty(
+                        ConfigConstants.MAX_VAL_TO_DEEM_A_COLOR_MISSING,"0"));
     }
 
 
@@ -43,6 +57,7 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
             if (event.getName().endsWith(".jp2.histogram.xml")) {
                 Histogram histogram = histogramCache.getHistogram(event);
                 int irregularities = countIrregularities(histogram);
+                log.debug("{}, found irregularities {}",event.getName(),irregularities);
 
                 if (irregularities > maxIrregularities) {
                     flaggingCollector.addFlag(
@@ -81,8 +96,13 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
             throw new IllegalArgumentException("Expected array of length 256");
         }
 
+
+        int darkestColor = HistogramUtils.findDarkestColor(values, startingColor,maxValueToDeemAColorMissing);
+        int brightestColor = HistogramUtils.findBrightestColor(values, maxValueToDeemAColorMissing);
+
+
         Arrays.fill(errorPositions, false);
-        for (int i = 0; i < values.length; i++) {
+        for (int i = darkestColor; i < brightestColor; i++) {
             if (i == 0 || i == values.length - 1) {
                 // This value does not have both a pre-value and a post-value, so skip it
                 continue;

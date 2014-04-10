@@ -6,9 +6,13 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.AltoCache;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -24,6 +28,9 @@ import java.util.regex.Pattern;
  * This checker flags films in which there are too many dark images.
  */
 public class DarknessHistogramChecker extends DefaultTreeEventHandler {
+
+    static Logger log = LoggerFactory.getLogger(DarknessHistogramChecker.class);
+
     private final ResultCollector resultCollector;
     private final FlaggingCollector flaggingCollector;
     private final HistogramCache histogramCache;
@@ -41,6 +48,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
 
     public DarknessHistogramChecker(ResultCollector resultCollector, FlaggingCollector flaggingCollector, HistogramCache histogramCache,Batch batch,
                                     AltoCache altoCache, Properties properties) {
+        log.debug("Enabling {}",getClass().getName());
         this.resultCollector = resultCollector;
         this.flaggingCollector = flaggingCollector;
         this.histogramCache = histogramCache;
@@ -49,7 +57,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
         this.maxNumberOfDarkImagesAllowed = Integer.parseInt(properties.getProperty(
                 ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED));
         this.lowestHistogramIndexNotConsideredBlack = Integer.parseInt(properties.getProperty(
-                ConfigConstants.DARKNESS_LOWEST_HISTOGRAM_INDEX_NOT_CONSIDERED_BLACK));
+                        ConfigConstants.FLAG_IGNORE_COLORS_BELOW));
         this.lowestAcceptablePeakPosition = Integer.parseInt(properties.getProperty(
                 ConfigConstants.DARKNESS_LOWEST_ACCEPTABLE_PEAK_POSITION));
         this.minNumberOfTextLines = Integer.parseInt(properties.getProperty(

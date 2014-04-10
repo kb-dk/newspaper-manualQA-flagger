@@ -4,7 +4,11 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventHandlerFactory;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.AltoCache;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.utils.Excluder;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.utils.InjectingExcluder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +37,9 @@ public class FlaggerFactory implements EventHandlerFactory {
         // Booleans below are deliberately set to false only if specifically set like that in the config file
         boolean mixHandlerOn = !properties.getProperty(ConfigConstants.MIX_HANDLER_ON, "true").equals("false");
         boolean altoWordAccuracyCheckerOn = !properties.getProperty(
-                ConfigConstants.ALTO_WORD_ACCURACY_CHECKER_ON,
-                "true").equals("false");
+                ConfigConstants.ALTO_WORD_ACCURACY_CHECKER_ON, "true").equals("false");
         boolean darknessHistogramCheckerOn = !properties.getProperty(
-                ConfigConstants.DARKNESS_HISTOGRAM_CHECKER_ON,
-                "true").equals("false");
+                ConfigConstants.DARKNESS_HISTOGRAM_CHECKER_ON, "true").equals("false");
         treeEventHandlers.add(new InjectingExcluder(UNMATCHED,new HistogramAverageHandler(resultCollector, histogramCache,batch)));
 
 

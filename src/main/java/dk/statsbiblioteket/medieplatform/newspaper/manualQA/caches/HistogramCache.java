@@ -1,6 +1,7 @@
-package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
+package dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches;
 
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
+import dk.statsbiblioteket.medieplatform.newspaper.manualQA.Histogram;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
