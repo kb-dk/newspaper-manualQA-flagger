@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
+/**
+ * A simple utility cache to ensure that the Histogram objects are not retrieved and parsed more than once
+ */
 public class HistogramCache {
 
     static Logger log = LoggerFactory.getLogger(HistogramCache.class);

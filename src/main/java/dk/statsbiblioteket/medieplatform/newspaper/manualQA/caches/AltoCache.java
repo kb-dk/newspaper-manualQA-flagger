@@ -9,6 +9,9 @@ import org.w3c.dom.Document;
 
 import java.io.IOException;
 
+/**
+ * Simple utility cache to ensure that the alto is not retrieved and dom parsed more than once
+ */
 public class AltoCache {
 
     static Logger log = LoggerFactory.getLogger(AltoCache.class);

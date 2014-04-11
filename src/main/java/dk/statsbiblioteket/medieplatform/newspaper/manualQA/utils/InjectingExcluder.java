@@ -8,6 +8,10 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Injec
 
 import java.util.NoSuchElementException;
 
+/**
+ * An excluder for the injecting tree event handlers. Nessesary because the framework uses instance of to
+ * determine if an eventhandler is injecting...
+ */
 public class InjectingExcluder extends InjectingTreeEventHandler {
     private String contains;
     private InjectingTreeEventHandler delegate;

@@ -48,7 +48,8 @@ public class FlaggerFactory implements EventHandlerFactory {
                         UNMATCHED,
                         new MissingColorsHistogramChecker(
                                 resultCollector,
-                                flaggingCollector,histogramCache,
+                                flaggingCollector,
+                                histogramCache,
                                 properties)));
 
 
@@ -57,17 +58,20 @@ public class FlaggerFactory implements EventHandlerFactory {
                         UNMATCHED,
                         new ChoppyCurveHistogramChecker(
                                 resultCollector,
-                                flaggingCollector,histogramCache,
+                                flaggingCollector,
+                                histogramCache,
                                 properties)));
 
         treeEventHandlers.add(
-                new Excluder(UNMATCHED,
+                new Excluder(
+                        UNMATCHED,
                         new EditionModsHandler(
                                 resultCollector,
                                 flaggingCollector,
                                 batch,
                                 properties)));
-        treeEventHandlers.add(new Excluder(UNMATCHED,new FilmHandler(resultCollector, flaggingCollector)));
+
+        treeEventHandlers.add(new Excluder(UNMATCHED, new FilmHandler(resultCollector, flaggingCollector)));
 
 
 

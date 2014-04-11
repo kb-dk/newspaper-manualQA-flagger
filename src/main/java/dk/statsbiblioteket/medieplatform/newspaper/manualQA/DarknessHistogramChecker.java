@@ -16,12 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -188,24 +184,6 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
                 = "alto:alto/alto:Layout/alto:Page/alto:PrintSpace/alto:TextBlock/alto:TextLine";
         NodeList nodeList = xpath.selectNodeList(doc, numberOfTextLinesXPath);
         return nodeList.getLength();
-    }
-
-
-    public static int getNumberOfTextLines2(AttributeParsingEvent event) throws NumberFormatException {
-        int count = 0;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(event.getData()))) {
-            String line;
-            Pattern pattern = Pattern.compile(Pattern.quote("<TextLine "));
-            while ((line = reader.readLine()) != null){
-                Matcher matcher = pattern.matcher(line);
-                while (matcher.find()) {
-                    count++;
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return count;
     }
 
 
