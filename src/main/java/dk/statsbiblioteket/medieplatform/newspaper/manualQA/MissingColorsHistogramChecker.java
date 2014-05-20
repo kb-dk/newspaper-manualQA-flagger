@@ -20,10 +20,9 @@ import java.util.Properties;
  * So this would be a sign of post-processing, and that is what this checker checks for.
  */
 public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
-
     private final int startingColor;
     private Logger log = LoggerFactory.getLogger(getClass());
-
+    private static final String DEFAULT_MIN_ALLOWED_COLOR_VALUE = "0";
 
     private dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector
             flaggingCollector;
@@ -47,7 +46,8 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
                 ConfigConstants.NUMBER_OF_MISSING_COLORS_ALLOWED));
         this.maxValueToDeemAColorMissing = Integer.parseInt(properties.getProperty(
                 ConfigConstants.MAX_VAL_TO_DEEM_A_COLOR_MISSING));
-        this.startingColor = Integer.parseInt(properties.getProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW, "0"));
+        this.startingColor = Integer.parseInt(properties.getProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW,
+                DEFAULT_MIN_ALLOWED_COLOR_VALUE));
     }
 
     @Override
