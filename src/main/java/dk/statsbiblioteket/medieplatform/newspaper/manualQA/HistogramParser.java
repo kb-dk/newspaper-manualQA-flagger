@@ -13,13 +13,6 @@ import org.w3c.dom.traversal.NodeIterator;
 
 import java.io.InputStream;
 
-/**
- * Created with IntelliJ IDEA.
- * User: jrg
- * Date: 1/8/14
- * Time: 3:59 PM
- * To change this template use File | Settings | File Templates.
- */
 public class HistogramParser {
     public long[] parseHistogram(AttributeParsingEvent event, ResultCollector resultCollector) {
         long[] histogram = new long[256];
@@ -74,5 +67,4 @@ public class HistogramParser {
 
         return result;
     }
-
 }
