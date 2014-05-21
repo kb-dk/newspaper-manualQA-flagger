@@ -16,7 +16,7 @@ public class AverageHistogramTest {
 
     @Test
     public void testGetAverageHistogramAsArrayGood() throws Exception {
-        AverageHistogram averageHistogram = new AverageHistogram();
+        AverageHistogram averageHistogram = new AverageHistogram("something");
         long[] histogram1 = new long[256];
         Arrays.fill(histogram1, 1);
         long[] histogram2 = new long[256];

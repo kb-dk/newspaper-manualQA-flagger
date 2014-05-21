@@ -6,6 +6,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
+import dk.statsbiblioteket.util.xml.DOM;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -36,12 +37,13 @@ public class EndSpikeHistogramCheckerTest {
     @Test
     public void testHandleAttributeGood() throws Exception {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
+                DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(),properties);
         AttributeParsingEvent event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
+                "B400022028241-RT1/400022028241-1/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
                 HistogramXml.getSampleGoodHistogram());
         histogramHandler.handleAttribute(event);
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
@@ -54,11 +56,12 @@ public class EndSpikeHistogramCheckerTest {
         properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE, "100");
 
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
+                DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(), properties);
         AttributeParsingEvent event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
+                "B400022028241-RT1/400022028241-1/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
         histogramHandler.handleAttribute(event);
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
@@ -71,11 +74,12 @@ public class EndSpikeHistogramCheckerTest {
         properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE, "100");
 
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
+                DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(),properties);
         AttributeParsingEvent event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
+                "B400022028241-RT1/400022028241-1/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
         histogramHandler.handleAttribute(event);
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
@@ -88,11 +92,12 @@ public class EndSpikeHistogramCheckerTest {
         properties.setProperty(ConfigConstants.END_SPIKE_MAX_PERCENT_ALLOWED_NEAR_WHITE, "0.5");
 
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
-        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"), null, "0.1-SNAPSHOT", 100);
+        FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
+                DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
         TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(),properties);
         AttributeParsingEvent event = createAttributeEvent(
-                "B400022028252-RT1/400022028252-08/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
+                "B400022028241-RT1/400022028241-1/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
                 HistogramXml.getSampleBadHistogram());
         histogramHandler.handleAttribute(event);
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());

@@ -176,6 +176,17 @@ public class FlaggingFinderTest {
                 "B400022028241-RT1/400022028241-1/FILM-ISO-target/adresseavisen1759-400022028241-1-ISO-0001.jp2");
     }
 
+    @Test
+    public void testFilmNodeReferenceHistogram() throws Exception {
+        ParsingEvent mixEvent = createAttributeParsingEvent("B400022028241-RT1/400022028241-1/adresseavisen1759-400022028241-1.film.histogram.xml");
+        FlaggingFinder flaggingFinder = getFlaggingFinder();
+        String mixMapping = flaggingFinder.getFileReferenceFromEvent(mixEvent);
+        Assert.assertEquals(
+                "B400022028241-RT1/400022028241-1/FILM-ISO-target/adresseavisen1759-400022028241-1-ISO-0001.jp2",
+                mixMapping);
+    }
+
+
 
     /*----------------------WORKSHIFT ISO*/
 

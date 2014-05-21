@@ -19,8 +19,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
     private HistogramCache cache;
     private final ResultCollector resultCollector;
     private final Pattern regex;
-    private AverageHistogram filmAverageHistogram = new AverageHistogram();
-    private AverageHistogram batchAverageHistogram = new AverageHistogram();
+    private AverageHistogram filmAverageHistogram;
 
 
     public HistogramAverageHandler(ResultCollector resultCollector, HistogramCache cache, Batch batch) {
@@ -32,30 +31,22 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
     @Override
     public void handleAttribute(AttributeParsingEvent event) {
         try {
-            if (event.getName().endsWith("jp2.histogram.xml")) {
+            if (event.getName().endsWith(".film.xml")){
+                filmAverageHistogram = new AverageHistogram(event.getName());
+            } else  if (event.getName().endsWith("jp2.histogram.xml")) {
                 long[] histogram = cache.getHistogram(event).values();
-                filmAverageHistogram.addHistogram(histogram);
-                batchAverageHistogram.addHistogram(histogram);
+                if (filmAverageHistogram != null) {
+                    filmAverageHistogram.addHistogram(histogram);
+                }
             }
         } catch (Exception e) {
             resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
     }
 
-
     @Override
     public void handleNodeBegin(NodeBeginsParsingEvent event) {
-        final String name = event.getName();
-        try {
-            if (regex.matcher(name).matches()) {
-                // We have now entered a film
-                filmAverageHistogram.resetAverageHistogram();
-            }
-        } catch (Exception e) {
-            resultCollector.addFailure(name, "exception", getComponent(), e.getMessage());
-        }
     }
-
 
     @Override
     public void handleNodeEnd(NodeEndParsingEvent event) {
@@ -63,7 +54,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
         try {
             if (regex.matcher(name).matches()) {
                 // We have now left a film
-                pushInjectedEvent(new AttributeParsingEvent(name +".film.histogram.xml") {
+                pushInjectedEvent(new AttributeParsingEvent(makeName(filmAverageHistogram)) {
                     @Override
                     public InputStream getData() throws IOException {
                         try {
@@ -88,6 +79,13 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
         } catch (Exception e) {
             resultCollector.addFailure(name, "exception", getComponent(), e.getMessage());
         }
+    }
+
+    private String makeName(AverageHistogram filmAverageHistogram) {
+        if (filmAverageHistogram.getName().endsWith(".film.xml")){
+            return filmAverageHistogram.getName().replace(".film.xml",".film.histogram.xml");
+        }
+        return filmAverageHistogram.getName();
     }
 
     private String getComponent() {

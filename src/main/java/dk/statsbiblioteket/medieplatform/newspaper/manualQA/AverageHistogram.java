@@ -6,6 +6,8 @@ import java.util.Arrays;
  * This class represents a histogram that is value-by-value average of several histgorams.
  */
 public class AverageHistogram {
+
+    private String name;
     private static int NUMBER_OF_VALUES_IN_HISTOGRAM = 256;
 
     // Holds the sums of each value in the histograms for which this one is an average
@@ -15,9 +17,14 @@ public class AverageHistogram {
     private long histogramCount;
 
 
-    public AverageHistogram() {
+    public AverageHistogram(String name) {
+        this.name = name;
     }
 
+
+    public String getName() {
+        return name;
+    }
 
     public void resetAverageHistogram() {
         Arrays.fill(sumOfValue, 0);
