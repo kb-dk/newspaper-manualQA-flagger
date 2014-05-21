@@ -157,7 +157,7 @@ The regexp to recognize if a path denote an Unmatched scan node
 
             //if no file in film iso target, get the first from editions
             NodeList editionPageNodes = DOM.createXPathSelector().selectNodeList(
-                    batchXmlStructure, "//node[@shortName='" + name + "']/node[@shortName!='FILM-ISO-target']/node");
+                    batchXmlStructure, "//node[@name='" + name + "']/node[@shortName!='FILM-ISO-target']/node");
             Node firstInEditionPages = null;
 
             firstInEditionPages = getFirstBySequence(editionPageNodes);
