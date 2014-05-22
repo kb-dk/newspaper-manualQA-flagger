@@ -18,8 +18,6 @@ import java.math.BigDecimal;
  * This collector should be used to collect the flags for the manual QA
  */
 public class FlaggingCollector {
-
-
     private final ObjectFactory objectFactory;
     private final Manualqainput report;
     private Batch batch;
@@ -49,13 +47,9 @@ public class FlaggingCollector {
         flagCount = 0;
     }
 
-
     private BigDecimal toBigDecimal(String componentVersion) {
         return new BigDecimal(componentVersion.replaceAll("[a-zA-Z-]*", ""));
     }
-
-
-
 
     /**
      * Add a flag
@@ -85,8 +79,8 @@ public class FlaggingCollector {
            report.getManualqafiles().getManualqafile().add(manualQAFile);
         } else {
             Details detailsBlock = objectFactory.createDetails();
-            String countMessage = "The number of issues found that require checking exceeds the maximum expected." +
-                    " The number of issues found was " + flagCount + ", but only " + maxFlags + " can be reported.";
+            String countMessage = "The number of issues found that require checking exceeds the maximum expected."
+                    + " The number of issues found was " + flagCount + ", but only " + maxFlags + " can be reported.";
             manualQAFile.setDescription(countMessage);
             detailsBlock.getContent().add(description);
             manualQAFile.setDetails(detailsBlock);
