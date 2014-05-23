@@ -123,34 +123,4 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
 
         return s;
     }
-
-    /*
-    private List<Integer> findMissingColors(Histogram histogram) {
-        long[] values = histogram.values();
-        List<Integer> result = new ArrayList<>();
-
-        int lowest = -1;
-        int highest = -1;
-        for (int i = 0; i < values.length; i++) {
-            long value = values[i];
-            if (lowest == -1 && value > 0) {
-                lowest = i;
-            }
-            if (value > 0) {
-                highest = i;
-            }
-
-        }
-        for (int i = lowest; i <= highest; i++) {
-            long value = values[i];
-
-            if (value == 0) {
-                result.add(i);
-
-            }
-        }
-        return result;
-    }
-    */
-
 }
