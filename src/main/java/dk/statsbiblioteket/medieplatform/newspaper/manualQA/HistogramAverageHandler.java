@@ -71,9 +71,6 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
                         return null;
                     }
                 });
-
-            } else {
-                //System.out.println(name);
             }
 
         } catch (Exception e) {
