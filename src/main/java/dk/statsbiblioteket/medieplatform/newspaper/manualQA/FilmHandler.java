@@ -79,16 +79,19 @@ public class FilmHandler extends DefaultTreeEventHandler {
     }
 
     private void validateOriginalResolution(AttributeParsingEvent event, Document doc) {
-        String originalNewspaperResolutionString = filmXPathSelector.selectString(doc, "/avis:reelMetadata/avis:captureResolutionOriginal");
+        String originalNewspaperResolutionString = filmXPathSelector.selectString(doc,
+                "/avis:reelMetadata/avis:captureResolutionOriginal");
         try {
             int resolution = Integer.parseInt(originalNewspaperResolutionString);
             if (resolution > MAXIMUM_RESOLUTION) {
-                flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(), "2E-7: captureOriginalResolution is expected " +
-                        "to be no more than " + MAXIMUM_RESOLUTION +" pixels/inch, not '" + resolution + "'");
+                flaggingCollector.addFlag(event, "metadata", getClass().getSimpleName(),
+                        "2E-7: captureOriginalResolution is expected "
+                        + "to be no more than " + MAXIMUM_RESOLUTION +" pixels/inch, not '" + resolution + "'");
             }
         } catch (NumberFormatException e) {
-            resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(), "2E-7: originalNewspaperResolution should be" +
-                    " an integer, not '" + originalNewspaperResolutionString + "'" );
+            resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(),
+                    "2E-7: originalNewspaperResolution should be"
+                    + " an integer, not '" + originalNewspaperResolutionString + "'" );
         }
     }
 
@@ -102,8 +105,8 @@ public class FilmHandler extends DefaultTreeEventHandler {
                         " be less than " + MAXIMUM_EXPECTED_REDUCTION_RATIO + ". Actual value is " + reductionRatio );
             }
         } catch (NumberFormatException e) {
-            resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(), "2E-6: reductionRatio should be" +
-                    " a number, not '" + reductionRatioString + "'" );
+            resultCollector.addFailure(event.getName(), "metadata", getClass().getSimpleName(), "2E-6: reductionRatio should be"
+                    + " a number, not '" + reductionRatioString + "'" );
         }
     }
 
