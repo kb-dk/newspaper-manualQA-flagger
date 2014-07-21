@@ -52,6 +52,9 @@ public class AverageHistogram {
 
 
     public synchronized long[] getAverageHistogramAsArray() {
+        if (!closed){
+            throw new IllegalStateException("Attempting to use an average histogram that is not closed");
+        }
         long[] averageOfValue = new long[NUMBER_OF_VALUES_IN_HISTOGRAM];
 
         for (int i = 0; i < NUMBER_OF_VALUES_IN_HISTOGRAM; i++) {

@@ -24,7 +24,7 @@ public class AverageHistogramTest {
 
         averageHistogram.addHistogram(histogram1);
         averageHistogram.addHistogram(histogram2);
-
+        averageHistogram.close();
         long[] average = averageHistogram.getAverageHistogramAsArray();
 
         for (int i = 0; i < 256; i++) {
