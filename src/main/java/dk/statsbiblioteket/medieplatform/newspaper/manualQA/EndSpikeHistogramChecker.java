@@ -106,6 +106,7 @@ public class EndSpikeHistogramChecker extends DefaultTreeEventHandler {
                 }
             }
         } catch (Exception e) {
+            log.error("Caught Exception", e);
             resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
 

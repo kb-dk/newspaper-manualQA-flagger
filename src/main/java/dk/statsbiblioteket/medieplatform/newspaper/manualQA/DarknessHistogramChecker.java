@@ -90,6 +90,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
                 checkHistogramDataIfReady();
             }
         } catch (Exception e) {
+            log.error("Caught Exception",e);
             resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
     }
@@ -115,6 +116,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
                 numberOfTooDarkImages = 0;
             }
         } catch (Exception e) {
+            log.error("Caught Exception", e);
             resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
     }
@@ -132,6 +134,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
                 }
             }
         } catch (Exception e) {
+            log.error("Caught Exception", e);
             resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
         }
     }
