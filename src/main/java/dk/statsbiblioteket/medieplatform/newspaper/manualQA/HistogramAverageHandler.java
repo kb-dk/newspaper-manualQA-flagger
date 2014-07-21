@@ -8,7 +8,6 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsi
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.InjectingTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 
-import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,16 +52,16 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
         final String name = event.getName();
         try {
             if (regex.matcher(name).matches()) {
+                filmAverageHistogram.close();
                 // We have now left a film
                 pushInjectedEvent(new AttributeParsingEvent(makeName(filmAverageHistogram)) {
+
+                    private final String averageHistogram
+                            = new Histogram(filmAverageHistogram.getAverageHistogramAsArray()).toXml();
+
                     @Override
                     public InputStream getData() throws IOException {
-                        try {
-                            return new ByteArrayInputStream(new Histogram(
-                                    filmAverageHistogram.getAverageHistogramAsArray()).toXml().getBytes());
-                        } catch (JAXBException e) {
-                            throw new IOException(e);
-                        }
+                        return new ByteArrayInputStream(averageHistogram.getBytes());
                     }
 
                     @Override

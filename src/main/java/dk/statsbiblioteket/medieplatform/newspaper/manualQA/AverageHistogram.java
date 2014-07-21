@@ -17,6 +17,8 @@ public class AverageHistogram {
     private long histogramCount;
 
 
+    private boolean closed = false;
+
     public AverageHistogram(String name) {
         this.name = name;
     }
@@ -26,13 +28,17 @@ public class AverageHistogram {
         return name;
     }
 
-    public void resetAverageHistogram() {
+    public synchronized void resetAverageHistogram() {
         Arrays.fill(sumOfValue, 0);
         histogramCount = 0;
+        closed = false;
     }
 
 
-    public void addHistogram(long[] histogram) {
+    public synchronized void addHistogram(long[] histogram) {
+        if (closed){
+            throw new IllegalStateException("Histogram is closed for changed");
+        }
         if (histogram.length != 256) {
             throw new IllegalArgumentException("Expected array of length 256");
         }
@@ -45,7 +51,7 @@ public class AverageHistogram {
     }
 
 
-    public long[] getAverageHistogramAsArray() {
+    public synchronized long[] getAverageHistogramAsArray() {
         long[] averageOfValue = new long[NUMBER_OF_VALUES_IN_HISTOGRAM];
 
         for (int i = 0; i < NUMBER_OF_VALUES_IN_HISTOGRAM; i++) {
@@ -55,5 +61,8 @@ public class AverageHistogram {
         return averageOfValue;
     }
 
-    // TODO make getAverageHistogramAsXml() if needed
+    //Close this histogram for further changes
+    public synchronized void close(){
+        closed = true;
+    }
 }
