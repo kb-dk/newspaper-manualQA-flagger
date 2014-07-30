@@ -1,3 +1,6 @@
+1.3
+* Fix issue with averaged histograms only being readable once
+
 1.2
 * Update to version 1.8 of batch event framework
 * Make flags reported for averaged histograms refer to existing files
