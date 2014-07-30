@@ -8,13 +8,13 @@
   </parent>
 
   <artifactId>newspaper-manualQA-flagger</artifactId>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.3</version>
 
   <scm>
     <url>https://github.com/statsbiblioteket/newspaper-manualQA-flagger</url>
     <connection>scm:git:https://github.com/statsbiblioteket/newspaper-manualQA-flagger.git</connection>
     <developerConnection>scm:git:git@github.com:statsbiblioteket/newspaper-manualQA-flagger.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>newspaper-manualQA-flagger-1.3</tag>
   </scm>
 
   <build>
