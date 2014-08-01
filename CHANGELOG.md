@@ -1,3 +1,6 @@
+1.4
+* Stop averaging histograms for WORKSHIFT_ISO_TARGETs 
+
 1.3
 * Fix issue with averaged histograms only being readable once
 
