@@ -98,7 +98,7 @@ public class ManualQAComponentIT  {
 
     private void validateBatch(Batch batch)  throws Exception  {
         TreeIterator iterator = getIterator();
-        EventRunner runner = new EventRunner(iterator);
+
         resultCollector = new ResultCollector(getClass().getSimpleName(), "v0.1");
         InputStream batchXmlStructureStream = retrieveBatchStructure();
 
@@ -110,8 +110,8 @@ public class ManualQAComponentIT  {
         flaggingCollector = new FlaggingCollector(batch, batchXmlManifest, "0.1", 100);
 
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(resultCollector, batch, flaggingCollector, properties);
-
-        runner.runEvents(eventHandlerFactory.createEventHandlers(), resultCollector);
+        EventRunner runner = new EventRunner(iterator, eventHandlerFactory.createEventHandlers(), resultCollector);
+        runner.run();
     }
 
     /**

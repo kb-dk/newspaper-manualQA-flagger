@@ -5,7 +5,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.InjectingTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 
 import java.io.ByteArrayInputStream;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Pattern;
 
-public class HistogramAverageHandler extends InjectingTreeEventHandler {
+public class HistogramAverageHandler implements TreeEventHandler {
 
     private HistogramCache cache;
     private final ResultCollector resultCollector;
@@ -28,7 +29,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
     }
 
     @Override
-    public void handleAttribute(AttributeParsingEvent event) {
+    public void handleAttribute(AttributeParsingEvent event, EventRunner runner) {
         try {
             if (event.getName().endsWith(".film.xml")){
                 filmAverageHistogram = new AverageHistogram(event.getName());
@@ -44,17 +45,17 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
     }
 
     @Override
-    public void handleNodeBegin(NodeBeginsParsingEvent event) {
+    public void handleNodeBegin(NodeBeginsParsingEvent event, EventRunner runner) {
     }
 
     @Override
-    public void handleNodeEnd(NodeEndParsingEvent event) {
+    public void handleNodeEnd(NodeEndParsingEvent event, EventRunner runner) {
         final String name = event.getName();
         try {
             if (regex.matcher(name).matches()) {
                 filmAverageHistogram.close();
                 // We have now left a film
-                pushInjectedEvent(new AttributeParsingEvent(makeName(filmAverageHistogram)) {
+                runner.pushEvent(new AttributeParsingEvent(makeName(filmAverageHistogram)) {
 
                     private final String averageHistogram
                             = new Histogram(filmAverageHistogram.getAverageHistogramAsArray()).toXml();
@@ -93,7 +94,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
      * Called when the batch is finished
      */
     @Override
-    public void handleFinish() {
+    public void handleFinish(EventRunner runner) {
         // TODO output average to somewhere...
     }
 

@@ -3,7 +3,7 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
 import dk.statsbiblioteket.util.xml.DOM;
@@ -40,7 +40,7 @@ public class EndSpikeHistogramCheckerTest {
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
                 DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
         //Threshold 0 so this expects perfect linearity
-        TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
+        DefaultTreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(),properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028241-RT1/400022028241-1/1795-12-20-01/adresseavisen1759-1795-12-20-01-0079.jp2.histogram.xml",
@@ -58,7 +58,7 @@ public class EndSpikeHistogramCheckerTest {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
                 DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
-        TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
+        DefaultTreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(), properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028241-RT1/400022028241-1/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
@@ -76,7 +76,7 @@ public class EndSpikeHistogramCheckerTest {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
                 DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
-        TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
+        DefaultTreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(),properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028241-RT1/400022028241-1/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",
@@ -94,7 +94,7 @@ public class EndSpikeHistogramCheckerTest {
         ResultCollector resultCollector = new ResultCollector("blah", "blah");
         FlaggingCollector flaggingCollector = new FlaggingCollector(new Batch("40000"),
                 DOM.streamToDOM(Thread.currentThread().getContextClassLoader().getResourceAsStream("batchStructure.xml")), "0.1-SNAPSHOT", 100);
-        TreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
+        DefaultTreeEventHandler histogramHandler = new EndSpikeHistogramChecker(
                 resultCollector, flaggingCollector, new HistogramCache(),properties);
         AttributeParsingEvent event = createAttributeEvent(
                 "B400022028241-RT1/400022028241-1/adresseavisen1759-1795-12-20-01-0079.film.histogram.xml",

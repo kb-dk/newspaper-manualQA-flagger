@@ -4,16 +4,15 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributePar
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 
 /**
  * The role of this class is to ensure that files in the UNMATCHED folder are not subjected to manual-QA-flagging
  */
 public class Excluder extends DefaultTreeEventHandler {
     private String contains;
-    private TreeEventHandler delegate;
+    private DefaultTreeEventHandler delegate;
 
-    public Excluder(String contains, TreeEventHandler delegate) {
+    public Excluder(String contains, DefaultTreeEventHandler delegate) {
         this.contains = contains;
         this.delegate = delegate;
     }

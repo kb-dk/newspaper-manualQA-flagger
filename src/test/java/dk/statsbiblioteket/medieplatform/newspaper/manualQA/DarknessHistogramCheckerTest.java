@@ -5,7 +5,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.AltoCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.caches.HistogramCache;
 import dk.statsbiblioteket.medieplatform.newspaper.manualQA.flagging.FlaggingCollector;
@@ -52,7 +52,7 @@ public class DarknessHistogramCheckerTest {
      */
     @Test
     public void testHandleAttributeGood() throws Exception {
-        TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector,new HistogramCache(), batch, new AltoCache(),
+        DefaultTreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector,new HistogramCache(), batch, new AltoCache(),
                 properties);
 
         histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
@@ -90,7 +90,7 @@ public class DarknessHistogramCheckerTest {
     public void testHandleAttributeBad() throws Exception {
         properties.setProperty(ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, "1");
 
-        TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector, new HistogramCache(),batch, new AltoCache(),
+        DefaultTreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector, new HistogramCache(),batch, new AltoCache(),
                 properties);
 
         histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));
@@ -124,7 +124,7 @@ public class DarknessHistogramCheckerTest {
     public void testHandleAttributeGoodBecauseOfAlto() throws Exception {
         properties.setProperty(ConfigConstants.DARKNESS_MAX_NUM_OF_DARK_IMAGES_ALLOWED, "1");
 
-        TreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector,new HistogramCache(), batch, new AltoCache(),
+        DefaultTreeEventHandler histogramHandler = new DarknessHistogramChecker(resultCollector, flaggingCollector,new HistogramCache(), batch, new AltoCache(),
                 properties);
 
         histogramHandler.handleNodeBegin(createNodeBeginsParsingEvent("/" + batchID + "-99"));

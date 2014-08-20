@@ -75,8 +75,8 @@ public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunna
         EventHandlerFactory eventHandlerFactory = new FlaggerFactory(
                 resultCollector, batch, flaggingCollector, properties);
         List<TreeEventHandler> eventHandlers = eventHandlerFactory.createEventHandlers();
-        EventRunner eventRunner = new EventRunner(createIterator(batch));
-        eventRunner.runEvents(eventHandlers, resultCollector);
+        EventRunner eventRunner = new EventRunner(createIterator(batch), eventHandlers, resultCollector);
+        eventRunner.run();
         saveFlaggingCollector(flaggingCollector);
         log.info("Done validating '{}', success: {}", batch.getFullID(), resultCollector.isSuccess());
 

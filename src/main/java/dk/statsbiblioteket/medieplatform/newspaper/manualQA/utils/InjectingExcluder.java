@@ -3,60 +3,50 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA.utils;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.InjectingTreeEventHandler;
-
-import java.util.NoSuchElementException;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 
 /**
  * An excluder for the injecting tree event handlers. Nessesary because the framework uses instance of to
  * determine if an eventhandler is injecting...
  */
-public class InjectingExcluder extends InjectingTreeEventHandler {
+public class InjectingExcluder implements TreeEventHandler {
     private String contains;
-    private InjectingTreeEventHandler delegate;
+    private TreeEventHandler delegate;
 
-    public InjectingExcluder(String contains, InjectingTreeEventHandler delegate) {
+    public InjectingExcluder(String contains, TreeEventHandler delegate) {
         this.contains = contains;
         this.delegate = delegate;
     }
 
     @Override
-    public void handleNodeBegin(NodeBeginsParsingEvent event) {
+    public void handleNodeBegin(NodeBeginsParsingEvent event, EventRunner runner) {
         if (event.getName().contains(contains)) {
             return;
         }
-        delegate.handleNodeBegin(event);
+        delegate.handleNodeBegin(event,runner);
     }
 
     @Override
-    public void handleNodeEnd(NodeEndParsingEvent event) {
+    public void handleNodeEnd(NodeEndParsingEvent event, EventRunner runner) {
         if (event.getName().contains(contains)) {
             return;
         }
-        delegate.handleNodeEnd(event);
+        delegate.handleNodeEnd(event, runner);
     }
 
     @Override
-    public void handleAttribute(AttributeParsingEvent event) {
+    public void handleAttribute(AttributeParsingEvent event, EventRunner runner) {
         if (event.getName().contains(contains)) {
             return;
         }
-        delegate.handleAttribute(event);
+        delegate.handleAttribute(event, runner);
     }
 
     @Override
-    public void handleFinish() {
-        delegate.handleFinish();
+    public void handleFinish(EventRunner runner) {
+        delegate.handleFinish(runner);
     }
 
-    @Override
-    public ParsingEvent popInjectedEvent() throws NoSuchElementException {
-        return delegate.popInjectedEvent();
-    }
 
-    @Override
-    public void pushInjectedEvent(ParsingEvent parsingEvent) {
-        delegate.pushInjectedEvent(parsingEvent);
-    }
 }
