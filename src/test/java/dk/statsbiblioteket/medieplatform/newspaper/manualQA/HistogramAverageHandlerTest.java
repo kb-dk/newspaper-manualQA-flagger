@@ -1053,7 +1053,7 @@ public class HistogramAverageHandlerTest {
                                                            "        </color>\n" +
                                                            "    </colors>\n" +
                                                            "</histogram>\n");
-        histogramHandler.handleAttribute(event,null);
+        histogramHandler.handleAttribute(event);
         Assert.assertFalse(flaggingCollector.hasFlags(),flaggingCollector.toReport());
     }
 
