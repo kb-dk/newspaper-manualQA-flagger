@@ -51,7 +51,7 @@ public class ManualQAComponentIT  {
      */
     @Test(groups = "integrationTest", enabled = false)
     public void testBatch() throws Exception {
-        loadSpecificProperties("src/test/config/config.properties");
+        loadSpecificProperties(Thread.currentThread().getContextClassLoader().getResource("config.properties").getPath());
         ManualQAFlaggerRunnableComponent runnable = new ManualQAFlaggerRunnableComponent(properties);
         runnable.doWorkOnBatch(new Batch("400026952148", 4),resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
@@ -66,7 +66,7 @@ public class ManualQAComponentIT  {
      */
     @Test(groups = "integrationTest", enabled = true)
     public void testConsistentBatch() throws Exception {
-        loadSpecificProperties("src/test/config/consistent-flagging-config.properties");
+        loadSpecificProperties(Thread.currentThread().getContextClassLoader().getResource("consistent-flagging-config.properties").getPath());
         validateBatch(new Batch(TEST_BATCH_ID, 1));
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
@@ -79,7 +79,7 @@ public class ManualQAComponentIT  {
      */
     @Test(groups = "integrationTest", enabled = true)
     public void testInconsistentBatch() throws Exception {
-        loadSpecificProperties("src/test/config/inconsistent-flagging-config.properties");
+        loadSpecificProperties(Thread.currentThread().getContextClassLoader().getResource("inconsistent-flagging-config.properties").getPath());
         validateBatch(new Batch(TEST_BATCH_ID, 1));
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertTrue(flaggingCollector.hasFlags(), flaggingCollector.toReport());
