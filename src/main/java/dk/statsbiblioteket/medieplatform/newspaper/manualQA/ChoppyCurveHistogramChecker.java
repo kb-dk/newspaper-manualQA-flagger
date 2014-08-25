@@ -44,10 +44,10 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         this.threshold = Double.parseDouble(properties.getProperty(ConfigConstants.CHOPPY_CHECK_THRESHOLD));
         this.maxIrregularities = Integer.parseInt(properties.getProperty(
                         ConfigConstants.CHOPPY_CHECK_MAX_IRREGULARITIES));
-        this.startingColor = Integer.parseInt(properties.getProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW,"0"));
+        this.startingColor = Integer.parseInt(properties.getProperty(ConfigConstants.FLAG_IGNORE_COLORS_BELOW, "0"));
         this.maxValueToDeemAColorMissing = Integer.parseInt(
                 properties.getProperty(
-                        ConfigConstants.MAX_VAL_TO_DEEM_A_COLOR_MISSING,"0"));
+                        ConfigConstants.MAX_VAL_TO_DEEM_A_COLOR_MISSING, "0"));
     }
 
 
@@ -97,7 +97,7 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
         }
 
 
-        int darkestColor = HistogramUtils.findDarkestColor(values, startingColor,maxValueToDeemAColorMissing);
+        int darkestColor = HistogramUtils.findDarkestColor(values, startingColor, maxValueToDeemAColorMissing);
         int brightestColor = HistogramUtils.findBrightestColor(values, maxValueToDeemAColorMissing);
 
 
