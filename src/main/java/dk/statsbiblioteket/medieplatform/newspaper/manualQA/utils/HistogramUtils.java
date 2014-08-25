@@ -9,7 +9,7 @@ public class HistogramUtils {
      * Find the highest color that is greater than #maxValueToDeemAColorMissing
      * @param values the values of the histogram
      * @param maxValueToDeemAColorMissing the max value
-     * @return the highest color. Return -1 if no bright color is found
+     * @return the highest color. Return values.length-1 if no bright color is found
      */
     public static int findBrightestColor(long[] values, long maxValueToDeemAColorMissing) {
         int i;
@@ -32,7 +32,7 @@ public class HistogramUtils {
      * @param values the values of the histogram
      * @param startingColor the starting color
      * @param maxValueToDeemAColorMissing the max value
-     * @return the darkest color. Return -1 if no dark color is found
+     * @return the darkest color. Return startingColor if no dark color is found
      */
     public static int findDarkestColor(long[] values, int startingColor, long maxValueToDeemAColorMissing) {
         int i;
@@ -45,7 +45,7 @@ public class HistogramUtils {
         if (i < values.length) {
             darkestColor = i;
         } else {
-            darkestColor = -1;
+            darkestColor = startingColor;
         }
         return darkestColor;
     }
