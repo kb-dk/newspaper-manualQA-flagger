@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
@@ -19,7 +22,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
     private final ResultCollector resultCollector;
     private final Pattern regex;
     private AverageHistogram filmAverageHistogram;
-
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     public HistogramAverageHandler(ResultCollector resultCollector, HistogramCache cache, Batch batch) {
         this.resultCollector = resultCollector;
@@ -39,7 +42,8 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
                 }
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            log.error("Caught exception", e);
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.toString());
         }
     }
 
@@ -73,6 +77,7 @@ public class HistogramAverageHandler extends InjectingTreeEventHandler {
             }
 
         } catch (Exception e) {
+            log.error("Caught exception", e);
             resultCollector.addFailure(name, "exception", getComponent(), e.getMessage());
         }
     }

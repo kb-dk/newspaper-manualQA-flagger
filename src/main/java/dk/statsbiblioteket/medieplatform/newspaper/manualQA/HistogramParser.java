@@ -3,6 +3,9 @@ package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
 import dk.statsbiblioteket.util.xml.DOM;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,6 +17,8 @@ import org.w3c.dom.traversal.NodeIterator;
 import java.io.InputStream;
 
 public class HistogramParser {
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     public long[] parseHistogram(AttributeParsingEvent event, ResultCollector resultCollector) {
         long[] histogram = new long[256];
 
@@ -22,7 +27,8 @@ public class HistogramParser {
             Document doc = DOM.streamToDOM(stream, true);
             histogram = parseDocToArray(doc);
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "Exception", "component", e.getMessage());
+            log.error("Caught exception", e);
+            resultCollector.addFailure(event.getName(), "exception", "component", e.toString());
         }
 
         return histogram;

@@ -91,7 +91,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
             }
         } catch (Exception e) {
             log.error("Caught Exception",e);
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.toString());
         }
     }
 
@@ -117,7 +117,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
             }
         } catch (Exception e) {
             log.error("Caught Exception", e);
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.toString());
         }
     }
 
@@ -135,7 +135,7 @@ public class DarknessHistogramChecker extends DefaultTreeEventHandler {
             }
         } catch (Exception e) {
             log.error("Caught Exception", e);
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.toString());
         }
     }
 

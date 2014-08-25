@@ -72,7 +72,8 @@ public class MissingColorsHistogramChecker extends DefaultTreeEventHandler {
                 }
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            log.error("Caught exception", e);
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.toString());
         }
     }
 

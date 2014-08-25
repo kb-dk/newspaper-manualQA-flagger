@@ -71,7 +71,8 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
                 }
             }
         } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.getMessage());
+            log.error("Caught exception", e);
+            resultCollector.addFailure(event.getName(), "exception", getComponent(), e.toString());
         }
     }
 
@@ -98,6 +99,9 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
 
 
         int darkestColor = HistogramUtils.findDarkestColor(values, startingColor,maxValueToDeemAColorMissing);
+        if (darkestColor == -1) {
+            darkestColor = 0;
+        }
         int brightestColor = HistogramUtils.findBrightestColor(values, maxValueToDeemAColorMissing);
 
 
