@@ -90,7 +90,6 @@ public class ChoppyCurveHistogramChecker extends DefaultTreeEventHandler {
     private int countIrregularities(Histogram histogram) {
         long[] values = histogram.values();
         long value, pre, post;
-        double deviation;
         int count = 0;
 
         if (values.length != 256) {
