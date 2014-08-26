@@ -1,3 +1,7 @@
+1.5
+* Update to version 1.10 of batch event framework
+* Fix indexOutOfBounds bug when no darkest color is found
+
 1.4
 * Stop averaging histograms for WORKSHIFT_ISO_TARGETs 
 
