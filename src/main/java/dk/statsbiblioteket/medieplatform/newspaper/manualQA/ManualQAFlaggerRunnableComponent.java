@@ -46,7 +46,7 @@ public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunna
     }
 
     @Override
-    public void doWorkOnBatch(Batch batch, ResultCollector resultCollector) throws Exception {
+    public void doWorkOnItem(Batch batch, ResultCollector resultCollector) throws Exception {
         log.info("Starting validation of '{}'", batch.getFullID());
 
         InputStream batchXmlStructureStream = retrieveBatchStructure(batch);

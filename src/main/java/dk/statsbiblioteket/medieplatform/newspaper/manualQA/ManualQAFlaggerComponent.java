@@ -1,6 +1,6 @@
 package dk.statsbiblioteket.medieplatform.newspaper.manualQA;
 
-import dk.statsbiblioteket.medieplatform.autonomous.SBOIDomsAutonomousComponentUtils;
+import dk.statsbiblioteket.medieplatform.autonomous.NewspaperBatchAutonomousComponentUtils;
 import dk.statsbiblioteket.medieplatform.autonomous.CallResult;
 import dk.statsbiblioteket.medieplatform.autonomous.RunnableComponent;
 
@@ -19,18 +19,18 @@ public class ManualQAFlaggerComponent {
      * @param args the arguments.
      *
      * @throws Exception
-     * @see SBOIDomsAutonomousComponentUtils#parseArgs(String[])
+     *NewspaperBatchAutonomousComponentUtilstUtils#parseArgs(String[])
      */
     public static void main(String[] args) throws Exception {
         log.info("Starting with args {}", args);
 
         //Parse the args to a properties construct
-        Properties properties = SBOIDomsAutonomousComponentUtils.parseArgs(args);
+        Properties properties = NewspaperBatchAutonomousComponentUtils.parseArgs(args);
 
         //make a new runnable component from the properties
         RunnableComponent component = new ManualQAFlaggerRunnableComponent(properties);
 
-        CallResult result = SBOIDomsAutonomousComponentUtils.startAutonomousComponent(properties, component);
+        CallResult result = NewspaperBatchAutonomousComponentUtils.startAutonomousComponent(properties, component);
         log.info(result.toString());
         System.exit(result.containsFailures());
     }

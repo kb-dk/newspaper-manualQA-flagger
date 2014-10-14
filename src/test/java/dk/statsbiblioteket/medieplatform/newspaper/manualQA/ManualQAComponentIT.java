@@ -53,7 +53,7 @@ public class ManualQAComponentIT  {
     public void testBatch() throws Exception {
         loadSpecificProperties(Thread.currentThread().getContextClassLoader().getResource("config.properties").getPath());
         ManualQAFlaggerRunnableComponent runnable = new ManualQAFlaggerRunnableComponent(properties);
-        runnable.doWorkOnBatch(new Batch("400026952148", 4),resultCollector);
+        runnable.doWorkOnItem(new Batch("400026952148", 4),resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         assertFalse(flaggingCollector.hasFlags(), flaggingCollector.toReport());
     }
