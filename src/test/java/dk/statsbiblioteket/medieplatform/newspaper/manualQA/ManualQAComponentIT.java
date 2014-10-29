@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Properties;
 
 import static org.testng.Assert.assertFalse;
@@ -123,7 +124,8 @@ public class ManualQAComponentIT  {
     public TreeIterator getIterator() throws URISyntaxException {
         File file = getBatchFolder();
         System.out.println(file);
-        return new TransformingIteratorForFileSystems(file, "\\.", ".*\\.jp2$", ".md5");
+        return new TransformingIteratorForFileSystems(file, "\\.", ".*\\.jp2$", ".md5",
+                                                      Arrays.asList("transfer_complete", "transfer_acknowledged"));
     }
 
     private File getBatchFolder() {
