@@ -138,8 +138,11 @@ public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunna
             String username = getProperties().getProperty(ConfigConstants.DOMS_USERNAME);
             String password = getProperties().getProperty(ConfigConstants.DOMS_PASSWORD);
             String domsUrl = getProperties().getProperty(ConfigConstants.DOMS_URL);
+            int fedoraRetries = Integer.parseInt(properties.getProperty(ConfigConstants.FEDORA_RETRIES, "1"));
+            int fedoraDelayBetweenRetries = Integer.parseInt(properties.getProperty(ConfigConstants.FEDORA_DELAY_BETWEEN_RETRIES, "100"));
             return new EnhancedFedoraImpl(
-                    new Credentials(username, password), domsUrl, null, null);
+                    new Credentials(username, password), domsUrl, null, null,
+                    fedoraRetries, fedoraRetries, fedoraRetries, fedoraDelayBetweenRetries);
         } catch (JAXBException | PIDGeneratorException e) {
             throw new IOException(e);
         }
