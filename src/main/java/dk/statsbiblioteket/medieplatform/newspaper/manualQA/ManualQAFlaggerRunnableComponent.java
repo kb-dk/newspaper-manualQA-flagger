@@ -142,7 +142,7 @@ public class ManualQAFlaggerRunnableComponent extends TreeProcessorAbstractRunna
             int fedoraDelayBetweenRetries = Integer.parseInt(properties.getProperty(ConfigConstants.FEDORA_DELAY_BETWEEN_RETRIES, "100"));
             return new EnhancedFedoraImpl(
                     new Credentials(username, password), domsUrl, null, null,
-                    fedoraRetries, fedoraRetries, fedoraRetries, fedoraDelayBetweenRetries);
+                    fedoraRetries, fedoraDelayBetweenRetries);
         } catch (JAXBException | PIDGeneratorException e) {
             throw new IOException(e);
         }
